@@ -5,69 +5,55 @@
       <q-avatar color="negative" text-color="white" icon="error" />
     </q-item-section>
     <q-item-section>
+      <q-item-label class="text-grey-9"><small>{{ organization }} grievance</small></q-item-label>
       <q-item-label>{{ title }}</q-item-label>
-      <q-item-label caption lines="12">{{ description }}</q-item-label>
+      <q-item-label @click="showMore" caption lines="200">{{ description }}</q-item-label>
     </q-item-section>
     <q-item-section side top>
-      <q-icon name="thumb_up_alt" color="blue" /> 544
+      <q-icon name="thumb_up_alt" v-ripple color="blue" class="cursor-pointer" /><span class="text-weight-bolder">634</span>
     </q-item-section>
     <q-item-section side top>
-      <q-icon name="thumb_down_alt" color="red" /> 33
+      <q-icon name="thumb_down_alt" v-ripple color="red" class="cursor-pointer" /> <span class="text-weight-bold">33</span>
     </q-item-section>
     </q-item>
-      <q-expansion-item icon="comment" label="232 Comments" opened=true>
-        <div class="q-pa-md full-width">
-          <q-form>
-    <q-input
-      filled
-      type="textarea"
-      autogrow
-      placeholder="Type comment here"
-    />
-            <div class="row">
-    <q-space />
-    <q-btn color="primary q-mt-sm">submit</q-btn>
-  </div>
-</q-form>
-  </div>
-  <q-list>
-    <q-item class="q-pa-sm">
-      <div class="row">
-        <div class="col col-md-1"></div>
-        <div class="col col-md-10">
-      <div class="row">
-      <q-avatar class="q-mr-md"><q-img rounded class="avatar" src="https://thumbs.dreamstime.com/b/male-avatar-icon-flat-style-male-user-icon-cartoon-man-avatar-vector-stock-91602735.jpg"></q-img></q-avatar>
-        <h4>Nick says:</h4>
-        </div>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        </div>
-        <div class="col col-md-1"></div>
-      </div>
-    </q-item>
-  </q-list>
+    <CommentsWidget
+          :entityId="id"
+          type="grievance"
+    ></CommentsWidget>
         <q-separator spaced inset />
-</q-expansion-item>
 </div>
 </template>
 <script>
+import CommentsWidget from 'components/CommentsWidget.vue'
 export default {
   name: 'GrievanceList',
+  components: { CommentsWidget },
   methods: {
     showComments: function (event) {
       console.log(event)
+    },
+    showMore: function (e) {
+      console.log(e)
+      e.target.lines = 25
     }
   },
   data () {
-    return {
-      commentForms: []
-    }
+    return {}
   },
   props: {
+    id: {
+      type: Number,
+      required: true
+    },
     title: {
       type: String,
       required: true
     },
     description: {
+      type: String,
+      required: true
+    },
+    organization: {
       type: String,
       required: true
     }

@@ -8,31 +8,37 @@
         </div>
         <div class="row full-width">
       <div class="bg-grey-2 col col-md-5 q-pl-md">
-        <h6>{{ org_a.name }}</h6>
+        <h6><q-avatar size="40px" square class="q-mr-md"><q-img rounded class="q-mt-none" :src="org_a.avatar_url"></q-img></q-avatar>{{ org_a.name }}</h6>
       </div>
       <div class="bg-grey-2 col col-md-2 text-center">
         <h6>vs.</h6>
       </div>
       <div class="bg-grey-2 col col-md-5 text-right q-pr-md">
-        <h6>{{ org_b.name }}</h6>
+        <h6><q-avatar size="40px" square class="q-mr-md"><q-img rounded class="q-mt-none" :src="org_b.avatar_url"></q-img></q-avatar>{{ org_b.name }}</h6>
       </div>
     </div>
     <q-img rounded class="full-width q-mt-none" :src="avatar_url"></q-img>
     <p class="text-center">created by: {{ creator }}</p>
   </div>
+  <!-- START GRIEVANCE / OFFER TABLES -->
   <div class="q-mb-lg" v-if="!loading">
+      <!-- org a grievances -->
       <q-list bordered padding>
         <q-item-section>
           <q-item-label class="bg-grey-11 text-uppercase text-center"><h6>{{ org_a.name }} Grievances</h6></q-item-label>
         </q-item-section>
-        <h6 class="text-center text-subtitle2 text-grey-9" v-if="!grievances[org_a.name].length">no grievances</h6>
+        <h6 class="text-center text-subtitle2 text-grey-9" v-if="!grievances[org_b.name].length">no grievances</h6>
         <GrievanceList
           v-for="grievance in grievances[org_a.name]"
           :key="grievance.id"
+          :id="grievance.id"
           :title="grievance.title"
           :description="grievance.description"
+          :organization="grievance.organization.name"
+          :organization-avatar-url="grievance.organization.avatar_url"
         />
       </q-list>
+      <!-- org b grievances -->
       <q-list bordered padding>
         <q-item-section>
           <q-item-label class="bg-grey-11 text-uppercase text-center"><h6>{{ org_b.name }} Grievances</h6></q-item-label>
@@ -41,12 +47,14 @@
         <GrievanceList
           v-for="grievance in grievances[org_b.name]"
           :key="grievance.id"
+          :id="grievance.id"
           :title="grievance.title"
           :description="grievance.description"
+          :organization="grievance.organization.name"
+          :organization-avatar-url="grievance.organization.avatar_url"
         />
       </q-list>
-      </div>
-  <div class="q-mb-lg" v-if="!loading">
+      <!-- org a offers -->
       <q-list bordered padding>
         <q-item-section>
           <q-item-label class="bg-grey-11 text-uppercase text-center"><h6>{{ org_a.name }} Offers</h6></q-item-label>
@@ -57,8 +65,11 @@
           :key="offer.id"
           :title="offer.title"
           :description="offer.description"
+          :organization="offer.organization.name"
+          :organization-avatar-url="offer.organization.avatar_url"
         />
       </q-list>
+      <!-- org b offers -->
       <q-list bordered padding>
         <q-item-section>
           <q-item-label class="bg-grey-11 text-uppercase text-center"><h6>{{ org_b.name }} Offers</h6></q-item-label>
@@ -81,6 +92,7 @@ import OfferList from 'components/OfferList.vue'
 export default {
   components: { GrievanceList, OfferList },
   async created () {
+    console.log('-->>--', this.$store.state.user.uid)
     let q = `http://localhost:3000/treaties/${this.$route.params.id}?filter={"include": [{"relation":"creator"}, {"relation": "offers", "scope":{"include":[{"relation":"organization"}]}}, {"relation":"grievances", "scope":{"include":[{"relation":"organization"}]}}, {"relation":"votes"}]}`
     const treaty = await this.$axios.get(q)
     this.name = treaty.data.name
@@ -106,6 +118,7 @@ export default {
     }
     this.loading = false
   },
+  mounted () {},
   data () {
     return {
       name: '',
@@ -119,6 +132,7 @@ export default {
       offers: {},
       loading: true
     }
-  }
+  },
+  methods: {}
 }
 </script>
