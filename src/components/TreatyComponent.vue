@@ -2,7 +2,7 @@
   <div>
   <q-item>
     <q-item-section top>
-      <q-item-label class="text-grey-9"><small>{{ organization }} {{ entityType }}</small></q-item-label>
+      <q-item-label class="text-grey-9"><small>{{ orgAid }}-{{ orgAname }} | {{ orgBid }}-{{ orgBname }} {{ entityType }}id:{{ entityId }}</small></q-item-label>
       <q-item-label><h5 class="q-pt-none">{{ title }}</h5></q-item-label>
       <q-item-label caption lines="200">{{ description }}</q-item-label>
     </q-item-section>
@@ -10,16 +10,18 @@
       <div class="text-center full-width">{{ orgAname }}</div>
       <LikeButtons
       :entityType='entityType'
-      :entityId="id" />
+      :entityId="entityId"
+      :organizationId="orgAid" />
       <q-separator class="q-mt-sm" />
       <div class="q-mt-sm text-center full-width">{{ orgBname }}</div>
       <LikeButtons
       :entityType='entityType'
-      :entityId="id" />
+      :entityId="entityId"
+      :organizationId="orgBid" />
     </q-item-section>
     </q-item>
     <CommentsWidget
-          :entityId="id"
+          :entityId="entityId"
           :entityType="entityType"
     ></CommentsWidget>
         <q-separator spaced inset />
@@ -31,21 +33,15 @@ import LikeButtons from 'components/LikeButtons.vue'
 export default {
   name: 'TreatyComponent',
   components: { CommentsWidget, LikeButtons },
-  methods: {
-    showComments: function (event) {
-      console.log(event)
-    },
-    showMore: function (e) {
-      console.log(e)
-      e.target.lines = 25
-    }
-  },
-  mounted () {},
   data () {
     return {}
   },
   props: {
-    id: {
+    entityId: {
+      type: Number,
+      required: true
+    },
+    organizationId: {
       type: Number,
       required: true
     },
@@ -71,6 +67,14 @@ export default {
     },
     orgBname: {
       type: String,
+      required: true
+    },
+    orgAid: {
+      type: Number,
+      required: false
+    },
+    orgBid: {
+      type: Number,
       required: true
     }
   }

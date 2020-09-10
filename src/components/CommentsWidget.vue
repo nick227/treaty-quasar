@@ -45,7 +45,6 @@ export default {
       this.currentPointer = this.currentPointer + this.limit
       const q = `http://localhost:3000/${this.entityType}-comments/?filter[skip]=${this.currentPointer}&filter[limit]=${this.limit}&filter[where][${this.entityType}_id]=${this.entityId}&filter[include][][relation]=creator&filter[order]=create_date%20DESC`
       const comments = await this.$axios.get(q)
-      console.log(comments.data)
       this.comments = this.comments.concat(comments.data)
     },
     getCommentCount: async function () {

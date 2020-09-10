@@ -27,20 +27,28 @@
         <q-item-section>
           <q-item-label class="bg-grey-11 text-uppercase text-center"><h6>{{ org_a.name }} Grievances</h6></q-item-label>
         </q-item-section>
-        <h6 class="text-center text-subtitle2 text-grey-9" v-if="!grievances[org_b.name].length">no grievances</h6>
+        <AddTreatyItem
+        entityType="Grievances"
+        :treatyId="treatyId"
+        :organizationId="org_a.id"
+        :fn="reload"
+        />
+        <h6 class="text-center text-subtitle2 text-grey-9" v-if="!grievances[org_a.name].length">no grievances</h6>
         <div v-if="grievances[org_a.name].length">
         <TreatyComponent
           v-for="grievance in grievances[org_a.name]"
            entityType="grievance"
           :key="grievance.id"
-          :id="grievance.id"
+          :entityId="grievance.id"
           :title="grievance.title"
           :description="grievance.description"
           :organization="grievance.organization.name"
-          :organization-id="grievance.organization.id"
-          :organization-avatar-url="grievance.organization.avatar_url"
+          :organizationId="grievance.organization.id"
+          :organizationAvatarUrl="grievance.organization.avatar_url"
           :orgAname="org_a.name"
           :orgBname="org_b.name"
+          :orgAid="org_a.id"
+          :orgBid="org_b.id"
         />
         </div>
       </q-list>
@@ -49,80 +57,49 @@
         <q-item-section>
           <q-item-label class="bg-grey-11 text-uppercase text-center"><h6>{{ org_b.name }} Grievances</h6></q-item-label>
         </q-item-section>
+        <AddTreatyItem
+        entityType="Grievances"
+        :treatyId="treatyId"
+        :organizationId="org_b.id"
+        :fn="reload"
+        />
         <h6 class="text-center text-subtitle2 text-grey-9" v-if="!grievances[org_b.name].length">no grievances</h6>
         <div v-if="grievances[org_b.name].length">
         <TreatyComponent
           v-for="grievance in grievances[org_b.name]"
            entityType="grievance"
           :key="grievance.id"
-          :id="grievance.id"
+          :entityId="grievance.id"
           :title="grievance.title"
           :description="grievance.description"
           :organization="grievance.organization.name"
-          :organization-id="grievance.organization.id"
-          :organization-avatar-url="grievance.organization.avatar_url"
+          :organizationId="grievance.organization.id"
+          :organizationAvatarUrl="grievance.organization.avatar_url"
           :orgAname="org_a.name"
           :orgBname="org_b.name"
+          :orgAid="org_a.id"
+          :orgBid="org_b.id"
         />
         </div>
       </q-list>
-      <!-- org a offers -->
-      <q-list bordered padding>
-        <q-item-section>
-          <q-item-label class="bg-grey-11 text-uppercase text-center"><h6>{{ org_a.name }} Offers</h6></q-item-label>
-        </q-item-section>
-        <h6 class="text-center text-subtitle2 text-grey-9" v-if="!offers[org_a.name].length">no offers</h6>
-        <div v-if="offers[org_a.name].length">
-        <TreatyComponent
-          v-for="offer in offers[org_a.name]"
-           entityType="offer"
-          :key="offer.id"
-          :id="offer.id"
-          :title="offer.title"
-          :description="offer.description"
-          :organization="offer.organization.name"
-          :organization-avatar-url="offer.organization.avatar_url"
-          :orgAname="org_a.name"
-          :orgBname="org_b.name"
-        />
-        </div>
-      </q-list>
-      <!-- org b offers -->
-      <q-list bordered padding>
-        <q-item-section>
-          <q-item-label class="bg-grey-11 text-uppercase text-center"><h6>{{ org_b.name }} Offers</h6></q-item-label>
-        </q-item-section>
-        <h6 class="text-center text-subtitle2 text-grey-9" v-if="!offers[org_b.name].length">no offers</h6>
-        <div v-if="offers[org_b.name].length">
-        <TreatyComponent
-          v-for="offer in offers[org_b.name]"
-           entityType="offer"
-          :key="offer.id"
-          :id="offer.id"
-          :title="offer.title"
-          :description="offer.description"
-          :organization="offer.organization.name"
-          :organization-avatar-url="offer.organization.avatar_url"
-          :orgAname="org_a.name"
-          :orgBname="org_b.name"
-        />
-        </div>
-      </q-list>
+      <!-- OFFER STUFF REMOVED -->
       </div>
   </q-page>
 </template>
 
 <script>
 import TreatyComponent from 'components/TreatyComponent.vue'
+import AddTreatyItem from 'components/AddTreatyItem.vue'
 export default {
-  components: { TreatyComponent },
+  components: { TreatyComponent, AddTreatyItem },
   async created () {
     this.reload()
   },
   methods: {
     reload: async function () {
-      let q = `http://localhost:3000/treaties/${this.$route.params.id}?filter={"include": [{"relation":"creator"}, {"relation": "offers", "scope":{"include":[{"relation":"organization"}]}}, {"relation":"grievances", "scope":{"include":[{"relation":"organization"}]}}, {"relation":"votes"}]}`
+      let q = `http://localhost:3000/treaties/${this.$route.params.id}?filter={"order":["create_date DESC"], "include": [{"relation":"creator"}, {"relation": "offers", "scope":{"include":[{"relation":"organization"}]}}, {"relation":"grievances", "scope":{"include":[{"relation":"organization"}]}}, {"relation":"votes"}]}`
       const treaty = await this.$axios.get(q)
+      this.treatyId = treaty.data.id
       this.name = treaty.data.name
       this.status = treaty.data.status
       this.description = treaty.data.description

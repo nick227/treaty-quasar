@@ -17,19 +17,6 @@
   <q-item
     clickable
     tag="a"
-    to="/treaty/create"
-  >
-    <q-item-section avatar>
-      <q-icon name="library_add" />
-    </q-item-section>
-    <q-item-section>
-      <q-item-label>New Treaty</q-item-label>
-    </q-item-section>
-  </q-item>
-  <!-- new item -->
-  <q-item
-    clickable
-    tag="a"
     to="/treaties"
   >
     <q-item-section avatar>

@@ -25,33 +25,48 @@ export default {
     entityType: String,
     entityId: Number,
     organizationId: Number,
-    organizationName: String,
-    numLikes: {
-      type: Number,
-      default: 0
-    },
-    numDislikes: {
-      type: Number,
-      default: 0
+    organizationName: String
+  },
+  data () {
+    return {
+      numLikes: 0,
+      numDislikes: 0
     }
   },
   methods: {
     like: async function () {
-      const q = `http://localhost:3000/${this.entityType}-like`
+      this.update(1)
+    },
+    dislike: function () {
+      this.update(0)
+    },
+    update: async function (val) {
+      const q = `http://localhost:3000/${this.entityType}-likes`
       const payload = {
         creator_user_id: this.$store.state.user.uid,
-        liked: 1
+        organization_id: this.organizationId,
+        liked: val
       }
       payload[this.entityType + '_id'] = this.entityId
       await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } })
       this.getLikes()
     },
-    dislike: function () {
-    },
-    getLikes: function () {
-      console.log('ij')
+    getLikes: async function () {
+      const q = `http://localhost:3000/${this.entityType}-likes?filter[where][and][0][${this.entityType}_id]=${this.entityId}&filter[where][and][1][organization_id]=${this.organizationId}`
+      const likes = await this.$axios.get(q)
+      this.numLikes = 0
+      this.numDislikes = 0
+      for (let i = 0; i < likes.data.length; i++) {
+        if (likes.data[i].liked === 1) {
+          this.numLikes = this.numLikes + 1
+        } if (likes.data[i].liked === 0) {
+          this.numDislikes = this.numDislikes + 1
+        }
+      }
     }
   },
-  mounted () {}
+  mounted () {
+    this.getLikes()
+  }
 }
 </script>

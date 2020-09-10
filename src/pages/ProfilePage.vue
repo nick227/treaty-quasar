@@ -27,7 +27,6 @@ export default {
       }
       this.$hello(network).api('me')
         .then((res) => {
-          console.log(res)
           this.profile = res
         })
     }
