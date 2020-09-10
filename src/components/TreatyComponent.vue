@@ -2,25 +2,25 @@
   <div>
   <q-item>
     <q-item-section top>
-      <q-item-label class="text-grey-9"><small>{{ organization }} grievance</small></q-item-label>
+      <q-item-label class="text-grey-9"><small>{{ organization }} {{ entityType }}</small></q-item-label>
       <q-item-label><h5 class="q-pt-none">{{ title }}</h5></q-item-label>
       <q-item-label caption lines="200">{{ description }}</q-item-label>
     </q-item-section>
     <q-item-section side top style="width:95px;">
       <div class="text-center full-width">{{ orgAname }}</div>
       <LikeButtons
-      entityType='grievance'
+      :entityType='entityType'
       :entityId="id" />
       <q-separator class="q-mt-sm" />
       <div class="q-mt-sm text-center full-width">{{ orgBname }}</div>
       <LikeButtons
-      entityType='grievance'
+      :entityType='entityType'
       :entityId="id" />
     </q-item-section>
     </q-item>
     <CommentsWidget
           :entityId="id"
-          entityType="grievance"
+          :entityType="entityType"
     ></CommentsWidget>
         <q-separator spaced inset />
 </div>
@@ -29,7 +29,7 @@
 import CommentsWidget from 'components/CommentsWidget.vue'
 import LikeButtons from 'components/LikeButtons.vue'
 export default {
-  name: 'GrievanceList',
+  name: 'TreatyComponent',
   components: { CommentsWidget, LikeButtons },
   methods: {
     showComments: function (event) {
@@ -40,6 +40,7 @@ export default {
       e.target.lines = 25
     }
   },
+  mounted () {},
   data () {
     return {}
   },
@@ -49,6 +50,10 @@ export default {
       required: true
     },
     title: {
+      type: String,
+      required: true
+    },
+    entityType: {
       type: String,
       required: true
     },

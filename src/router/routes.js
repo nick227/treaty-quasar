@@ -5,8 +5,12 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/Index.vue') },
       { path: '/profile', component: () => import('pages/Profile.vue') },
-      { path: '/treaty/:id', component: () => import('pages/treaty.vue') },
-      { path: '/login', component: () => import('pages/Login.vue') }
+      { path: '/treaties', component: () => import('pages/TreatyList.vue') },
+      { path: '/treaty/create', component: () => import('pages/CreateTreaty.vue') },
+      { path: '/treaty/:id', component: () => import('pages/Treaty.vue') },
+      { path: '/login', component: () => import('pages/Login.vue') },
+      { path: '/organizations', component: () => import('pages/OrganizationList.vue') },
+      { path: '/organization/:id', component: () => import('pages/Organization.vue') }
     ]
   }
 ]

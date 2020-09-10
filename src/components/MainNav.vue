@@ -13,10 +13,50 @@
       <q-item-label>Home</q-item-label>
     </q-item-section>
   </q-item>
+  <!-- new item -->
   <q-item
     clickable
     tag="a"
-    to="/Login"
+    to="/treaty/create"
+  >
+    <q-item-section avatar>
+      <q-icon name="library_add" />
+    </q-item-section>
+    <q-item-section>
+      <q-item-label>New Treaty</q-item-label>
+    </q-item-section>
+  </q-item>
+  <!-- new item -->
+  <q-item
+    clickable
+    tag="a"
+    to="/treaties"
+  >
+    <q-item-section avatar>
+      <q-icon name="article" />
+    </q-item-section>
+    <q-item-section>
+      <q-item-label>Treaties</q-item-label>
+    </q-item-section>
+  </q-item>
+  <!-- new item -->
+  <q-item
+    clickable
+    tag="a"
+    to="/organizations"
+  >
+    <q-item-section avatar>
+      <q-icon name="public" />
+    </q-item-section>
+    <q-item-section>
+      <q-item-label>Organizations</q-item-label>
+    </q-item-section>
+  </q-item>
+  <!-- new item -->
+  <q-item
+    clickable
+    tag="a"
+    to="/login"
   >
     <q-item-section avatar>
       <q-icon name="login" />
@@ -37,19 +77,6 @@
     </q-item-section>
     <q-item-section>
       <q-item-label>Logout</q-item-label>
-    </q-item-section>
-  </q-item>
-  <!-- new item -->
-  <q-item
-    clickable
-    tag="a"
-    to="/treaty/1"
-  >
-    <q-item-section avatar>
-      <q-icon name="grade" />
-    </q-item-section>
-    <q-item-section>
-      <q-item-label>Treaty 1</q-item-label>
     </q-item-section>
   </q-item>
   <!-- new item -->
