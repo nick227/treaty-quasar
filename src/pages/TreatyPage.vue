@@ -1,5 +1,5 @@
 <template>
-  <q-page padding>
+  <q-page>
       <div class="q-pa-md q-gutter-sm">
         <div class="text-center">
       <q-badge :label="status" />
@@ -20,15 +20,37 @@
     <q-img class="full-width q-mt-none" :src="avatar_url"></q-img>
     <p class="text-center">created by: {{ creator }}</p>
   </div>
-  <!-- START GRIEVANCE / OFFER TABLES -->
+  <!-- START TABS -->
   <div class="q-mb-lg" v-if="!loading">
+    <q-tabs
+          v-model="tab"
+          dense
+          class="bg-grey-3 text-grey-7"
+          active-color="primary"
+          indicator-color="purple"
+          align="justify"
+        >
+          <q-tab name="grievance" label="Grievances" />
+          <q-tab name="offer" label="Offers" />
+        </q-tabs>
+        <q-tab-panels
+        v-model="tab"
+        animated
+        transition-prev="fade"
+        transition-next="fade"
+        class=""
+        >
+  <!-- START GRIEVANCE / OFFER TABLES -->
+    <q-tab-panel name="grievance">
+      <div class="row full-width">
+        <div class="col col-6">
       <!-- org a grievances -->
-      <q-list bordered padding>
+      <q-list class="bg-grey-2">
         <q-item-section>
-          <q-item-label class="bg-grey-11 text-uppercase text-center"><h6>{{ org_a.name }} Grievances</h6></q-item-label>
+          <q-item-label class="text-uppercase text-center"><q-avatar square size="140px" class="q-mr-md"><q-img class="avatar" :src="org_a.avatar_url"></q-img></q-avatar><h6>{{ org_a.name }} Grievances</h6></q-item-label>
         </q-item-section>
         <AddTreatyItem
-        entityType="Grievances"
+        entityType="grievance"
         :treatyId="treatyId"
         :organizationId="org_a.id"
         :fn="reload"
@@ -52,13 +74,15 @@
         />
         </div>
       </q-list>
+    </div>
+        <div class="col col-6">
       <!-- org b grievances -->
-      <q-list bordered padding>
+      <q-list bordered>
         <q-item-section>
-          <q-item-label class="bg-grey-11 text-uppercase text-center"><h6>{{ org_b.name }} Grievances</h6></q-item-label>
+          <q-item-label class="text-uppercase text-center"><q-avatar square size="140px" class="q-mr-md"><q-img class="avatar" :src="org_b.avatar_url"></q-img></q-avatar><h6>{{ org_b.name }} Grievances</h6></q-item-label>
         </q-item-section>
         <AddTreatyItem
-        entityType="Grievances"
+        entityType="grievance"
         :treatyId="treatyId"
         :organizationId="org_b.id"
         :fn="reload"
@@ -81,8 +105,79 @@
           :orgBid="org_b.id"
         />
         </div>
+      </q-list></div>
+      </div>
+      </q-tab-panel>
+      <!--    OFFER WIDGETS    -->
+      <q-tab-panel name="offer">
+        <div class="row full-width">
+          <div class="col col-6">
+      <!-- org a offers -->
+      <q-list bordered>
+        <q-item-section>
+          <q-item-label class="text-uppercase text-center"><h6>{{ org_a.name }} Offers</h6></q-item-label>
+        </q-item-section>
+        <AddTreatyItem
+        entityType="offer"
+        :treatyId="treatyId"
+        :organizationId="org_a.id"
+        :fn="reload"
+        />
+        <h6 class="text-center text-subtitle2 text-grey-9" v-if="!offers[org_a.name].length">no offers</h6>
+        <div v-if="offers[org_a.name].length">
+        <TreatyComponent
+          v-for="offer in offers[org_a.name]"
+           entityType="offer"
+          :key="offer.id"
+          :entityId="offer.id"
+          :title="offer.title"
+          :description="offer.description"
+          :organization="offer.organization.name"
+          :organizationId="offer.organization.id"
+          :organizationAvatarUrl="offer.organization.avatar_url"
+          :orgAname="org_a.name"
+          :orgBname="org_b.name"
+          :orgAid="org_a.id"
+          :orgBid="org_b.id"
+        />
+        </div>
       </q-list>
-      <!-- OFFER STUFF REMOVED -->
+    </div>
+          <div class="col col-6">
+      <!-- org b offers -->
+      <q-list bordered>
+        <q-item-section>
+          <q-item-label class="text-uppercase text-center"><h6>{{ org_b.name }} Offers</h6></q-item-label>
+        </q-item-section>
+        <AddTreatyItem
+        entityType="offer"
+        :treatyId="treatyId"
+        :organizationId="org_b.id"
+        :fn="reload"
+        />
+        <h6 class="text-center text-subtitle2 text-grey-9" v-if="!offers[org_b.name].length">no offers</h6>
+        <div v-if="offers[org_b.name].length">
+        <TreatyComponent
+          v-for="offer in offers[org_b.name]"
+           entityType="offer"
+          :key="offer.id"
+          :entityId="offer.id"
+          :title="offer.title"
+          :description="offer.description"
+          :organization="offer.organization.name"
+          :organizationId="offer.organization.id"
+          :organizationAvatarUrl="offer.organization.avatar_url"
+          :orgAname="org_a.name"
+          :orgBname="org_b.name"
+          :orgAid="org_a.id"
+          :orgBid="org_b.id"
+        />
+        </div>
+      </q-list>
+    </div>
+        </div>
+      </q-tab-panel>
+      </q-tab-panels>
       </div>
   </q-page>
 </template>
@@ -117,7 +212,7 @@ export default {
       this.grievances[this.org_a.name] = []
       this.grievances[this.org_b.name] = []
       if (typeof obj.grievances === 'object') {
-        for (let i = 0; i < obj.grievances.length; i++) {
+        for (let i = obj.grievances.length - 1; i >= 0; i--) {
           this.grievances[obj.grievances[i].organization.name].push(obj.grievances[i])
         }
       }
@@ -133,6 +228,7 @@ export default {
   },
   data () {
     return {
+      tab: 'grievance',
       name: '',
       status: '',
       description: '',

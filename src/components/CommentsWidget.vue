@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-expansion-item icon="comment" :label="'Comments ' + commentCount" class="bg-cyan-1">
+    <q-expansion-item icon="comment" :label="'Comments ' + commentCount" class="bg-grey-4">
       <div class="q-pa-md full-width">
         <q-form @submit="postComment">
           <q-input filled type="textarea" autogrow placeholder="Type comment here" v-model="newComment" :key="entityId" />

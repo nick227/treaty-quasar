@@ -2,7 +2,7 @@
   <div>
   <q-item>
     <q-item-section top>
-      <q-item-label class="text-grey-9"><small>{{ orgAid }}-{{ orgAname }} | {{ orgBid }}-{{ orgBname }} {{ entityType }}id:{{ entityId }}</small></q-item-label>
+      <q-item-label class="bg-grey-2"><small>{{ organization }} {{ entityType }}</small></q-item-label>
       <q-item-label><h5 class="q-pt-none">{{ title }}</h5></q-item-label>
       <q-item-label caption lines="200">{{ description }}</q-item-label>
     </q-item-section>
@@ -43,6 +43,10 @@ export default {
     },
     organizationId: {
       type: Number,
+      required: true
+    },
+    organizationAvatarUrl: {
+      type: String,
       required: true
     },
     title: {

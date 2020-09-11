@@ -36,7 +36,7 @@ export default {
       this.description = ''
     },
     submitForm: async function () {
-      const q = `http://localhost:3000/${this.entityType.toLowerCase()}`
+      const q = `http://localhost:3000/${this.entityType.toLowerCase()}s`
       const payload = {
         creator_user_id: this.$store.state.user.uid,
         title: this.title,

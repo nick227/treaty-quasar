@@ -1,6 +1,13 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <TopToolbar></TopToolbar>
+    <!--
+    <q-footer reveal elevated class="bg-cyan">
+        <q-toolbar>
+          <q-toolbar-title></q-toolbar-title>
+        </q-toolbar>
+      </q-footer>
+    -->
     <q-page-container>
       <router-view />
     </q-page-container>
