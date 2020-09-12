@@ -1,5 +1,11 @@
 <template>
-  <q-page class="full-width full-height">
+  <q-page padding class="river-column">
+      <div class="q-pa-md q-gutter-sm">
+        <div class="text-center">
+      <q-badge :label="status" />
+          <h3>{{name}}</h3>
+          <h6>{{description}}</h6>
+        </div>
         <div class="row full-width">
       <div class="bg-grey-2 col col-md-5 q-pl-md">
         <h6><q-avatar size="40px" square class="q-mr-md"><q-img rounded class="q-mt-none" :src="org_a.avatar_url"></q-img></q-avatar>{{ org_a.name }}</h6>
@@ -11,34 +17,9 @@
         <h6><q-avatar size="40px" square class="q-mr-md"><q-img rounded class="q-mt-none" :src="org_b.avatar_url"></q-img></q-avatar>{{ org_b.name }}</h6>
       </div>
     </div>
-<q-card class="q-pa-lg full-width full-height">
-        <q-expansion-item v-model="expanded" switch-toggle-side dense-toggle label="Edit Treaty" class="absolute-right z-top q-mr-lg q-mb-lg">
-          <EditTreatyWidget
-           :name="name"
-           :avatar_url="avatar_url"
-           :description="description"
-           :status="status"
-           :id="id"
-           :reload="reload"
-           />
-        </q-expansion-item>
-      <q-card-section horizontal class="full-width items-start">
-      <q-avatar size="250px" class="q-mr-md q-mb-lg items-start">
-        <q-img
-          :src="avatar_url"
-          style="max-height:80vh"
-        />
-      </q-avatar>
-        <q-card-section class="q-pb-md q-pt-none">
-          <h2>{{ name }}</h2>
-          <p class="">created by: {{ creator }}</p>
-          <p class="q-pt-none" style="max-width:60%;">{{ description }}</p>
-          <q-badge :label="'status: ' + status" />
-        </q-card-section>
-      </q-card-section>
-      <RateTreatyWidget class="absolute-bottom-right q-mr-lg q-pb-lg z-top" />
-    </q-card>
-      <q-separator />
+    <q-img class="full-width q-mt-none" :src="avatar_url"></q-img>
+    <p class="text-center">created by: {{ creator }}</p>
+  </div>
   <!-- START TABS -->
   <div class="q-mb-lg" v-if="!loading">
     <q-tabs
@@ -47,11 +28,10 @@
           class="bg-grey-3 text-grey-7"
           active-color="primary"
           indicator-color="purple"
-          align="left"
+          align="justify"
         >
           <q-tab name="grievance" label="Grievances" />
           <q-tab name="offer" label="Offers" />
-          <q-tab name="vote" label="Voting" />
         </q-tabs>
         <q-tab-panels
         v-model="tab"
@@ -60,24 +40,19 @@
         transition-next="fade"
         class=""
         >
-  <!-- START VoteTreatyWidget -->
-    <q-tab-panel name="vote">
-      <VoteTreatyWidget />
-    </q-tab-panel>
   <!-- START GRIEVANCE / OFFER TABLES -->
     <q-tab-panel name="grievance">
       <div class="row full-width">
-      <!-- org a grievances -->
         <div class="col col-6">
-      <q-list class="">
+      <!-- org a grievances -->
+      <q-list class="bg-grey-2">
         <q-item-section>
-          <q-item-label class="text-uppercase text-center"><q-avatar square size="400px" class="q-mr-md"><q-img class="avatar" :src="org_a.avatar_url"></q-img></q-avatar><h6>{{ org_a.name }} Grievances</h6></q-item-label>
+          <q-item-label class="text-uppercase text-center"><q-avatar square size="240px" class="q-mr-md"><q-img class="avatar" :src="org_a.avatar_url"></q-img></q-avatar><h6>{{ org_a.name }} Grievances</h6></q-item-label>
         </q-item-section>
         <AddTreatyItem
         entityType="grievance"
         :treatyId="treatyId"
         :organizationId="org_a.id"
-        :organizationName="org_a.name"
         :fn="reload"
         />
         <h6 class="text-center text-subtitle2 text-grey-9" v-if="!grievances[org_a.name].length">no grievances</h6>
@@ -100,17 +75,16 @@
         </div>
       </q-list>
     </div>
-      <!-- org b grievances -->
         <div class="col col-6">
+      <!-- org b grievances -->
       <q-list bordered>
         <q-item-section>
-          <q-item-label class="text-uppercase text-center"><q-avatar square size="400px" class="q-mr-md"><q-img class="avatar" :src="org_b.avatar_url"></q-img></q-avatar><h6>{{ org_b.name }} Grievances</h6></q-item-label>
+          <q-item-label class="text-uppercase text-center"><q-avatar square size="140px" class="q-mr-md"><q-img class="avatar" :src="org_b.avatar_url"></q-img></q-avatar><h6>{{ org_b.name }} Grievances</h6></q-item-label>
         </q-item-section>
         <AddTreatyItem
         entityType="grievance"
         :treatyId="treatyId"
         :organizationId="org_b.id"
-        :organizationName="org_b.name"
         :fn="reload"
         />
         <h6 class="text-center text-subtitle2 text-grey-9" v-if="!grievances[org_b.name].length">no grievances</h6>
@@ -141,13 +115,12 @@
       <!-- org a offers -->
       <q-list bordered>
         <q-item-section>
-          <q-item-label class="text-uppercase text-center"><q-avatar square size="240px" class="q-mr-md"><q-img class="avatar" :src="org_a.avatar_url"></q-img></q-avatar><h6>{{ org_a.name }} Offers</h6></q-item-label>
+          <q-item-label class="text-uppercase text-center"><h6>{{ org_a.name }} Offers</h6></q-item-label>
         </q-item-section>
         <AddTreatyItem
         entityType="offer"
         :treatyId="treatyId"
         :organizationId="org_a.id"
-        :organizationName="org_a.name"
         :fn="reload"
         />
         <h6 class="text-center text-subtitle2 text-grey-9" v-if="!offers[org_a.name].length">no offers</h6>
@@ -174,13 +147,12 @@
       <!-- org b offers -->
       <q-list bordered>
         <q-item-section>
-          <q-item-label class="text-uppercase text-center"><q-avatar square size="240px" class="q-mr-md"><q-img class="avatar" :src="org_b.avatar_url"></q-img></q-avatar><h6>{{ org_b.name }} Offers</h6></q-item-label>
+          <q-item-label class="text-uppercase text-center"><h6>{{ org_b.name }} Offers</h6></q-item-label>
         </q-item-section>
         <AddTreatyItem
         entityType="offer"
         :treatyId="treatyId"
         :organizationId="org_b.id"
-        :organizationName="org_b.name"
         :fn="reload"
         />
         <h6 class="text-center text-subtitle2 text-grey-9" v-if="!offers[org_b.name].length">no offers</h6>
@@ -207,22 +179,14 @@
       </q-tab-panel>
       </q-tab-panels>
       </div>
-    </q-page>
+  </q-page>
 </template>
 
 <script>
 import TreatyComponent from 'components/TreatyComponent.vue'
 import AddTreatyItem from 'components/AddTreatyItem.vue'
-import EditTreatyWidget from 'components/EditTreatyWidget.vue'
-import RateTreatyWidget from 'components/RateTreatyWidget.vue'
-import VoteTreatyWidget from 'components/VoteTreatyWidget.vue'
 export default {
-  meta () {
-    return {
-      title: this.name
-    }
-  },
-  components: { TreatyComponent, AddTreatyItem, EditTreatyWidget, RateTreatyWidget, VoteTreatyWidget },
+  components: { TreatyComponent, AddTreatyItem },
   async created () {
     this.reload()
   },
@@ -264,7 +228,6 @@ export default {
   },
   data () {
     return {
-      id: this.$route.params.id,
       tab: 'grievance',
       name: '',
       status: '',
@@ -275,8 +238,7 @@ export default {
       org_b: {},
       grievances: {},
       offers: {},
-      loading: true,
-      expanded: false
+      loading: true
     }
   }
 }

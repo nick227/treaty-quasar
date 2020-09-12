@@ -1,5 +1,5 @@
 <template>
-  <q-page padding>
+  <q-page padding class="river-column">
   <q-expansion-item switch-toggle-side dense-toggle label="Create Organization">
     <CreateOrganizationWidget />
   </q-expansion-item>
@@ -7,17 +7,19 @@
     <q-list padding>
       <q-separator />
     <div v-for="org in organizations" :key="org.id">
-      <q-item>
-         <q-item-section top avatar>
-          <q-item class="q-mr-md" tag="a" :to="'/organization/'+org.id"><q-avatar size="240px" square class=""><q-img rounded class="q-mt-none" :src="org.avatar_url"></q-img></q-avatar></q-item>
-        </q-item-section>
-        <q-item-section>
-          <q-item class="q-pa-sm" tag="a" :to="'/organization/'+org.id"><q-item-label>{{ org.name }}</q-item-label></q-item>
-          <q-item-label class="q-pa-sm" caption lines="2">{{ org.description }}</q-item-label>
-        </q-item-section>
-        <q-item-section side>
-          <q-btn :label="joinedList.indexOf(org.id) === -1 ? 'Join' : 'Unjoin'" :color="joinedList.indexOf(org.id) === -1 ? 'primary' : 'secondary'" style="width:100px" :ripple="{ center: true }" @click="joinedList.indexOf(org.id) === -1 ? join(org.id) : unjoin(org.id)"></q-btn>
-        </q-item-section>
+      <q-item class="full-width" tag="a" :to="'/organization/'+org.id">
+         <q-card class="full-width">
+      <q-img rounded class="q-mt-none" :src="org.avatar_url"></q-img>
+      <q-card-section>
+        <div class="text-h6">{{ org.name }}</div>
+      </q-card-section>
+      <q-card-section class="q-pt-none">
+        {{ org.description }}
+      </q-card-section>
+      <div class="text-right q-pa-lg">
+        <q-btn class="style=z-index:999;" :label="joinedList.indexOf(org.id) === -1 ? 'Join' : 'Unjoin'" :color="joinedList.indexOf(org.id) === -1 ? 'primary' : 'secondary'" style="width:100px" :ripple="{ center: true }" @click="joinedList.indexOf(org.id) === -1 ? join(org.id) : unjoin(org.id)"></q-btn>
+        </div>
+    </q-card>
       </q-item>
       <q-separator />
       </div>
@@ -27,6 +29,11 @@
 <script>
 import CreateOrganizationWidget from 'components/CreateOrganizationWidget.vue'
 export default {
+  meta () {
+    return {
+      title: 'Organizations'
+    }
+  },
   components: { CreateOrganizationWidget },
   name: 'OrganizationList',
   data () {
@@ -41,7 +48,7 @@ export default {
   },
   methods: {
     join: async function (id) {
-      const q = 'http://localhost:3000/user-to-organizations'
+      const q = `${process.env.api}/user-to-organizations`
       const payload = {
         creator_user_id: this.$store.state.user.uid,
         organization_id: id
@@ -51,7 +58,7 @@ export default {
     },
     unjoin: async function (id) {
       const relId = this.joined.filter((obj) => { return obj.organization_id === id })[0].id
-      const q = `http://localhost:3000/user-to-organizations/${relId}`
+      const q = `${process.env.api}/user-to-organizations/${relId}`
       await this.$axios.delete(q)
       this.reload()
     },
@@ -60,13 +67,13 @@ export default {
       this.loadOrgs()
     },
     loadJoined: async function () {
-      const q = `http://localhost:3000/user-to-organizations?filter[where][creator_user_id]=${this.$store.state.user.uid}`
+      const q = `${process.env.api}/user-to-organizations?filter[where][creator_user_id]=${this.$store.state.user.uid}`
       const joined = await this.$axios.get(q)
       this.joined = joined.data
       this.joinedList = joined.data.map((obj) => { return obj.organization_id })
     },
     loadOrgs: async function () {
-      const q = 'http://localhost:3000/organizations?filter[order]=create_date%20DESC'
+      const q = `${process.env.api}/organizations?filter[order]=create_date%20DESC`
       const organizations = await this.$axios.get(q)
       this.organizations = organizations.data
     }

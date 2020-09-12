@@ -37,23 +37,23 @@ export default {
   name: 'CommentsWidget',
   methods: {
     getComments: async function () {
-      const q = `http://localhost:3000/${this.entityType}-comments/?filter[skip]=${this.currentPointer}&filter[limit]=${this.limit}&filter[where][${this.entityType}_id]=${this.entityId}&filter[include][][relation]=creator&filter[order]=create_date%20DESC`
+      const q = `${process.env.api}/${this.entityType}-comments/?filter[skip]=${this.currentPointer}&filter[limit]=${this.limit}&filter[where][${this.entityType}_id]=${this.entityId}&filter[include][][relation]=creator&filter[order]=create_date%20DESC`
       const comments = await this.$axios.get(q)
       this.comments = comments.data
     },
     showMore: async function () {
       this.currentPointer = this.currentPointer + this.limit
-      const q = `http://localhost:3000/${this.entityType}-comments/?filter[skip]=${this.currentPointer}&filter[limit]=${this.limit}&filter[where][${this.entityType}_id]=${this.entityId}&filter[include][][relation]=creator&filter[order]=create_date%20DESC`
+      const q = `${process.env.api}/${this.entityType}-comments/?filter[skip]=${this.currentPointer}&filter[limit]=${this.limit}&filter[where][${this.entityType}_id]=${this.entityId}&filter[include][][relation]=creator&filter[order]=create_date%20DESC`
       const comments = await this.$axios.get(q)
       this.comments = this.comments.concat(comments.data)
     },
     getCommentCount: async function () {
-      const q = `http://localhost:3000/${this.entityType}-comments/count?[where][${this.entityType}_id]=${this.entityId}`
+      const q = `${process.env.api}/${this.entityType}-comments/count?[where][${this.entityType}_id]=${this.entityId}`
       const res = await this.$axios.get(q)
       this.commentCount = res.data.count
     },
     postComment: async function () {
-      const q = `http://localhost:3000/${this.entityType}-comments`
+      const q = `${process.env.api}/${this.entityType}-comments`
       const payload = {
         creator_user_id: this.$store.state.user.uid,
         text: this.newComment

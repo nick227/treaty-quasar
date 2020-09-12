@@ -42,7 +42,7 @@ export default {
   },
   methods: {
     postForm: async function () {
-      const q = 'http://localhost:3000/organizations'
+      const q = `${process.env.api}/organizations`
       const payload = {
         creator_user_id: this.$store.state.user.uid,
         description: this.description,

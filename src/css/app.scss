@@ -8,21 +8,38 @@ h6 {
   margin: 0;
   padding: 10px 0;
 }
-
 .q-page-container {
   display: flex;
   align-items: center;
   flex-direction: column;
   width: 100%;
-
 }
-
-main.q-page {
-  max-width: 800px;
+.q-page {
   width: 90%;
   padding-bottom: 100px;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
-
 .q-item{
 	min-height: 1px;
+}
+.transparent{
+  background: transparent;
+}
+.info-card{
+  width:100%;
+  max-width: 250px;
+}
+.org-card{
+  max-width: 150px;
+}
+.river-column{
+  max-width: 600px;
+  width: 90%;
+}
+.q-field--filled{
+  background-color: $lightgray;
+}
+.semi-trans{
+  background-color: $transwhite;
 }

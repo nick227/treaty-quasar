@@ -20,7 +20,8 @@ module.exports = function (/* ctx */) {
     // https://quasar.dev/quasar-cli/boot-files
     boot: [
       'axios',
-      'hello'
+      'hello',
+      'vuelidate'
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -46,6 +47,9 @@ module.exports = function (/* ctx */) {
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
 
+      env: {
+        api: 'http://localhost:3000'
+      },
       // transpile: false,
 
       // Add dependencies for transpiling with Babel (Array of string/regex)

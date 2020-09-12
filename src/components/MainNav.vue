@@ -43,6 +43,19 @@
   <q-item
     clickable
     tag="a"
+    to="/members"
+  >
+    <q-item-section avatar>
+      <q-icon name="person" />
+    </q-item-section>
+    <q-item-section>
+      <q-item-label>Members</q-item-label>
+    </q-item-section>
+  </q-item>
+  <!-- new item -->
+  <q-item
+    clickable
+    tag="a"
     to="/login"
   >
     <q-item-section avatar>
@@ -84,6 +97,12 @@ export default {
       }, function (e) {
         alert('Signed out error: ' + e.error.message)
       })
+    },
+    isLoggedIn () {
+      this.$hello('facebook').api('me')
+        .then((res) => {
+          // this.profile = res
+        })
     }
   }
 }

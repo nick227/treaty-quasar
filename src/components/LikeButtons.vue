@@ -41,7 +41,7 @@ export default {
       this.update(0)
     },
     update: async function (val) {
-      const q = `http://localhost:3000/${this.entityType}-likes`
+      const q = `${process.env.api}/${this.entityType}-likes`
       const payload = {
         creator_user_id: this.$store.state.user.uid,
         organization_id: this.organizationId,
@@ -52,7 +52,7 @@ export default {
       this.getLikes()
     },
     getLikes: async function () {
-      const q = `http://localhost:3000/${this.entityType}-likes?filter[where][and][0][${this.entityType}_id]=${this.entityId}&filter[where][and][1][organization_id]=${this.organizationId}`
+      const q = `${process.env.api}/${this.entityType}-likes?filter[where][and][0][${this.entityType}_id]=${this.entityId}&filter[where][and][1][organization_id]=${this.organizationId}`
       const likes = await this.$axios.get(q)
       this.numLikes = 0
       this.numDislikes = 0

@@ -8,6 +8,11 @@
 </template>
 <script>
 export default {
+  meta () {
+    return {
+      title: 'Login'
+    }
+  },
   name: 'Login',
   methods: {
     async auth (network) {
@@ -20,13 +25,13 @@ export default {
         })
     },
     async update (obj) {
-      const q = `http://localhost:3000/users?filter[where][facebook_uuid]=${obj.id}`
+      const q = `${process.env.api}/users?filter[where][facebook_uuid]=${obj.id}`
       const res = await this.$axios.get(q)
       if (res.data.length) {
         this.$store.commit('user/updateUid', res.data[0].id)
         window.location.href = '/'
       } else {
-        const q = 'http://localhost:3000/users'
+        const q = `${process.env.api}/users`
         const payload = {
           name: obj.name,
           avatar_url: obj.picture,

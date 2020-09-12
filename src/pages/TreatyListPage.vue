@@ -1,19 +1,26 @@
 <template>
-  <q-page padding>
+  <q-page padding class="river-column">
   <q-expansion-item switch-toggle-side dense-toggle label="Create Treaty">
     <CreateTreatyWidget />
   </q-expansion-item>
     <q-list padding>
       <q-separator />
     <div v-for="treaty in treaties" :key="treaty.id">
-      <q-item>
-         <q-item-section top avatar>
-          <q-item class="q-mr-md" tag="a" :to="'/treaty/'+treaty.id"><q-avatar size="240px" square class=""><q-img rounded class="q-mt-none" :src="treaty.avatar_url"></q-img></q-avatar></q-item>
-        </q-item-section>
-        <q-item-section>
-          <q-item class="q-pa-sm" tag="a" :to="'/treaty/'+treaty.id"><q-item-label>{{ treaty.name }}</q-item-label></q-item>
-          <q-item-label class="q-pa-sm" caption lines="2">{{ treaty.description }}</q-item-label>
-        </q-item-section>
+          <div class="row q-pl-md q-pr-md" style="">
+            <div class="col col-5"><h6>{{ treaty.organization_a.name }}</h6></div>
+            <div class="col col-2 text-center"><h6>vs.</h6></div>
+            <div class="col col-5 text-right"><h6>{{ treaty.organization_b.name }}</h6></div>
+          </div>
+      <q-item class="full-width" tag="a" :to="'/treaty/'+treaty.id">
+         <q-card class="full-width">
+      <q-img rounded class="q-mt-none" :src="treaty.avatar_url"></q-img>
+      <q-card-section>
+        <div class="text-h6">{{ treaty.name }}</div>
+      </q-card-section>
+      <q-card-section class="q-pt-none">
+        {{ treaty.description }}
+      </q-card-section>
+    </q-card>
       </q-item>
       <q-separator />
     </div>
@@ -38,7 +45,7 @@ export default {
       this.loadTreaties()
     },
     loadTreaties: async function () {
-      const q = 'http://localhost:3000/treaties?filter[order]=create_date%20DESC'
+      const q = `${process.env.api}/treaties?filter[include][0][relation]=organization_a&filter[include][1][relation]=organization_b&filter[order]=create_date%20DESC`
       const treaties = await this.$axios.get(q)
       this.treaties = treaties.data
     }

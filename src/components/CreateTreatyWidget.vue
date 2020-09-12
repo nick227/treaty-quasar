@@ -1,7 +1,7 @@
 <template>
   <div>
     <h6 class="q-mb-sm q-mt-lg">New Treaty</h6>
-  <q-form @submit="postForm" greedy class="self-cente">
+  <q-form @submit="postForm" greedy class="self-center">
     <q-input
      filled
      required
@@ -35,6 +35,7 @@
         hide-selected
         fill-input
         input-debounce="0"
+        behavior="menu"
         :options="organizationsA"
         @filter="filterFnA"
         @input-value="setModelA"
@@ -58,6 +59,7 @@
         hide-selected
         fill-input
         input-debounce="0"
+        behavior="menu"
         :options="organizationsB"
         @filter="filterFnB"
         @input-value="setModelB"
@@ -72,8 +74,13 @@
         </template>
       </q-select>
    </div>
-    </div> <div class="text-right q-mt-lg">
-        <q-btn label="Submit" type="submit" color="primary"/>
+    </div>
+    <div class="full-width row">
+      <div class="text-left col-8 col text-red q-mt-sm row">
+      </div>
+      <div class="text-right col col-4 q-mt-lg">
+          <q-btn label="Submit" type="submit" color="primary"/>
+      </div>
     </div>
   </q-form>
   </div>
@@ -98,7 +105,7 @@ export default {
   },
   methods: {
     getOrgs: async function () {
-      const q = 'http://localhost:3000/organizations?filter[order]=create_date%20DESC'
+      const q = `${process.env.api}/organizations?filter[order]=name%20ASC`
       const organizations = await this.$axios.get(q)
       this.organizationsA = this.organizationsB = organizations.data.map((obj) => { return obj.name })
       for (var i = 0, length1 = organizations.data.length; i < length1; i++) {
@@ -106,15 +113,27 @@ export default {
       }
     },
     filterFnA (val, update, abort) {
+      if (val === '') {
+        update(() => {
+          this.options = this.organizationsA
+        })
+        return
+      }
       update(() => {
         const needle = val.toLocaleLowerCase()
-        this.organizationsA = this.organizationsA.filter(v => v.toLocaleLowerCase().indexOf(needle) > -1)
+        this.options = this.organizationsA.filter(v => v.toLocaleLowerCase().indexOf(needle) > -1)
       })
     },
     filterFnB (val, update, abort) {
+      if (val === '') {
+        update(() => {
+          this.options = this.organizationsB
+        })
+        return
+      }
       update(() => {
         const needle = val.toLocaleLowerCase()
-        this.organizationsB = this.organizationsB.filter(v => v.toLocaleLowerCase().indexOf(needle) > -1)
+        this.options = this.organizationsB.filter(v => v.toLocaleLowerCase().indexOf(needle) > -1)
       })
     },
     setModelA (val) {
@@ -124,20 +143,42 @@ export default {
       this.orgB = val
     },
     postForm: async function () {
-      const q = 'http://localhost:3000/treaties'
-      const payload = {
-        creator_user_id: this.$store.state.user.uid,
-        name: this.name,
-        description: this.description,
-        organization_a_id: this.organizationsObj[this.orgA],
-        organization_b_id: this.organizationsObj[this.orgB],
-        avatar_url: this.avatar_url,
-        status: 'pending'
+      if (this.orgValidate()) {
+        console.log('skljks')
+        const q = `${process.env.api}/treaties`
+        const payload = {
+          creator_user_id: this.$store.state.user.uid,
+          name: this.name,
+          description: this.description,
+          organization_a_id: this.organizationsObj[this.orgA],
+          organization_b_id: this.organizationsObj[this.orgB],
+          avatar_url: this.avatar_url,
+          status: 'pending'
+        }
+        console.log(payload)
+        const res = await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } })
+        this.$router.push('/treaty/' + res.data.id)
       }
-      const res = await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } })
-      this.$router.push('/treaty/' + res.data.id)
+    },
+    orgValidate: function () {
+      if (!this.organizationsA.includes(this.orgA)) {
+        console.log('aaaa')
+        this.$q.notify({
+          type: 'negative',
+          message: 'Invalid Party A'
+        })
+        return false
+      }
+      if (!this.organizationsB.includes(this.orgB)) {
+        console.log('bbbb')
+        this.$q.notify({
+          type: 'negative',
+          message: 'Invalid Party B'
+        })
+        return false
+      }
+      return true
     }
   }
 }
-
 </script>

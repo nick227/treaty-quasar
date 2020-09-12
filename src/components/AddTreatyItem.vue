@@ -4,7 +4,7 @@
       <q-dialog v-model="prompt" persistent>
       <q-card style="min-width: 350px">
         <q-card-section color="secondary">
-          <div class="text-h6">Add {{ entityType }}</div>
+          <div class="text-h6">Add {{ organizationName }} {{ entityType }}</div>
         </q-card-section>
 
         <q-card-section class="q-pt-none">
@@ -29,14 +29,14 @@ export default {
       description: ''
     }
   },
-  props: ['entityType', 'treatyId', 'organizationId', 'fn'],
+  props: ['entityType', 'treatyId', 'organizationId', 'fn', 'organizationName'],
   methods: {
     clearForm: function () {
       this.title = ''
       this.description = ''
     },
     submitForm: async function () {
-      const q = `http://localhost:3000/${this.entityType.toLowerCase()}s`
+      const q = `${process.env.api}/${this.entityType.toLowerCase()}s`
       const payload = {
         creator_user_id: this.$store.state.user.uid,
         title: this.title,
