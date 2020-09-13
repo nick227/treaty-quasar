@@ -1,91 +1,39 @@
 <template>
   <q-list>
-  <!-- new item -->
-  <q-item
+  <q-item v-for="item in navItems"
     clickable
-    tag="a"
-    to="/"
+    :tag="item.tagType"
+    :to="item.href"
+    :key="item.name"
+    @click="item.fn ? item.fn() : null"
   >
     <q-item-section avatar>
-      <q-icon name="home" />
+      <q-icon :name="item.iconName" />
     </q-item-section>
     <q-item-section>
-      <q-item-label>Home</q-item-label>
+      <q-item-label>{{ item.text }}</q-item-label>
     </q-item-section>
   </q-item>
-  <!-- new item -->
-  <q-item
-    clickable
-    tag="a"
-    to="/treaties"
-  >
-    <q-item-section avatar>
-      <q-icon name="article" />
-    </q-item-section>
-    <q-item-section>
-      <q-item-label>Treaties</q-item-label>
-    </q-item-section>
-  </q-item>
-  <!-- new item -->
-  <q-item
-    clickable
-    tag="a"
-    to="/organizations"
-  >
-    <q-item-section avatar>
-      <q-icon name="public" />
-    </q-item-section>
-    <q-item-section>
-      <q-item-label>Organizations</q-item-label>
-    </q-item-section>
-  </q-item>
-  <!-- new item -->
-  <q-item
-    clickable
-    tag="a"
-    to="/members"
-  >
-    <q-item-section avatar>
-      <q-icon name="person" />
-    </q-item-section>
-    <q-item-section>
-      <q-item-label>Members</q-item-label>
-    </q-item-section>
-  </q-item>
-  <!-- new item -->
-  <q-item
-    clickable
-    tag="a"
-    to="/login"
-  >
-    <q-item-section avatar>
-      <q-icon name="login" />
-    </q-item-section>
-    <q-item-section>
-      <q-item-label>Login</q-item-label>
-    </q-item-section>
-  </q-item>
-  <!-- new item -->
-  <q-item
-    clickable
-    tag="a"
-    href="#"
-    @click="logout()"
-  >
-    <q-item-section avatar>
-      <q-icon name="logout" />
-    </q-item-section>
-    <q-item-section>
-      <q-item-label>Logout</q-item-label>
-    </q-item-section>
-  </q-item>
-  <!-- new item -->
 </q-list>
 </template>
 
 <script>
 export default {
   name: 'MainNav',
+  data () {
+    const self = this
+    return {
+      navItems: [
+        { tagType: 'a', iconName: 'home', href: '/', fn: false, text: 'Home' },
+        { tagType: 'a', iconName: 'article', href: '/treaties', fn: false, text: 'Treaties' },
+        { tagType: 'a', iconName: 'public', href: '/organizations', fn: false, text: 'Organizations' },
+        { tagType: 'a', iconName: 'person', href: '/members', fn: false, text: 'Members' },
+        { tagType: 'a', iconName: 'login', href: '/login', fn: false, text: 'Login' },
+        { tagType: 'a', iconName: 'logout', href: '/', fn: function () { self.logout() }, text: 'Logout' }
+      ]
+    }
+  },
+  mounted () {},
   methods: {
     logout () {
       if (this.$hello.getAuthResponse('facebook') == null) {

@@ -24,30 +24,49 @@
       </q-item>
       <q-separator />
     </div>
+  <div v-if="!done" v-intersection="onIntersection" class="full-width text-center">
+    <q-spinner-dots color="primary" size="40px" />
+  </div>
   </q-list>
   </q-page>
 </template>
 <script>
 import CreateTreatyWidget from 'components/CreateTreatyWidget.vue'
 export default {
+  meta () {
+    return {
+      title: 'Treaties'
+    }
+  },
   components: { CreateTreatyWidget },
   name: 'TreatyList',
   data () {
     return {
-      treaties: []
+      treaties: [],
+      pointer: 0,
+      limit: 2,
+      done: false,
+      loadNum: 0
     }
   },
   async created () {
-    this.reload()
+    this.loadTreaties()
   },
   methods: {
-    reload: function () {
-      this.loadTreaties()
+    onIntersection: function (index, done) {
+      if (this.loadNum > 1) {
+        this.pointer = this.pointer + this.limit
+        this.loadTreaties()
+      }
+      this.loadNum++
     },
     loadTreaties: async function () {
-      const q = `${process.env.api}/treaties?filter[include][0][relation]=organization_a&filter[include][1][relation]=organization_b&filter[order]=create_date%20DESC`
+      const q = `${process.env.api}/treaties?filter[include][0][relation]=organization_a&filter[include][1][relation]=organization_b&filter[order]=create_date%20DESC&filter[limit]=${this.limit}&filter[skip]=${this.pointer}`
       const treaties = await this.$axios.get(q)
-      this.treaties = treaties.data
+      if (this.limit > treaties.data.length) {
+        this.done = true
+      }
+      this.treaties = this.treaties.concat(treaties.data)
     }
   }
 }

@@ -1,10 +1,11 @@
 <template>
   <q-page class="flex flex-center">
-    <h1></h1>
+    <HomePageAnimations />
   </q-page>
 </template>
 
 <script>
+import HomePageAnimations from 'components/HomePageAnimation3.vue'
 export default {
   meta () {
     return {
@@ -13,6 +14,7 @@ export default {
       equiv: { 'http-equiv': 'Content-Type', content: 'text/html; charset=UTF-8' }
     }
   },
-  name: 'PageIndex'
+  name: 'PageIndex',
+  components: { HomePageAnimations }
 }
 </script>

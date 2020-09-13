@@ -23,7 +23,7 @@
   <q-drawer
     v-model="leftDrawerOpen"
     bordered
-    content-class="bg-grey-1"
+    content-class="bg-black text-white"
   >
     <q-list>
       <q-item-label header></q-item-label>

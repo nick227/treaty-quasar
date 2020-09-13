@@ -23,6 +23,9 @@
       </q-item>
       <q-separator />
       </div>
+  <div v-if="!done" v-intersection="onIntersection" class="full-width text-center">
+    <q-spinner-dots color="primary" size="40px" />
+  </div>
     </q-list>
   </q-page>
 </template>
@@ -40,13 +43,24 @@ export default {
     return {
       joined: [],
       joinedList: [],
-      organizations: []
+      organizations: [],
+      pointer: 0,
+      limit: 4,
+      done: false,
+      loadNum: 0
     }
   },
   async created () {
     this.reload()
   },
   methods: {
+    onIntersection: function (index, done) {
+      if (this.loadNum > 1) {
+        this.pointer = this.pointer + this.limit
+        this.loadOrgs()
+      }
+      this.loadNum++
+    },
     join: async function (id) {
       const q = `${process.env.api}/user-to-organizations`
       const payload = {
@@ -73,9 +87,12 @@ export default {
       this.joinedList = joined.data.map((obj) => { return obj.organization_id })
     },
     loadOrgs: async function () {
-      const q = `${process.env.api}/organizations?filter[order]=create_date%20DESC`
+      const q = `${process.env.api}/organizations?filter[order]=create_date%20DESC&filter[limit]=${this.limit}&filter[skip]=${this.pointer}`
       const organizations = await this.$axios.get(q)
-      this.organizations = organizations.data
+      if (this.limit > organizations.data.length) {
+        this.done = true
+      }
+      this.organizations = this.organizations.concat(organizations.data)
     }
   }
 }
