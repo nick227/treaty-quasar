@@ -13,14 +13,16 @@
       <q-toolbar-title>
         <span class="">CONCORDANT.IO</span>
         <q-avatar class="q-ml-lg" v-if="profile.id">
-          <img :src="profile.picture">
+          <img class="cursor-pointer" @click="showProfile()" :src="profile.picture">
         </q-avatar>
       </q-toolbar-title>
+          <q-form @submit="search">
       <q-input class="q-pa-none" style="width:300px;" dark v-model="searchTerm" label="Search">
         <template v-slot:append>
           <q-icon v-ripple clickable class="cursor-pointer" @click="search" name="search" />
         </template>
       </q-input>
+        </q-form>
     </q-toolbar>
   </q-header>
   <q-drawer
@@ -51,14 +53,18 @@ export default {
       profile: {},
       leftDrawerOpen: true,
       miniState: false,
-      searchTerm: ''
+      searchTerm: '',
+      profile_url: '/profile/' + this.$store.state.user.uid
     }
   },
   methods: {
-    search: function () {
-      alert('kdkd')
+    showProfile: function () {
+      this.$router.push(this.profile_url)
     },
-    getProfile (network) {
+    search: function () {
+      console.log('searching:', this.searchTerm)
+    },
+    getProfile: function (network) {
       if (this.$hello.getAuthResponse(network) == null) {
         return
       }

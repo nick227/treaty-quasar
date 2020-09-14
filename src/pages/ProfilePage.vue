@@ -1,6 +1,6 @@
 <template>
   <q-page class="full-width full-height" :style="'background-image:url(' + this.user.profile_background_url + ');'">
-<q-card class="q-pa-lg full-width full-height transparent">
+<q-card class="q-pa-lg full-width full-height  bg-semi-trans">
       <q-card-section horizontal class="full-width">
       <q-avatar size="250px" class="q-mr-md q-mb-lg items-start">
         <q-img
@@ -27,7 +27,7 @@
         </q-expansion-item>
       </q-card-section>
       <q-separator />
-      <h6 class="q-mt-lg q-ml-lg">Member of:</h6>
+      <h6 v-if="orgs.length" class="q-mt-lg q-ml-lg">Member of:</h6>
     <div class="row q-pa-lg justify-start content-start">
       <div class="col col-shrink" v-for="org in orgs" :key="org.id">
         <q-card class="org-card flex-break q-mr-md transparent">
