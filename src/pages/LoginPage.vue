@@ -16,7 +16,7 @@ export default {
   name: 'Login',
   methods: {
     async auth (network) {
-      this.$hello(network).login({ scope: 'friends' })
+      this.$hello(network).login()
         .then((e) => {
           this.$hello(network).api('me')
             .then((res) => {

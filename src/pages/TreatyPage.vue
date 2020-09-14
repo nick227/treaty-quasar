@@ -11,7 +11,7 @@
         <h6><q-avatar size="40px" square class="q-mr-md"><q-img rounded class="q-mt-none" :src="org_b.avatar_url"></q-img></q-avatar>{{ org_b.name }}</h6>
       </div>
     </div>
-<q-card class="q-pa-lg full-width full-height">
+  <q-card class="q-pa-lg full-width full-height">
         <q-expansion-item v-model="expanded" switch-toggle-side dense-toggle label="Edit Treaty" class="absolute-right z-top q-mr-lg q-mb-lg">
           <EditTreatyWidget
            :name="name"
@@ -33,10 +33,16 @@
           <h2>{{ name }}</h2>
           <p class="">created by: {{ creator }}</p>
           <p class="q-pt-none" style="max-width:60%;">{{ description }}</p>
-          <q-badge :label="'status: ' + status" />
+          <div class="row">
+            <q-badge class="q-mr-md" :label="'status: ' + status" />
+            <q-badge color="secondary" v-if="user_organization_name" :label="'Commenting as: ' + user_organization_name" />
+          </div>
         </q-card-section>
       </q-card-section>
-      <RateTreatyWidget class="absolute-bottom-right q-mr-lg q-pb-lg z-top" />
+      <RateTreatyWidget class="absolute-bottom-right q-mr-lg q-pb-lg z-top"
+      :organizationId="user_organization_id"
+      :treatyId="treatyId"
+      />
     </q-card>
       <q-separator />
   <!-- START TABS -->
@@ -62,14 +68,16 @@
         >
   <!-- START VoteTreatyWidget -->
     <q-tab-panel name="vote">
-      <VoteTreatyWidget />
+      <VoteTreatyWidget
+           :id="id"
+           :organizationId="user_organization_id" />
     </q-tab-panel>
   <!-- START GRIEVANCE / OFFER TABLES -->
     <q-tab-panel name="grievance">
       <div class="row full-width">
       <!-- org a grievances -->
         <div class="col col-6">
-      <q-list class="">
+      <q-list bordered>
         <q-item-section>
           <q-item-label class="text-uppercase text-center"><q-avatar square size="400px" class="q-mr-md"><q-img class="avatar" :src="org_a.avatar_url"></q-img></q-avatar><h6>{{ org_a.name }} Grievances</h6></q-item-label>
         </q-item-section>
@@ -207,6 +215,19 @@
       </q-tab-panel>
       </q-tab-panels>
       </div>
+    <q-dialog v-model="verify_org" persistent>
+      <q-card>
+        <q-card-section class="row items-center">
+          <q-avatar icon="done_outline" color="primary" text-color="white" />
+          <span class="q-ml-sm">Choose ONE organization to comment as.</span>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" color="primary" v-close-popup />
+          <q-btn flat :label="org_a.name" color="primary" @click="setOrg(org_a.name)" v-close-popup />
+          <q-btn flat :label="org_b.name" color="primary" @click="setOrg(org_b.name)" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
     </q-page>
 </template>
 
@@ -223,12 +244,28 @@ export default {
     }
   },
   components: { TreatyComponent, AddTreatyItem, EditTreatyWidget, RateTreatyWidget, VoteTreatyWidget },
-  async created () {
+  async mounted () {
     this.reload()
   },
   methods: {
+    setOrg: function (res) {
+      this.user_organization_name = res
+    },
+    getUserOrg: async function () {
+      const q = `${process.env.api}/user-to-organizations?filter[where][creator_user_id]=${this.$store.state.user.uid}`
+      const joined = await this.$axios.get(q)
+      this.joined = joined.data
+      this.joinedList = joined.data.filter((obj) => { return obj.organization_id === this.org_a.id || obj.organization_id === this.org_b.id }).map((obj) => { return obj.organization_id })
+      if (this.joinedList.length > 1) {
+        this.verify_org = true
+      } else {
+        this.user_organization_id = this.joinedList[0]
+        this.user_organization_name = this.org_obj[this.user_organization_id]
+      }
+    },
     reload: async function () {
       let q = `${process.env.api}/treaties/${this.$route.params.id}?filter={"order":["create_date DESC"], "include": [{"relation":"creator"}, {"relation": "offers", "scope":{"include":[{"relation":"organization"}]}}, {"relation":"grievances", "scope":{"include":[{"relation":"organization"}]}}, {"relation":"votes"}]}`
+      console.log(q)
       const treaty = await this.$axios.get(q)
       this.treatyId = treaty.data.id
       this.name = treaty.data.name
@@ -240,8 +277,11 @@ export default {
       const orgs = await this.$axios.get(q)
       this.org_a = orgs.data[0]
       this.org_b = orgs.data[1]
+      this.org_obj[this.org_a.id] = this.org_a.name
+      this.org_obj[this.org_b.id] = this.org_b.name
       this.loading = false
       this.updateOrgs(treaty.data)
+      this.getUserOrg()
     },
     updateOrgs: function (obj) {
       this.grievances = {}
@@ -276,7 +316,13 @@ export default {
       grievances: {},
       offers: {},
       loading: true,
-      expanded: false
+      expanded: false,
+      user_organization_id: null,
+      user_organization_name: 'unknown',
+      org_obj: {},
+      joinedList: [],
+      verify_org: false,
+      treatyId: null
     }
   }
 }

@@ -2,9 +2,12 @@
   <q-list>
   <q-item v-for="item in navItems"
     clickable
+    v-ripple
     :tag="item.tagType"
     :to="item.href"
     :key="item.name"
+    @mouseover="miniState = false"
+    @mouseout="miniState = true"
     @click="item.fn ? item.fn() : null"
   >
     <q-item-section avatar>
@@ -30,7 +33,8 @@ export default {
         { tagType: 'a', iconName: 'person', href: '/members', fn: false, text: 'Members' },
         { tagType: 'a', iconName: 'login', href: '/login', fn: false, text: 'Login' },
         { tagType: 'a', iconName: 'logout', href: '/', fn: function () { self.logout() }, text: 'Logout' }
-      ]
+      ],
+      active: 'Home'
     }
   },
   mounted () {},

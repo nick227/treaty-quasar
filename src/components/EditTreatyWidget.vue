@@ -75,7 +75,6 @@ export default {
         description: this.data_description,
         avatar_url: this.data_avatar_url
       }
-      console.log(payload)
       const q = `${process.env.api}/treaties/${this.id}`
       await this.$axios.patch(q, payload, { headers: { Accept: 'application/json' } })
         .then((res) => {

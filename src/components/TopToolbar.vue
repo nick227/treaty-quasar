@@ -10,24 +10,30 @@
         aria-label="Menu"
         @click="leftDrawerOpen = !leftDrawerOpen"
       />
-
       <q-toolbar-title>
         <span class="">CONCORDANT.IO</span>
         <q-avatar class="q-ml-lg" v-if="profile.id">
           <img :src="profile.picture">
         </q-avatar>
       </q-toolbar-title>
-
+      <q-input class="q-pa-none" style="width:300px;" dark v-model="searchTerm" label="Search">
+        <template v-slot:append>
+          <q-icon v-ripple clickable class="cursor-pointer" @click="search" name="search" />
+        </template>
+      </q-input>
     </q-toolbar>
   </q-header>
   <q-drawer
     v-model="leftDrawerOpen"
     bordered
+    :mini="miniState"
+    @mouseover="miniState = false"
+    @mouseout="miniState = true"
+    :width="200"
     content-class="bg-black text-white"
   >
-    <q-list>
-      <q-item-label header></q-item-label>
-      <MainNav></MainNav>
+    <q-list class="q-pt-lg">
+      <MainNav class="q-mt-lg"></MainNav>
     </q-list>
   </q-drawer>
   </div>
@@ -43,15 +49,15 @@ export default {
   data () {
     return {
       profile: {},
-      leftDrawerOpen: true
-    }
-  },
-  watch: {
-    profile: function (val) {
-      this.$forceUpdate()
+      leftDrawerOpen: true,
+      miniState: false,
+      searchTerm: ''
     }
   },
   methods: {
+    search: function () {
+      alert('kdkd')
+    },
     getProfile (network) {
       if (this.$hello.getAuthResponse(network) == null) {
         return

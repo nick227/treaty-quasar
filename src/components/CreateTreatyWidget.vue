@@ -144,7 +144,6 @@ export default {
     },
     postForm: async function () {
       if (this.orgValidate()) {
-        console.log('skljks')
         const q = `${process.env.api}/treaties`
         const payload = {
           creator_user_id: this.$store.state.user.uid,
@@ -155,14 +154,12 @@ export default {
           avatar_url: this.avatar_url,
           status: 'pending'
         }
-        console.log(payload)
         const res = await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } })
         this.$router.push('/treaty/' + res.data.id)
       }
     },
     orgValidate: function () {
       if (!this.organizationsA.includes(this.orgA)) {
-        console.log('aaaa')
         this.$q.notify({
           type: 'negative',
           message: 'Invalid Party A'
@@ -170,7 +167,6 @@ export default {
         return false
       }
       if (!this.organizationsB.includes(this.orgB)) {
-        console.log('bbbb')
         this.$q.notify({
           type: 'negative',
           message: 'Invalid Party B'

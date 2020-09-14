@@ -2,8 +2,8 @@
 <div class="">
 <div class="row q-pa-lg">
   <div class="col col-shrink q-mb-lg" v-for="user in users" :key="user.id">
-    <q-card class="org-card flex-break q-ma-lg">
-      <img loading="lazy" style="height: 150px; width: 200px" :src="user.avatar_url">
+    <q-card class="flex-break q-ma-lg">
+      <div :style="'background-image:url(' + user.avatar_url + ')'" class="card-image"></div>
       <q-card-section>
         <p class="caption">{{ user.name }}</p>
         <q-badge outline color="orange" :label="user.location.length > 2 ? user.location : 'Unknown'" />
@@ -31,7 +31,7 @@ export default {
     return {
       users: [],
       pointer: 0,
-      limit: 25,
+      limit: 9,
       done: false,
       loadNum: 0
     }

@@ -28,17 +28,47 @@
 <script>
 export default {
   name: 'RateTreatyWidget',
-  props: ['id'],
+  props: ['treatyId', 'organizationId'],
   data () {
     return {
       ratingVal: 0,
-      numRatings: 0
+      numRatings: 0,
+      ratings: []
     }
   },
-  mounted () {},
+  mounted () {
+    this.getRating()
+  },
   methods: {
-    postForm: function (e) {
-      console.log(this.ratingVal)
+    getRating: async function () {
+      const q = `${process.env.api}/treaty-ratings/?filterp[where][treaty_id]=${this.treatyId}&filter[fields][value]=true`
+      const ratings = await this.$axios.get(q)
+      this.ratings = ratings.data
+      this.numRatings = this.ratings.length
+      this.ratingVal = Math.round(this.ratings.reduce((total, next) => total + next.value, 0) / this.ratings.length)
+    },
+    postForm: async function (e) {
+      const q = `${process.env.api}/treaty-ratings`
+      const payload = {
+        creator_user_id: this.$store.state.user.uid,
+        treaty_id: parseInt(this.treatyId),
+        organization_id: parseInt(this.organizationId),
+        value: this.ratingVal
+      }
+      await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } })
+        .then((res) => {
+          this.getRating()
+          this.$q.notify({
+            type: 'positive',
+            message: 'Rating added'
+          })
+        })
+        .catch((err) => {
+          this.$q.notify({
+            type: 'negative',
+            message: err
+          })
+        })
     }
   }
 }
