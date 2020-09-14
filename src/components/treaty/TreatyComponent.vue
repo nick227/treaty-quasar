@@ -28,8 +28,8 @@
 </div>
 </template>
 <script>
-import CommentsWidget from 'components/CommentsWidget.vue'
-import LikeButtons from 'components/LikeButtons.vue'
+import CommentsWidget from 'components/widgets/CommentsWidget.vue'
+import LikeButtons from 'components/widgets/LikeButtonsWidget.vue'
 export default {
   name: 'TreatyComponent',
   components: { CommentsWidget, LikeButtons },

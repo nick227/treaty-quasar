@@ -30,7 +30,7 @@
   </q-page>
 </template>
 <script>
-import CreateOrganizationWidget from 'components/CreateOrganizationWidget.vue'
+import CreateOrganizationWidget from 'components/organization/CreateOrganizationWidget.vue'
 export default {
   meta () {
     return {

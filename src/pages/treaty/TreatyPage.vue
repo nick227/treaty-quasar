@@ -2,13 +2,13 @@
   <q-page class="full-width full-height">
         <div class="row full-width">
       <div class="bg-grey-2 col col-md-5 q-pl-md">
-        <h6><q-avatar size="40px" square class="q-mr-md"><q-img rounded class="q-mt-none" :src="org_a.avatar_url"></q-img></q-avatar>{{ org_a.name }}</h6>
+        <a class="cursor-pointer" @click="$router.push('/organization/'+org_a.id)"><h6><q-avatar size="40px" square class="q-mr-md"><q-img rounded class="q-mt-none" :src="org_a.avatar_url"></q-img></q-avatar>{{ org_a.name }}</h6></a>
       </div>
       <div class="bg-grey-2 col col-md-2 text-center">
         <h6>vs.</h6>
       </div>
       <div class="bg-grey-2 col col-md-5 text-right q-pr-md">
-        <h6><q-avatar size="40px" square class="q-mr-md"><q-img rounded class="q-mt-none" :src="org_b.avatar_url"></q-img></q-avatar>{{ org_b.name }}</h6>
+        <a class="cursor-pointer" @click="$router.push('/organization/'+org_b.id)"><h6><q-avatar size="40px" square class="q-mr-md"><q-img rounded class="q-mt-none" :src="org_b.avatar_url"></q-img></q-avatar>{{ org_b.name }}</h6></a>
       </div>
     </div>
   <q-card class="q-pa-lg full-width full-height">
@@ -39,9 +39,10 @@
           </div>
         </q-card-section>
       </q-card-section>
-      <RateTreatyWidget class="absolute-bottom-right q-mr-lg q-pb-lg z-top"
+      <RatingWidget class="absolute-bottom-right q-mr-lg q-pb-lg z-top"
       :organizationId="user_organization_id"
-      :treatyId="treatyId"
+      :entityId="treatyId"
+      entityType="treaty"
       />
     </q-card>
       <q-separator />
@@ -232,18 +233,18 @@
 </template>
 
 <script>
-import TreatyComponent from 'components/TreatyComponent.vue'
-import AddTreatyItem from 'components/AddTreatyItem.vue'
-import EditTreatyWidget from 'components/EditTreatyWidget.vue'
-import RateTreatyWidget from 'components/RateTreatyWidget.vue'
-import VoteTreatyWidget from 'components/VoteTreatyWidget.vue'
+import TreatyComponent from 'components/treaty/TreatyComponent.vue'
+import AddTreatyItem from 'components/treaty/AddTreatyItem.vue'
+import EditTreatyWidget from 'components/treaty/EditTreatyWidget.vue'
+import RatingWidget from 'components/widgets/RatingWidget.vue'
+import VoteTreatyWidget from 'components/treaty/VoteTreatyWidget.vue'
 export default {
   meta () {
     return {
       title: this.name
     }
   },
-  components: { TreatyComponent, AddTreatyItem, EditTreatyWidget, RateTreatyWidget, VoteTreatyWidget },
+  components: { TreatyComponent, AddTreatyItem, EditTreatyWidget, RatingWidget, VoteTreatyWidget },
   async mounted () {
     this.reload()
   },
@@ -258,9 +259,16 @@ export default {
       this.joinedList = joined.data.filter((obj) => { return obj.organization_id === this.org_a.id || obj.organization_id === this.org_b.id }).map((obj) => { return obj.organization_id })
       if (this.joinedList.length > 1) {
         this.verify_org = true
-      } else {
+      }
+      if (this.joinedList.length === 1) {
         this.user_organization_id = this.joinedList[0]
         this.user_organization_name = this.org_obj[this.user_organization_id]
+      }
+      if (this.joinedList.length === 0) {
+        this.$q.notify({
+          type: 'info',
+          message: 'Please join organization to comment'
+        })
       }
     },
     reload: async function () {
@@ -318,7 +326,7 @@ export default {
       loading: true,
       expanded: false,
       user_organization_id: null,
-      user_organization_name: 'unknown',
+      user_organization_name: 'n/a',
       org_obj: {},
       joinedList: [],
       verify_org: false,

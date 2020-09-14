@@ -64,6 +64,7 @@ h6 {
     /* bg color is important for th; just specify one */
     background-color: $lightgray;
     }
-
- 
-}    
+}
+a.cursor-pointer:hover{
+  text-decoration: underline;
+}

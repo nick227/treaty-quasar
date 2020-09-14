@@ -31,7 +31,7 @@
   </q-page>
 </template>
 <script>
-import CreateTreatyWidget from 'components/CreateTreatyWidget.vue'
+import CreateTreatyWidget from 'components/treaty/CreateTreatyWidget.vue'
 export default {
   meta () {
     return {

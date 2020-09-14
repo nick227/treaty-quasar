@@ -87,6 +87,7 @@ export default {
         organization_id: parseInt(this.organizationId),
         vote_type: this.voteVal
       }
+      console.log(payload)
       await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } }).then(() => {
         this.getVotes()
         this.$q.notify({

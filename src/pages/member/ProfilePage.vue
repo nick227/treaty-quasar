@@ -46,7 +46,7 @@
     </q-page>
 </template>
 <script>
-import EditProfileWidget from 'components/EditProfileWidget.vue'
+import EditProfileWidget from 'components/profile/EditProfileWidget.vue'
 export default {
   meta () {
     return {

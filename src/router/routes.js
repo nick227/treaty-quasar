@@ -4,13 +4,13 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('pages/Index.vue') },
-      { path: '/profile/:id', component: () => import('pages/ProfilePage.vue') },
-      { path: '/treaties', component: () => import('pages/TreatyListPage.vue') },
-      { path: '/members', component: () => import('pages/MemberListPage.vue') },
-      { path: '/treaty/:id', component: () => import('pages/TreatyPage.vue') },
+      { path: '/profile/:id', component: () => import('pages/member/ProfilePage.vue') },
+      { path: '/treaties', component: () => import('pages/treaty/TreatyListPage.vue') },
+      { path: '/members', component: () => import('pages/member/MemberListPage.vue') },
+      { path: '/treaty/:id', component: () => import('pages/treaty/TreatyPage.vue') },
       { path: '/login', component: () => import('pages/LoginPage.vue') },
-      { path: '/organizations', component: () => import('pages/OrganizationListPage.vue') },
-      { path: '/organization/:id', component: () => import('pages/OrganizationPage.vue') }
+      { path: '/organizations', component: () => import('pages/organization/OrganizationListPage.vue') },
+      { path: '/organization/:id', component: () => import('pages/organization/OrganizationPage.vue') }
     ]
   }
 ]

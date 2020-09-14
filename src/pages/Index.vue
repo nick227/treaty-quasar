@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import HomePageAnimations from 'components/HomePageAnimation3.vue'
+import HomePageAnimations from 'components/animations/HomePageAnimation3.vue'
 export default {
   meta () {
     return {

@@ -21,7 +21,7 @@
   </q-layout>
 </template>
 <script>
-import TopToolbar from 'components/TopToolbar.vue'
+import TopToolbar from 'components/elements/TopToolbar.vue'
 
 export default {
   name: 'MainLayout',

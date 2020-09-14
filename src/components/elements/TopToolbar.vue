@@ -41,7 +41,7 @@
   </div>
 </template>
 <script>
-import MainNav from 'components/MainNav.vue'
+import MainNav from 'components/elements/MainNav.vue'
 export default {
   name: 'TopToolbar',
   mounted () {
