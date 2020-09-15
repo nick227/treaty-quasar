@@ -52,7 +52,7 @@
 <script>
 export default {
   name: 'VoteTreatyWidget',
-  props: ['id', 'organizationId'],
+  props: ['id', 'userOrganizationId'],
   data () {
     return {
       num_yay: 0,
@@ -84,7 +84,7 @@ export default {
       const payload = {
         creator_user_id: this.$store.state.user.uid,
         treaty_id: parseInt(this.id),
-        organization_id: parseInt(this.organizationId),
+        organization_id: parseInt(this.userOrganizationId),
         vote_type: this.voteVal
       }
       console.log(payload)

@@ -31,13 +31,12 @@
     <div class="row q-pa-lg justify-start content-start">
       <div class="col col-shrink" v-for="org in orgs" :key="org.id">
         <q-card class="org-card flex-break q-mr-md transparent">
-      <img :src="org.avatar_url">
+      <div :style="'background-image:url(' + org.avatar_url + ')'" class="card-image"></div>
       <q-card-section>
         <div class="text-h6">{{ org.name }}</div>
-        <div class="text-subtitle2">{{ org.description }}</div>
       </q-card-section>
       <q-card-section class="q-pt-none">
-        <q-btn :to="'/organization/'+org.id" class="full-width" color="primary">PROFILE</q-btn>
+        <q-btn :to="'/organization/'+org.id" class="full-width" color="primary">VISIT</q-btn>
       </q-card-section>
     </q-card>
       </div>

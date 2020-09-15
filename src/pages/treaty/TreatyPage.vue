@@ -40,7 +40,7 @@
         </q-card-section>
       </q-card-section>
       <RatingWidget class="absolute-bottom-right q-mr-lg q-pb-lg z-top"
-      :organizationId="user_organization_id"
+      :userOrganizationId="user_organization_id"
       :entityId="treatyId"
       entityType="treaty"
       />
@@ -71,7 +71,7 @@
     <q-tab-panel name="vote">
       <VoteTreatyWidget
            :id="id"
-           :organizationId="user_organization_id" />
+           :userOrganizationId="user_organization_id" />
     </q-tab-panel>
   <!-- START GRIEVANCE / OFFER TABLES -->
     <q-tab-panel name="grievance">
@@ -85,6 +85,7 @@
         <AddTreatyItem
         entityType="grievance"
         :treatyId="treatyId"
+        :userOrganizationId="user_organization_id"
         :organizationId="org_a.id"
         :organizationName="org_a.name"
         :fn="reload"
@@ -273,7 +274,6 @@ export default {
     },
     reload: async function () {
       let q = `${process.env.api}/treaties/${this.$route.params.id}?filter={"order":["create_date DESC"], "include": [{"relation":"creator"}, {"relation": "offers", "scope":{"include":[{"relation":"organization"}]}}, {"relation":"grievances", "scope":{"include":[{"relation":"organization"}]}}, {"relation":"votes"}]}`
-      console.log(q)
       const treaty = await this.$axios.get(q)
       this.treatyId = treaty.data.id
       this.name = treaty.data.name

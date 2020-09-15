@@ -1,6 +1,6 @@
 <template>
   <div>
-      <q-btn class="full-width" color="accent" label="Add New" @click="prompt = true" />
+      <q-btn class="full-width" color="accent" label="Add New" @click="openForm" />
       <q-dialog v-model="prompt" persistent>
       <q-card style="min-width: 350px">
         <q-card-section color="secondary">
@@ -21,7 +21,9 @@
   </div>
 </template>
 <script>
+import { ErrorHelper } from 'components/mixins/ErrorHelper.js'
 export default {
+  name: 'AddTreatyItem',
   data () {
     return {
       prompt: false,
@@ -29,8 +31,16 @@ export default {
       description: ''
     }
   },
-  props: ['entityType', 'treatyId', 'organizationId', 'fn', 'organizationName'],
+  mixins: [ErrorHelper],
+  mounted () {},
+  props: ['entityType', 'treatyId', 'organizationId', 'fn', 'organizationName', 'userOrganizationId'],
   methods: {
+    openForm: function () {
+      if (!this.isValid('organization', this.userOrganizationId)) {
+        return false
+      }
+      this.prompt = true
+    },
     clearForm: function () {
       this.title = ''
       this.description = ''
@@ -39,6 +49,7 @@ export default {
       const q = `${process.env.api}/${this.entityType.toLowerCase()}s`
       const payload = {
         creator_user_id: this.$store.state.user.uid,
+        creator_organization_id: this.userOrganizationId,
         title: this.title,
         description: this.description,
         organization_id: this.organizationId,

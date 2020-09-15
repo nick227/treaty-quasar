@@ -15,6 +15,7 @@
         <q-avatar class="q-ml-lg" v-if="profile.id">
           <img class="cursor-pointer" @click="showProfile()" :src="profile.picture">
         </q-avatar>
+        <q-btn v-if="!profile.id" to="/login" class="q-ml-lg" outline style="color: goldenrod;" label="Login" />
       </q-toolbar-title>
           <q-form @submit="search">
       <q-input class="q-pa-none" style="width:300px;" dark v-model="searchTerm" label="Search">
