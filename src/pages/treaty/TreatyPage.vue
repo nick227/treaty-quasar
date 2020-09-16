@@ -56,9 +56,9 @@
           indicator-color="purple"
           align="left"
         >
+          <q-tab name="treaty" label="Treaty" />
           <q-tab name="grievance" label="Grievances" />
           <q-tab name="offer" label="Offers" />
-          <q-tab name="treaty" label="Treaty" />
           <q-tab name="vote" label="Voting" />
         </q-tabs>
         <q-tab-panels
@@ -85,8 +85,8 @@
         </q-item-section>
         <AddTreatyItem
         entityType="grievance"
-        :treatyId="treatyId"
         :userOrganizationId="user_organization_id"
+        :treatyId="treatyId"
         :organizationId="org_a.id"
         :organizationName="org_a.name"
         :fn="reload"
@@ -153,10 +153,11 @@
       <!-- org a offers -->
       <q-list bordered>
         <q-item-section>
-          <q-item-label class="text-uppercase text-center"><q-avatar square size="240px" class="q-mr-md"><q-img class="avatar" :src="org_a.avatar_url"></q-img></q-avatar><h6>{{ org_a.name }} Offers</h6></q-item-label>
+          <q-item-label class="text-uppercase text-center"><q-avatar square size="400px" class="q-mr-md"><q-img class="avatar" :src="org_a.avatar_url"></q-img></q-avatar><h6>{{ org_a.name }} Offers</h6></q-item-label>
         </q-item-section>
         <AddTreatyItem
         entityType="offer"
+        :userOrganizationId="user_organization_id"
         :treatyId="treatyId"
         :organizationId="org_a.id"
         :organizationName="org_a.name"
@@ -186,10 +187,11 @@
       <!-- org b offers -->
       <q-list bordered>
         <q-item-section>
-          <q-item-label class="text-uppercase text-center"><q-avatar square size="240px" class="q-mr-md"><q-img class="avatar" :src="org_b.avatar_url"></q-img></q-avatar><h6>{{ org_b.name }} Offers</h6></q-item-label>
+          <q-item-label class="text-uppercase text-center"><q-avatar square size="400px" class="q-mr-md"><q-img class="avatar" :src="org_b.avatar_url"></q-img></q-avatar><h6>{{ org_b.name }} Offers</h6></q-item-label>
         </q-item-section>
         <AddTreatyItem
         entityType="offer"
+        :userOrganizationId="user_organization_id"
         :treatyId="treatyId"
         :organizationId="org_b.id"
         :organizationName="org_b.name"
