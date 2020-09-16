@@ -4,7 +4,7 @@
     clickable
     v-ripple
     :tag="item.tagType"
-    :to="item.href"
+    :to="item.href ? item.href : null"
     :key="item.name"
     @mouseover="miniState = false"
     @mouseout="miniState = true"
@@ -24,7 +24,6 @@
 export default {
   name: 'MainNav',
   data () {
-    const self = this
     return {
       navItems: [
         { tagType: 'a', iconName: 'home', href: '/', fn: false, text: 'Home' },
@@ -32,7 +31,7 @@ export default {
         { tagType: 'a', iconName: 'public', href: '/organizations', fn: false, text: 'Organizations' },
         { tagType: 'a', iconName: 'person', href: '/members', fn: false, text: 'Members' },
         { tagType: 'a', iconName: 'login', href: '/login', fn: false, text: 'Login' },
-        { tagType: 'a', iconName: 'logout', href: '/', fn: function () { self.logout() }, text: 'Logout' }
+        { tagType: 'a', iconName: 'logout', fn: this.logout, text: 'Logout' }
       ],
       active: 'Home'
     }
@@ -41,11 +40,13 @@ export default {
   methods: {
     logout () {
       if (this.$hello.getAuthResponse('facebook') == null) {
-        return
+        this.$router.push('/')
+        return false
       }
       this.$hello('facebook').logout().then(function () {
         this.$store.commit('user/updateUid', null)
-        this.$router.push('/login')
+        this.$store.commit('user/updateAvatar', null)
+        window.location.href = '/'
       }, function (e) {
         alert('Signed out error: ' + e.error.message)
       })

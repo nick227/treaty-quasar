@@ -53,6 +53,7 @@ export default {
     },
     getLikes: async function () {
       const q = `${process.env.api}/${this.entityType}-likes?filter[where][and][0][${this.entityType}_id]=${this.entityId}&filter[where][and][1][organization_id]=${this.organizationId}`
+      console.log('---', q)
       const likes = await this.$axios.get(q)
       this.numLikes = 0
       this.numDislikes = 0

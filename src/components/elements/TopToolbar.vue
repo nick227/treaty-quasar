@@ -13,7 +13,7 @@
       <q-toolbar-title>
         <span class="">CONCORDANT.IO</span>
         <q-avatar class="q-ml-lg" v-if="profile.id">
-          <img class="cursor-pointer" @click="showProfile()" :src="profile.picture">
+          <img class="cursor-pointer" @click="showProfile()" :src="profile.avatar_url">
         </q-avatar>
         <q-btn v-if="!profile.id" to="/login" class="q-ml-lg" outline style="color: goldenrod;" label="Login" />
       </q-toolbar-title>
@@ -45,7 +45,7 @@
 import MainNav from 'components/elements/MainNav.vue'
 export default {
   name: 'TopToolbar',
-  mounted () {
+  created () {
     this.getProfile('facebook')
   },
   components: { MainNav },
@@ -54,25 +54,28 @@ export default {
       profile: {},
       leftDrawerOpen: true,
       miniState: false,
-      searchTerm: '',
-      profile_url: '/profile/' + this.$store.state.user.uid
+      searchTerm: ''
     }
   },
   methods: {
     showProfile: function () {
-      this.$router.push(this.profile_url)
+      this.$router.push('/profile/' + this.$store.state.user.uid)
     },
     search: function () {
       console.log('searching:', this.searchTerm)
     },
     getProfile: function (network) {
       if (this.$hello.getAuthResponse(network) == null) {
-        return
+        return false
       }
+      this.profile.id = this.$store.state.user.uid
+      this.profile.avatar_url = this.$store.state.user.avatarUrl
+      /*
       this.$hello(network).api('me')
         .then((res) => {
           this.profile = res
         })
+        */
     }
   }
 }

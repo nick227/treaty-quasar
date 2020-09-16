@@ -1,7 +1,9 @@
 export default function () {
   return {
-    user: {
-      uid: null
-    }
+    uid: null,
+    avatarUrl: null,
+    name: null,
+    organizations: [],
+    location: null
   }
 }

@@ -58,6 +58,7 @@
         >
           <q-tab name="grievance" label="Grievances" />
           <q-tab name="offer" label="Offers" />
+          <q-tab name="treaty" label="Treaty" />
           <q-tab name="vote" label="Voting" />
         </q-tabs>
         <q-tab-panels
@@ -118,6 +119,7 @@
         </q-item-section>
         <AddTreatyItem
         entityType="grievance"
+        :userOrganizationId="user_organization_id"
         :treatyId="treatyId"
         :organizationId="org_b.id"
         :organizationName="org_b.name"
@@ -215,6 +217,11 @@
     </div>
         </div>
       </q-tab-panel>
+      <q-tab-panel name="treaty">
+      <TreatyDraft
+      :treatyId="treatyId"
+      :userOrganizationId="user_organization_id" />
+      </q-tab-panel>
       </q-tab-panels>
       </div>
     <q-dialog v-model="verify_org" persistent>
@@ -225,8 +232,8 @@
         </q-card-section>
         <q-card-actions align="right">
           <q-btn flat label="Cancel" color="primary" v-close-popup />
-          <q-btn flat :label="org_a.name" color="primary" @click="setOrg(org_a.name)" v-close-popup />
-          <q-btn flat :label="org_b.name" color="primary" @click="setOrg(org_b.name)" v-close-popup />
+          <q-btn flat :label="org_a.name" color="primary" @click="setOrg(org_a)" v-close-popup />
+          <q-btn flat :label="org_b.name" color="primary" @click="setOrg(org_b)" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -239,21 +246,27 @@ import AddTreatyItem from 'components/treaty/AddTreatyItem.vue'
 import EditTreatyWidget from 'components/treaty/EditTreatyWidget.vue'
 import RatingWidget from 'components/widgets/RatingWidget.vue'
 import VoteTreatyWidget from 'components/treaty/VoteTreatyWidget.vue'
+import TreatyDraft from 'components/treaty/TreatyDraft.vue'
 export default {
   meta () {
     return {
       title: this.name
     }
   },
-  components: { TreatyComponent, AddTreatyItem, EditTreatyWidget, RatingWidget, VoteTreatyWidget },
+  components: { TreatyComponent, AddTreatyItem, EditTreatyWidget, RatingWidget, VoteTreatyWidget, TreatyDraft },
   async mounted () {
     this.reload()
   },
   methods: {
-    setOrg: function (res) {
-      this.user_organization_name = res
+    setOrg: function (obj) {
+      this.user_organization_name = obj.name
+      this.user_organization_id = obj.id
+      this.reload()
     },
     getUserOrg: async function () {
+      if (this.user_organization_id) {
+        return true
+      }
       const q = `${process.env.api}/user-to-organizations?filter[where][creator_user_id]=${this.$store.state.user.uid}`
       const joined = await this.$axios.get(q)
       this.joined = joined.data
@@ -313,7 +326,7 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      tab: 'grievance',
+      tab: 'treaty',
       name: '',
       status: '',
       description: '',

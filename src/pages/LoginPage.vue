@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <q-page class="river-column flex-middle">
     <div class="q-mt-xl">
       <q-btn color="primary" push class="full-width" icon="facebook" label="Login with Facebook" size="md" @click="auth('facebook')">
       </q-btn>
@@ -29,6 +29,7 @@ export default {
       const res = await this.$axios.get(q)
       if (res.data.length) {
         this.$store.commit('user/updateUid', res.data[0].id)
+        this.$store.commit('user/updateAvatar', res.data[0].avatar_url)
         window.location.href = '/'
       } else {
         const q = `${process.env.api}/users`
@@ -40,8 +41,11 @@ export default {
         this.$axios.post(q, payload).then(function (res) {
           this.$router.push('/')
         }).catch(function (error) {
-          alert('error')
-          console.log(error)
+          this.$q.notify({
+            type: 'negative',
+            icon: 'error',
+            message: error
+          })
         })
       }
     }

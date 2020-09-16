@@ -36,6 +36,7 @@ export default {
   props: ['entityType', 'treatyId', 'organizationId', 'fn', 'organizationName', 'userOrganizationId'],
   methods: {
     openForm: function () {
+      console.log(this.organizationId, this.organizationName, this.userOrganizationId)
       if (!this.isValid('organization', this.userOrganizationId)) {
         return false
       }

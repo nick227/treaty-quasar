@@ -60,7 +60,6 @@ export default {
         value: this.ratingVal
       }
       payload[this.entityType + '_id'] = parseInt(this.entityId)
-      console.log(payload)
       await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } })
         .then((res) => {
           this.getRating()
