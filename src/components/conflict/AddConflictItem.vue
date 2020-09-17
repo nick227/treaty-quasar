@@ -23,7 +23,7 @@
 <script>
 import { ErrorHelper } from 'components/mixins/ErrorHelper.js'
 export default {
-  name: 'AddTreatyItem',
+  name: 'AddConflictItem',
   data () {
     return {
       prompt: false,
@@ -33,10 +33,9 @@ export default {
   },
   mixins: [ErrorHelper],
   mounted () {},
-  props: ['entityType', 'treatyId', 'organizationId', 'fn', 'organizationName', 'userOrganizationId'],
+  props: ['entityType', 'conflictId', 'organizationId', 'fn', 'organizationName', 'userOrganizationId'],
   methods: {
     openForm: function () {
-      console.log(this.organizationId, this.organizationName, this.userOrganizationId)
       if (!this.isValid('organization', this.userOrganizationId)) {
         return false
       }
@@ -54,7 +53,7 @@ export default {
         title: this.title,
         description: this.description,
         organization_id: this.organizationId,
-        treaty_id: this.treatyId
+        conflict_id: this.conflictId
       }
       await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } })
       this.clearForm()

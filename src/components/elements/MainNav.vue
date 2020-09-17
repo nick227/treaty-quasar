@@ -27,7 +27,7 @@ export default {
     return {
       navItems: [
         { tagType: 'a', iconName: 'home', href: '/', fn: false, text: 'Home' },
-        { tagType: 'a', iconName: 'article', href: '/treaties', fn: false, text: 'Treaties' },
+        { tagType: 'a', iconName: 'article', href: '/conflicts', fn: false, text: 'Conflicts' },
         { tagType: 'a', iconName: 'public', href: '/organizations', fn: false, text: 'Organizations' },
         { tagType: 'a', iconName: 'person', href: '/members', fn: false, text: 'Members' },
         { tagType: 'a', iconName: 'login', href: '/login', fn: false, text: 'Login' },

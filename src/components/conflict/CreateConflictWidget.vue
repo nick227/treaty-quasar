@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h6 class="q-mb-sm q-mt-lg">New Treaty</h6>
+    <h6 class="q-mb-sm q-mt-lg">New Conflict</h6>
   <q-form @submit="postForm" greedy class="self-center">
     <q-input
      filled
@@ -87,7 +87,7 @@
 </template>
 <script>
 export default {
-  name: 'TreatyList',
+  name: 'ConflictList',
   data () {
     return {
       orgA: null,
@@ -144,18 +144,17 @@ export default {
     },
     postForm: async function () {
       if (this.orgValidate()) {
-        const q = `${process.env.api}/treaties`
+        const q = `${process.env.api}/conflicts`
         const payload = {
           creator_user_id: this.$store.state.user.uid,
           name: this.name,
           description: this.description,
           organization_a_id: this.organizationsObj[this.orgA],
           organization_b_id: this.organizationsObj[this.orgB],
-          avatar_url: this.avatar_url,
-          status: 'pending'
+          avatar_url: this.avatar_url
         }
         const res = await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } })
-        this.$router.push('/treaty/' + res.data.id)
+        this.$router.push('/conflict/' + res.data.id)
       }
     },
     orgValidate: function () {

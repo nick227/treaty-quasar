@@ -38,6 +38,7 @@ export default {
   methods: {
     getComments: async function () {
       const q = `${process.env.api}/${this.entityType}-comments/?filter[skip]=${this.currentPointer}&filter[limit]=${this.limit}&filter[where][${this.entityType}_id]=${this.entityId}&filter[include][][relation]=creator&filter[order]=create_date%20DESC`
+      console.log(q)
       const comments = await this.$axios.get(q)
       this.comments = comments.data
     },
@@ -66,7 +67,7 @@ export default {
   },
   mounted () {
     this.getComments()
-    this.getCommentCount()
+    // this.getCommentCount()
   },
   data () {
     return {

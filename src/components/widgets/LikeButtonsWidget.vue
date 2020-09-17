@@ -21,12 +21,7 @@
 <script>
 export default {
   name: 'LikeButtons',
-  props: {
-    entityType: String,
-    entityId: Number,
-    organizationId: Number,
-    organizationName: String
-  },
+  props: ['entityType', 'entityId', 'organizationId', 'organizationName'],
   data () {
     return {
       numLikes: 0,
@@ -53,7 +48,6 @@ export default {
     },
     getLikes: async function () {
       const q = `${process.env.api}/${this.entityType}-likes?filter[where][and][0][${this.entityType}_id]=${this.entityId}&filter[where][and][1][organization_id]=${this.organizationId}`
-      console.log('---', q)
       const likes = await this.$axios.get(q)
       this.numLikes = 0
       this.numDislikes = 0

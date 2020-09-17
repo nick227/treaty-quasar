@@ -31,7 +31,7 @@
 import CommentsWidget from 'components/widgets/CommentsWidget.vue'
 import LikeButtons from 'components/widgets/LikeButtonsWidget.vue'
 export default {
-  name: 'TreatyComponent',
+  name: 'ConflictComponent',
   components: { CommentsWidget, LikeButtons },
   data () {
     return {}

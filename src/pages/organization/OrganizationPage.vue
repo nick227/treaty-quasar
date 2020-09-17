@@ -24,17 +24,17 @@
     </q-list>
    </div>
    <q-separator />
-  <div v-if="treaties.length" class="q-pa-md q-gutter-sm">
-  <h6>Treaties</h6>
+  <div v-if="conflicts.length" class="q-pa-md q-gutter-sm">
+  <h6>Conflicts</h6>
     <q-list>
-      <q-item v-for="treaty in treaties" :key="treaty.id" clickable v-ripple :to="'/treaty/' + treaty.id">
+      <q-item v-for="conflict in conflicts" :key="conflict.id" clickable v-ripple :to="'/conflict/' + conflict.id">
           <q-item-section avatar>
             <q-avatar rounded>
-              <img :src="treaty.avatar_url">
+              <img :src="conflict.avatar_url">
             </q-avatar>
           </q-item-section>
           <q-item-section class="">
-            <div class="">{{ treaty.name }}<BR /><span class="ellipsis-2-lines">{{ treaty.description }}</span></div>
+            <div class="">{{ conflict.name }}<BR /><span class="ellipsis-2-lines">{{ conflict.description }}</span></div>
           </q-item-section>
         </q-item>
     </q-list>
@@ -53,7 +53,7 @@ export default {
     return {
       org: {},
       members: [],
-      treaties: [],
+      conflicts: [],
       isMember: false
     }
   },
@@ -64,7 +64,7 @@ export default {
     reload: async function () {
       this.loadOrg()
       this.loadMembers()
-      this.loadTreaties()
+      this.loadConflicts()
     },
     join: async function (id) {
       const q = `${process.env.api}/user-to-organizations`
@@ -94,10 +94,10 @@ export default {
       const uidList = this.members.map((obj) => { return obj.id })
       this.isMember = uidList.includes(this.$store.state.user.uid)
     },
-    loadTreaties: async function () {
-      const q = `${process.env.api}/treaties?filter[where][or][0][organization_a_id]=${this.$route.params.id}&filter[where][or][1][organization_b_id]=${this.$route.params.id}`
-      const treaties = await this.$axios.get(q)
-      this.treaties = treaties.data
+    loadConflicts: async function () {
+      const q = `${process.env.api}/conflicts?filter[where][or][0][organization_a_id]=${this.$route.params.id}&filter[where][or][1][organization_b_id]=${this.$route.params.id}`
+      const conflicts = await this.$axios.get(q)
+      this.conflicts = conflicts.data
     }
   }
 }

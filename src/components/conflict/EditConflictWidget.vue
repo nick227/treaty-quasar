@@ -37,7 +37,7 @@
 </template>
 <script>
 export default {
-  name: 'EditTreatyWidget',
+  name: 'EditConflictWidget',
   props: ['name', 'description', 'avatar_url', 'id', 'status', 'reload'],
   model: {
     prop: 'name',
@@ -75,7 +75,7 @@ export default {
         description: this.data_description,
         avatar_url: this.data_avatar_url
       }
-      const q = `${process.env.api}/treaties/${this.id}`
+      const q = `${process.env.api}/conflicts/${this.id}`
       await this.$axios.patch(q, payload, { headers: { Accept: 'application/json' } })
         .then((res) => {
           this.reload()

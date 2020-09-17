@@ -131,7 +131,6 @@ export default {
         { name: 'date', label: 'Date', field: 'date' }
       ]
     }
-
   }
 }
 </script>

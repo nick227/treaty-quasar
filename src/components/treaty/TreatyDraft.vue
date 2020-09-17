@@ -1,22 +1,30 @@
 <template>
-  <div class="row full-width">
-    <q-expansion-item v-model="expanded" label="Add Provision" class="full-width q-mb-lg bg-grey-11">
+  <q-layout view="Lhh lpR fff" style="width:1250px; max-width:99%;" container class="bg-white">
+    <q-header class="bg-primary">
+      <q-toolbar>
+        <q-toolbar-title class="q-pl-lg">{{ treatyName }}</q-toolbar-title>
+        <q-btn flat v-close-popup round dense icon="close" />
+      </q-toolbar>
+    </q-header>
+     <q-page-container>
+     <q-page padding>
+    <q-expansion-item v-model="expanded" label="Add Provision" class="full-width q-mb-sm bg-grey-11">
       <AddProvision
       :treatyId="treatyId"
       :numProvisions="numProvisions"
       :reload="loadProvisions" />
     </q-expansion-item>
     <q-list class="full-width">
-      <div v-for="(provision, index) in provisions" :key="provision.id" class="full-width">
-        <div class="row">
+      <div v-for="(provision, index) in provisions" :key="provision.id" class="full-width q-mb-lg">
+        <div class="row q-mb-sm">
           <div class="col text-center">
-            <h4 class="border q-pa-lg float-left bg-grey-11 full-width">{{ index + 1 }}</h4>
+            <h4 class="border text-center q-pa-lg bg-grey-11 full-width">{{ index + 1 }}</h4>
           </div>
-          <div class="col col-11 text-left q-pl-md">
-            <h5 class="q-pb-none">{{ provision.title }}</h5>
-            <p>{{ provision.description }}</p>
+          <div class="col col-10 text-left q-pl-md">
+            <h6 class="q-pb-none">{{ provision.title }}</h6>
+            <p class="q-pa-none">{{ provision.description }}</p>
           </div>
-          <div class="col text-center">
+          <div class="col text-center q-pt-lg">
             <LikeButtons
             :key="likeKey"
             entityType='provision'
@@ -24,18 +32,28 @@
             :organizationId="userOrganizationId" />
           </div>
         </div>
-        <q-separator />
+    <CommentsWidget
+          :entityId="provision.id"
+          entityType="provision"
+    ></CommentsWidget>
       </div>
     </q-list>
-  </div>
+    <VoteTreatyWidget
+    :id="treatyId"
+    :userOrganizationId="userOrganizationId" />
+          </q-page>
+        </q-page-container>
+  </q-layout>
 </template>
 <script>
+import CommentsWidget from 'components/widgets/CommentsWidget.vue'
 import AddProvision from 'components/treaty/AddProvision.vue'
+import VoteTreatyWidget from 'components/treaty/VoteTreatyWidget.vue'
 import LikeButtons from 'components/widgets/LikeButtonsWidget.vue'
 export default {
   name: 'TreatyDraft',
-  props: ['treatyId', 'userOrganizationId'],
-  components: { AddProvision, LikeButtons },
+  props: ['treatyId', 'userOrganizationId', 'treatyName'],
+  components: { AddProvision, LikeButtons, CommentsWidget, VoteTreatyWidget },
   data () {
     return {
       likeKey: 0,

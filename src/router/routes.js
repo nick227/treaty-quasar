@@ -5,9 +5,9 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/Index.vue') },
       { path: '/profile/:id', component: () => import('pages/member/ProfilePage.vue') },
-      { path: '/treaties', component: () => import('pages/treaty/TreatyListPage.vue') },
+      { path: '/conflicts', component: () => import('pages/conflict/ConflictListPage.vue') },
       { path: '/members', component: () => import('pages/member/MemberListPage.vue') },
-      { path: '/treaty/:id', component: () => import('pages/treaty/TreatyPage.vue') },
+      { path: '/conflict/:id', component: () => import('pages/conflict/ConflictPage.vue') },
       { path: '/login', component: () => import('pages/LoginPage.vue') },
       { path: '/organizations', component: () => import('pages/organization/OrganizationListPage.vue') },
       { path: '/organization/:id', component: () => import('pages/organization/OrganizationPage.vue') }
