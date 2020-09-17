@@ -23,9 +23,9 @@
     <!-- START TABS -->
     <div class="q-mb-lg" v-if="!loading">
       <q-tabs v-model="tab" dense class="bg-grey-3 text-grey-7" active-color="primary" indicator-color="purple" align="left">
+        <q-tab name="treaties" label="Treaties" />
         <q-tab name="grievances" label="Grievances'" />
         <q-tab name="offers" label="Offers" />
-        <q-tab name="treaties" label="Treaties" />
       </q-tabs>
       <q-tab-panels v-model="tab" animated transition-prev="fade" transition-next="fade" class="">
         <q-tab-panel name="grievances">
@@ -105,6 +105,7 @@
         <q-tab-panel name="treaties">
           <TreatyListComponent
           :conflictId="conflictId"
+          :userOrganizationId="user_organization_id"
            />
         </q-tab-panel>
       </q-tab-panels>

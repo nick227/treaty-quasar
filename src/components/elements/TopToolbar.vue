@@ -59,7 +59,7 @@ export default {
   },
   methods: {
     showProfile: function () {
-      this.$router.push('/profile/' + this.$store.state.user.uid)
+      this.$router.push({ path: '/profile/' + this.$store.state.user.uid })
     },
     search: function () {
       console.log('searching:', this.searchTerm)

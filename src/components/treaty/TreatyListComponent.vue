@@ -28,6 +28,7 @@ import TreatyDraft from 'components/treaty/TreatyDraft.vue'
 export default {
   name: 'TreatyListComponent',
   components: { TreatyDraft },
+  props: ['userOrganizationId', 'conflictId'],
   data () {
     return {
       treaties: [],
@@ -51,11 +52,12 @@ export default {
   methods: {
     openTreaty: async function (props) {
       this.childTreatyId = props.row.id
+      this.childTreatyName = props.row.name
       this.childOrganizationId = props.row.organization_id
       this.showTreaty = true
     },
     getTreaties: async function () {
-      const q = `${process.env.api}/treaties?filter[limit]=${this.limit}&filter[skip]=${this.pointer}&filter[include][][relation]=status&filter[include][1][relation]=creator&filter[include][2][relation]=organization&filter[include][3][relation]=votes`
+      const q = `${process.env.api}/treaties?filter[where][conflict_id]=${this.conflictId}&filter[limit]=${this.limit}&filter[skip]=${this.pointer}&filter[include][][relation]=status&filter[include][1][relation]=creator&filter[include][2][relation]=organization&filter[include][3][relation]=votes`
       const treaties = await this.$axios.get(q)
       if (this.limit > treaties.data.length) {
         this.done = true
@@ -70,7 +72,7 @@ export default {
         { name: 'status', label: 'Status', field: 'status', sortable: true, align: 'left' },
         { name: 'organization', label: 'Organization', field: 'organization', sortable: true, align: 'left' },
         { name: 'creator', label: 'Creator', field: 'creator', sortable: true, align: 'left' },
-        { name: 'actions', label: 'Provisions', field: '', align: 'center' }
+        { name: 'actions', label: 'View', field: '', align: 'center' }
       ]
     }
   },

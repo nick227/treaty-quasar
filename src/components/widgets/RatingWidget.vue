@@ -1,5 +1,6 @@
 <template>
   <div class="text-right">
+    <div class="caption">{{ numRatings }} ratings</div>
     <q-rating @click="postForm"
       v-model="ratingVal"
       size="2em"
@@ -22,7 +23,6 @@
       <q-tooltip>Best</q-tooltip>
     </template>
   </q-rating>
-    <div class="caption">{{ numRatings }} ratings</div>
   </div>
 </template>
 <script>

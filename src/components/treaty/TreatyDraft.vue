@@ -15,7 +15,7 @@
       :reload="loadProvisions" />
     </q-expansion-item>
     <q-list class="full-width">
-      <div v-for="(provision, index) in provisions" :key="provision.id" class="full-width q-mb-lg">
+      <div v-for="(provision, index) in provisions" :key="provision.id" class="full-width q-mb-sm">
         <div class="row q-mb-sm">
           <div class="col text-center">
             <h4 class="border text-center q-pa-lg bg-grey-11 full-width">{{ index + 1 }}</h4>
