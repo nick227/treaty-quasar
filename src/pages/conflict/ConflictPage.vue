@@ -15,7 +15,8 @@
           <h2>{{ name }}</h2>
           <p class="q-pt-none" style="max-width:60%;">{{ description }}</p>
           <div class="row">
-            <q-badge color="secondary" v-if="user_organization_name" :label="'Commenting as: ' + user_organization_name" /> </div>
+            <q-badge color="secondary" v-if="user_organization_name" :label="'Commenting as: ' + user_organization_name" />
+          </div>
         </q-card-section>
       </q-card-section>
     </q-card>

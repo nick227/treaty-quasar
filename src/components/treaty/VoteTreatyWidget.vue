@@ -1,24 +1,26 @@
 <template>
   <q-page>
   <div class="row">
-    <div class="col col-12 q-pa-lg row flex-center">
-      <h4 class="q-mr-lg">Do you agree to this treaty?</h4>
-    <q-btn
-      class="q-ma-lg"
-      padding="xl"
-      color="positive"
-      round
-      label="AYE"
-      @click="confirm(1)"
-    />
-    <q-btn
-      class="q-ma-lg"
-      padding="xl"
-      color="negative"
-      round
-      label="NAY"
-      @click="confirm(0)"
-    />
+    <div class="col bg-blue-grey-1 col-12 q-pl-lg q-pr-lg q-pt-none q-pb-sm row flex-center">
+      <h6 class="q-ma-lg">Do you agree to this treaty?</h6>
+      <div class="row flex-center text-center" style="flex-wrap:nowrap; white-space:nowrap;">
+        <q-btn
+          class="q-mr-sm"
+          padding="lg"
+          color="positive"
+          round
+          label="AYE"
+          @click="confirm(1)"
+        />
+        <q-btn
+          class="q-ma-md"
+          padding="lg"
+          color="negative"
+          round
+          label="NAY"
+          @click="confirm(0)"
+        />
+      </div>
     </div>
     <q-separator />
     <div class="row text-center flex-center full-width"><div class="text-green q-mr-md">{{ num_yay }} Yay</div><div>/</div><div class="text-red q-ml-md">{{ num_nay }} Nay</div></div>
@@ -124,11 +126,11 @@ export default {
     },
     setupTable: function () {
       this.columns = [
-        { name: 'vote', label: 'Vote', field: 'vote', format: val => val ? 'Yay' : 'Nay', sortable: true },
-        { name: 'name', label: 'Name', field: 'name' },
-        { name: 'location', label: 'Location', field: 'location', sortable: true },
-        { name: 'organization', label: 'Organization', field: 'organization', sortable: true },
-        { name: 'date', label: 'Date', field: 'date' }
+        { name: 'vote', label: 'Vote', field: 'vote', format: val => val ? 'Yay' : 'Nay', sortable: true, align: 'left' },
+        { name: 'name', label: 'Name', field: 'name', align: 'left' },
+        { name: 'location', label: 'Location', field: 'location', sortable: true, align: 'left' },
+        { name: 'organization', label: 'Organization', field: 'organization', sortable: true, align: 'left' },
+        { name: 'date', label: 'Date', field: 'date', sortable: true, align: 'left' }
       ]
     }
   }

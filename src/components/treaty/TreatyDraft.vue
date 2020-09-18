@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="Lhh lpR fff" style="width:1250px; max-width:99%;" container class="bg-white">
+  <q-layout view="Lhh lpR fff" style="width:800px; max-width:99%;" container class="bg-white">
     <q-header class="bg-primary">
       <q-toolbar>
         <q-toolbar-title class="q-pl-lg">{{ treatyName }}</q-toolbar-title>
@@ -8,7 +8,7 @@
     </q-header>
      <q-page-container>
      <q-page padding>
-    <q-expansion-item v-model="expanded" label="Add Provision" class="full-width q-mb-sm bg-grey-11">
+    <q-expansion-item v-model="expanded" label="Add Provision" class="full-width q-mb-sm bg-blue-grey-1">
       <AddProvision
       :treatyId="treatyId"
       :numProvisions="numProvisions"
@@ -18,13 +18,13 @@
       <div v-for="(provision, index) in provisions" :key="provision.id" class="full-width q-mb-sm">
         <div class="row q-mb-sm">
           <div class="col text-center">
-            <h4 class="border text-center q-pa-lg bg-grey-11 full-width">{{ index + 1 }}</h4>
+            <h4 class="border text-center q-pa-sm bg-blue-grey-1">{{ index + 1 }}</h4>
           </div>
           <div class="col col-10 text-left q-pl-md">
-            <h6 class="q-pb-none">{{ provision.title }}</h6>
+            <h6 class="q-pa-none">{{ provision.title }}</h6>
             <p class="q-pa-none">{{ provision.description }}</p>
           </div>
-          <div class="col text-center q-pt-lg">
+          <div class="col text-center q-pt-sm">
             <LikeButtons
             :key="likeKey"
             entityType='provision'
