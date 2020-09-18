@@ -4,3 +4,6 @@ export function uid (state) {
 export function avatar (state) {
   return state.avatarUrl
 }
+export function unreadMsgCount (state) {
+  return state.unreadMsgCount
+}

@@ -16,6 +16,7 @@
     "core-js": "^3.6.5",
     "hellojs": "^1.18.4",
     "quasar": "^1.13.2",
+    "sqlstring": "^2.3.2",
     "vue-hellojs": "0.0.4",
     "vue-i18n": "^8.0.0",
     "vuelidate": "^0.7.5",

@@ -8,6 +8,7 @@
     </q-header>
      <q-page-container>
      <q-page padding>
+      <div class="text-center"><RatingWidget :entityId="treatyId" :userOrganizationId="userOrganizationId" entityType="treaty" /></div>
     <q-expansion-item v-model="expanded" label="Add Provision" class="full-width q-mb-sm bg-blue-grey-1">
       <AddProvision
       :treatyId="treatyId"
@@ -46,6 +47,7 @@
   </q-layout>
 </template>
 <script>
+import RatingWidget from 'components/widgets/RatingWidget.vue'
 import CommentsWidget from 'components/widgets/CommentsWidget.vue'
 import AddProvision from 'components/treaty/AddProvision.vue'
 import VoteTreatyWidget from 'components/treaty/VoteTreatyWidget.vue'
@@ -53,7 +55,7 @@ import LikeButtons from 'components/widgets/LikeButtonsWidget.vue'
 export default {
   name: 'TreatyDraft',
   props: ['treatyId', 'userOrganizationId', 'treatyName'],
-  components: { AddProvision, LikeButtons, CommentsWidget, VoteTreatyWidget },
+  components: { AddProvision, LikeButtons, CommentsWidget, VoteTreatyWidget, RatingWidget },
   data () {
     return {
       likeKey: 0,

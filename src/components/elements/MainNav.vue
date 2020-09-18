@@ -27,9 +27,11 @@ export default {
     return {
       navItems: [
         { tagType: 'a', iconName: 'home', href: '/', fn: false, text: 'Home' },
-        { tagType: 'a', iconName: 'article', href: '/conflicts', fn: false, text: 'Conflicts' },
+        { tagType: 'a', iconName: 'article', href: '/treaties', fn: false, text: 'Treaties' },
         { tagType: 'a', iconName: 'public', href: '/organizations', fn: false, text: 'Organizations' },
+        { tagType: 'a', iconName: 'flash_on', href: '/conflicts', fn: false, text: 'Conflicts' },
         { tagType: 'a', iconName: 'person', href: '/members', fn: false, text: 'Members' },
+        { tagType: 'a', iconName: 'email', href: '/messages', fn: false, text: 'Messages' },
         { tagType: 'a', iconName: 'login', href: '/login', fn: false, text: 'Login' },
         { tagType: 'a', iconName: 'logout', fn: this.logout, text: 'Logout' }
       ],
@@ -39,13 +41,14 @@ export default {
   mounted () {},
   methods: {
     logout () {
+      console.log('logout')
+      this.$store.commit('user/updateUid', null)
+      this.$store.commit('user/updateAvatar', null)
       if (this.$hello.getAuthResponse('facebook') == null) {
         this.$router.push('/')
         return false
       }
       this.$hello('facebook').logout().then(function () {
-        this.$store.commit('user/updateUid', null)
-        this.$store.commit('user/updateAvatar', null)
         window.location.href = '/'
       }, function (e) {
         alert('Signed out error: ' + e.error.message)
@@ -53,9 +56,7 @@ export default {
     },
     isLoggedIn () {
       this.$hello('facebook').api('me')
-        .then((res) => {
-          // this.profile = res
-        })
+        .then((res) => {})
     }
   }
 }

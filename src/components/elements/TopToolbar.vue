@@ -1,7 +1,7 @@
 <template>
   <div>
   <q-header elevated reveal class="bg-black">
-    <q-toolbar>
+    <q-toolbar style="overflow:visible;">
       <q-btn
         flat
         dense
@@ -10,11 +10,12 @@
         aria-label="Menu"
         @click="leftDrawerOpen = !leftDrawerOpen"
       />
-      <q-toolbar-title>
+      <q-toolbar-title style="overflow:visible;">
         <span class="">CONCORDANT.IO</span>
         <q-avatar class="q-ml-lg" v-if="profile.id">
           <img class="cursor-pointer" @click="showProfile()" :src="profile.avatar_url">
         </q-avatar>
+        <q-btn v-if="newMessages" round color="dark" to="/messages" class="q-pa-none q-ml-md" icon="email"><q-badge style="font-size:0.70em" class="" floating color="accent">new {{ newMessages }}</q-badge></q-btn>
         <q-btn v-if="!profile.id" to="/login" class="q-ml-lg" outline style="color: goldenrod;" label="Login" />
       </q-toolbar-title>
           <q-form @submit="search">
@@ -45,8 +46,16 @@
 import MainNav from 'components/elements/MainNav.vue'
 export default {
   name: 'TopToolbar',
-  created () {
+  mounted () {
     this.getProfile('facebook')
+    this.checkMessages()
+  },
+  created () {
+    this.$store.subscribe((mutation, state) => {
+      if (mutation.type === 'user/updateMsgCount') {
+        this.checkMessages()
+      }
+    })
   },
   components: { MainNav },
   data () {
@@ -54,7 +63,8 @@ export default {
       profile: {},
       leftDrawerOpen: true,
       miniState: false,
-      searchTerm: ''
+      searchTerm: '',
+      newMessages: false
     }
   },
   methods: {
@@ -70,12 +80,18 @@ export default {
       }
       this.profile.id = this.$store.state.user.uid
       this.profile.avatar_url = this.$store.state.user.avatarUrl
-      /*
-      this.$hello(network).api('me')
-        .then((res) => {
-          this.profile = res
-        })
-        */
+    },
+    checkMessages: async function () {
+      if (this.profile.id) {
+        const q = `${process.env.api}/user-messages?filter[where][and][0][user_id]=${this.$store.state.user.uid}&filter[where][and][1][status]=0`
+        console.log(q)
+        const newMessages = await this.$axios.get(q)
+        this.newMessages = newMessages.data.length
+        console.log('this.newMessages: ', this.newMessages)
+        if (this.newMessages) {
+          this.$store.commit('user/updateMsgCount', this.newMessages)
+        }
+      }
     }
   }
 }

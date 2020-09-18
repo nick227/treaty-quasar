@@ -11,8 +11,12 @@
       </q-avatar>
         <q-card-section class="q-pb-md q-pt-none">
           <h2>{{ user.name }}</h2>
-          <h4 class="q-pt-none">{{ user.location }}</h4>
-          <p class="q-pt-none" style="max-width:60%;">{{ user.biography }}</p>
+          <q-btn @click="sendMessage = true" style="height:40px;" class="q-mb-md" square color="dark">
+            <q-icon left size="2em" name="mail" />
+            <div>Message</div>
+          </q-btn>
+          <h6 class="q-pa-none">Location: {{ user.location }}</h6>
+          <p class="q-pa-none" style="max-width:60%;">{{ user.biography }}</p>
         </q-card-section>
         <q-expansion-item v-model="expanded" switch-toggle-side dense-toggle label="Edit Profile" class="absolute-right z-top q-mb-lg q-mb-lg">
           <EditProfileWidget
@@ -26,9 +30,10 @@
            />
         </q-expansion-item>
       </q-card-section>
-      <q-separator />
-      <h6 v-if="orgs.length" class="q-mt-lg q-ml-lg">Member of:</h6>
+      <q-separator v-if="orgs.length" />
+      <h6 class="q-mt-lg q-ml-lg">Member of:</h6>
     <div class="row q-pa-lg justify-start content-start">
+      <p v-if="!orgs.length">No Groups</p>
       <div class="col col-shrink" v-for="org in orgs" :key="org.id">
         <q-card class="org-card flex-break q-mr-md transparent">
       <div :style="'background-image:url(' + org.avatar_url + ')'" class="card-image"></div>
@@ -36,15 +41,29 @@
         <div class="text-h6">{{ org.name }}</div>
       </q-card-section>
       <q-card-section class="q-pt-none">
-        <q-btn :to="'/organization/'+org.id" class="full-width" color="primary">VISIT</q-btn>
+        <q-btn :to="'/organization/'+org.id" class="full-width" color="dark">VISIT</q-btn>
       </q-card-section>
     </q-card>
       </div>
     </div>
+      <q-separator />
+    <CommentsWidget v-if="user.id"
+          :entityId="user.id"
+          entityType="user"
+    ></CommentsWidget>
     </q-card>
+    <q-dialog v-model="sendMessage">
+      <MessageWidget
+      :senderUserId="visitorUserId"
+      :receiverUserId="user.id"
+      :receiverName="user.name"
+      :done="closeMsg" />
+    </q-dialog>
     </q-page>
 </template>
 <script>
+import MessageWidget from 'components/widgets/MessageWidget.vue'
+import CommentsWidget from 'components/widgets/CommentsWidget.vue'
 import EditProfileWidget from 'components/profile/EditProfileWidget.vue'
 export default {
   meta () {
@@ -52,14 +71,16 @@ export default {
       title: this.user.name
     }
   },
-  components: { EditProfileWidget },
+  components: { EditProfileWidget, CommentsWidget, MessageWidget },
   name: 'Profile',
   data () {
     return {
       user: {},
       orgs: {},
       style: '',
-      expanded: false
+      expanded: false,
+      sendMessage: false,
+      visitorUserId: this.$store.state.user.uid
     }
   },
   async created () {
@@ -67,6 +88,9 @@ export default {
     this.getOrganizations()
   },
   methods: {
+    closeMsg: function () {
+      this.sendMessage = false
+    },
     reload: async function () {
       this.expanded = false
       this.getProfile()

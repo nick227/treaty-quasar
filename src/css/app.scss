@@ -32,6 +32,10 @@ h6 {
 .org-card{
   width: 250px;
 }
+.message-card{
+  width:640px;
+  max-width: 100%;
+}
 .card-image{
   max-width:500px; 
   max-height:350px; 
@@ -51,6 +55,12 @@ h6 {
 }
 .bg-semi-trans{
   background-color: $transwhite;
+}
+.bg-grey-trans{
+  background-color: $transgrey;
+}
+.bg-trans{
+  background-color: transparent;
 }
 .bg-semi-trans-dark{
   background-color: $transblack;
