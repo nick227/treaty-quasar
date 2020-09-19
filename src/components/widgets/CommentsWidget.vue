@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-expansion-item icon="comment" :label="'Comments ' + commentCount" class="bg-grey-trans" @click="loadComments">
+    <q-expansion-item icon="comment" :label="capitalize(entityType) + ' Comments ' + commentCount" class="bg-grey-trans" @click="loadComments">
       <div class="q-pa-md full-width">
         <q-form @submit="postComment">
           <q-input filled type="textarea" autogrow placeholder="Type comment here" v-model="newComment" :key="entityId" />
@@ -42,6 +42,9 @@ export default {
         this.loaded = true
       }
     },
+    capitalize: function (str) {
+      return str.charAt(0).toUpperCase() + str.slice(1)
+    },
     getComments: async function () {
       const q = `${process.env.api}/${this.entityType}-comments/?filter[skip]=${this.currentPointer}&filter[limit]=${this.limit}&filter[where][${this.entityType}_id]=${this.entityId}&filter[include][][relation]=creator&filter[order]=create_date%20DESC`
       const comments = await this.$axios.get(q)
@@ -55,7 +58,6 @@ export default {
     },
     getCommentCount: async function () {
       const q = `${process.env.api}/${this.entityType}-comments/count?[where][${this.entityType}_id]=${this.entityId}`
-      console.log('--', q)
       const res = await this.$axios.get(q)
       this.commentCount = res.data.count
     },
@@ -69,6 +71,7 @@ export default {
       await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } })
       this.newComment = ''
       this.getComments()
+      this.getCommentCount()
     }
   },
   mounted () {

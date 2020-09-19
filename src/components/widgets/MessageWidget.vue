@@ -40,8 +40,6 @@ export default {
         user_id: this.receiverUserId,
         status: 0
       }
-      console.log(q)
-      console.log(payload)
       await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } }).then(() => {
         this.$q.notify({
           type: 'positive',

@@ -1,115 +1,149 @@
 <template>
   <q-page class="full-width full-height">
-    <div class="row full-width">
-      <div class="bg-grey-2 col col-md-5 q-pl-md"> <a class="cursor-pointer" @click="$router.push('/organization/'+org_a.id)"><h6><q-avatar size="40px" square class="q-mr-md"><q-img rounded class="q-mt-none" :src="org_a.avatar_url"></q-img></q-avatar>{{ org_a.name }}</h6></a> </div>
-      <div class="bg-grey-2 col col-md-2 text-center">
-        <h6>vs.</h6> </div>
-      <div class="bg-grey-2 col col-md-5 text-right q-pr-md"> <a class="cursor-pointer" @click="$router.push('/organization/'+org_b.id)"><h6><q-avatar size="40px" square class="q-mr-md"><q-img rounded class="q-mt-none" :src="org_b.avatar_url"></q-img></q-avatar>{{ org_b.name }}</h6></a> </div>
-    </div>
-    <q-card class="q-pa-lg full-width full-height">
-      <q-expansion-item v-model="expanded" switch-toggle-side dense-toggle label="Edit Conflict" class="absolute-right z-top q-mr-lg q-mb-lg">
-        <EditConflictWidget :name="name" :avatar_url="avatar_url" :description="description" :status="status" :id="id" :reload="reload" /> </q-expansion-item>
-      <q-card-section horizontal class="full-width items-start">
-        <div class="card-image" :style="'width:550px; height:350px; background-image:url('+avatar_url+');'"></div>
-        <q-card-section class="q-pb-md q-pt-none">
-          <h2>{{ name }}</h2>
-          <p class="q-pt-none" style="max-width:60%;">{{ description }}</p>
-          <div class="row">
-            <q-badge color="secondary" v-if="user_organization_name" :label="'Commenting as: ' + user_organization_name" />
-          </div>
-        </q-card-section>
-      </q-card-section>
-    </q-card>
+    <ConflictHeaderSection :name="name" :avatar_url="avatar_url" :description="description" :status="status" :id="id" :reload="reload" :org_a="org_a" :org_b="org_b" :user_organization_name="user_organization_name" />
     <q-separator />
     <!-- START TABS -->
     <div class="q-mb-lg" v-if="!loading">
       <q-tabs v-model="tab" dense class="bg-grey-3 text-grey-7" active-color="primary" indicator-color="purple" align="left">
         <q-tab name="treaties" label="Treaties" />
-        <q-tab name="grievances" label="Grievances'" />
-        <q-tab name="offers" label="Offers" />
+        <q-tab :name="org_a.name + '_grievances'" :label="org_a.name + ' Grievances'" />
+        <q-tab :name="org_b.name + '_grievances'" :label="org_b.name + ' Grievances'" />
+        <q-tab :name="org_a.name + '_offers'" :label="org_a.name + ' Offers'" />
+        <q-tab :name="org_b.name + '_offers'" :label="org_b.name + ' Offers'" />
       </q-tabs>
+      <!-- START PANELS -->
       <q-tab-panels v-model="tab" animated transition-prev="fade" transition-next="fade" class="">
-        <q-tab-panel name="grievances">
-          <!-- START GRIEVANCE / OFFER TABLES -->
-          <div class="row full-width">
-            <!-- org a grievances -->
-            <div class="col col-6">
-              <q-list bordered>
-                <q-item-section>
-                  <q-item-label class="text-uppercase text-center">
-                    <q-avatar square size="400px" class="q-ma-md">
-                      <q-img class="card-image" :src="org_a.avatar_url"></q-img>
-                    </q-avatar>
-                    <h6>{{ org_a.name }} Grievances</h6></q-item-label>
-                </q-item-section>
-                <AddConflictItem entityType="grievance" :userOrganizationId="user_organization_id" :conflictId="conflictId" :organizationId="org_a.id" :organizationName="org_a.name" :fn="reload" />
-                <h6 class="text-center text-subtitle2 text-grey-9" v-if="!grievances[org_a.name].length">no grievances</h6>
-                <div v-if="grievances[org_a.name].length">
-                  <ConflictComponent v-for="grievance in grievances[org_a.name]" entityType="grievance" :key="grievance.id" :entityId="grievance.id" :title="grievance.title" :description="grievance.description" :organization="grievance.organization.name" :organizationId="grievance.organization.id" :organizationAvatarUrl="grievance.organization.avatar_url" :orgAname="org_a.name" :orgBname="org_b.name" :orgAid="org_a.id" :orgBid="org_b.id" /> </div>
-              </q-list>
-            </div>
-            <!-- org b grievances -->
-            <div class="col col-6">
-              <q-list bordered>
-                <q-item-section>
-                  <q-item-label class="text-uppercase text-center">
-                    <q-avatar square size="400px" class="q-ma-md">
-                      <q-img class="card-image" :src="org_b.avatar_url"></q-img>
-                    </q-avatar>
-                    <h6>{{ org_b.name }} Grievances</h6></q-item-label>
-                </q-item-section>
-                <AddConflictItem entityType="grievance" :userOrganizationId="user_organization_id" :conflictId="conflictId" :organizationId="org_b.id" :organizationName="org_b.name" :fn="reload" />
-                <h6 class="text-center text-subtitle2 text-grey-9" v-if="!grievances[org_b.name].length">no grievances</h6>
-                <div v-if="grievances[org_b.name].length">
-                  <ConflictComponent v-for="grievance in grievances[org_b.name]" entityType="grievance" :key="grievance.id" :entityId="grievance.id" :title="grievance.title" :description="grievance.description" :organization="grievance.organization.name" :organizationId="grievance.organization.id" :organizationAvatarUrl="grievance.organization.avatar_url" :orgAname="org_a.name" :orgBname="org_b.name" :orgAid="org_a.id" :orgBid="org_b.id" /> </div>
-              </q-list>
-            </div>
-          </div>
+        <q-tab-panel :name="org_a.name + '_grievances'">
+          <!-- org a grievances -->
+          <q-list bordered>
+            <q-item-section>
+              <q-item-label class="text-uppercase text-center">
+                <h6>{{ org_a.name }} Grievances</h6></q-item-label>
+            </q-item-section>
+            <AddConflictItem
+            entityType="grievance"
+            :userOrganizationId="user_organization_id"
+            :conflictId="conflictId"
+            :organizationId="org_a.id"
+            :organizationName="org_a.name"
+            :fn="reload" />
+            <h6 class="text-center text-subtitle2 text-grey-9" v-if="!grievances[org_a.name].length">no grievances</h6>
+            <div v-if="grievances[org_a.name].length">
+              <ConflictComponent v-for="grievance in grievances[org_a.name]"
+              entityType="grievance"
+              :key="grievance.id"
+              :entityId="grievance.id"
+              :title="grievance.title"
+              :description="grievance.description"
+              :organization="grievance.organization.name"
+              :organizationId="grievance.organization.id"
+              :organizationAvatarUrl="grievance.organization.avatar_url"
+              :orgAname="org_a.name"
+              :orgBname="org_b.name"
+              :orgAid="org_a.id"
+              :orgBid="org_b.id" /> </div>
+          </q-list>
         </q-tab-panel>
-        <!--    OFFER WIDGETS    -->
-        <q-tab-panel name="offers">
-          <div class="row full-width">
-            <div class="col col-6">
-              <!-- org a offers -->
-              <q-list bordered>
-                <q-item-section>
-                  <q-item-label class="text-uppercase text-center">
-                    <q-avatar square size="400px" class="q-ma-md">
-                      <q-img class="card-image" :src="org_a.avatar_url"></q-img>
-                    </q-avatar>
-                    <h6>{{ org_a.name }} Offers</h6></q-item-label>
-                </q-item-section>
-                <AddConflictItem entityType="offer" :userOrganizationId="user_organization_id" :conflictId="conflictId" :organizationId="org_a.id" :organizationName="org_a.name" :fn="reload" />
-                <h6 class="text-center text-subtitle2 text-grey-9" v-if="!offers[org_a.name].length">no offers</h6>
-                <div v-if="offers[org_a.name].length">
-                  <ConflictComponent v-for="offer in offers[org_a.name]" entityType="offer" :key="offer.id" :entityId="offer.id" :title="offer.title" :description="offer.description" :organization="offer.organization.name" :organizationId="offer.organization.id" :organizationAvatarUrl="offer.organization.avatar_url" :orgAname="org_a.name" :orgBname="org_b.name" :orgAid="org_a.id" :orgBid="org_b.id" /> </div>
-              </q-list>
+          <!-- org b grievances -->
+        <q-tab-panel :name="org_b.name + '_grievances'">
+          <q-list bordered>
+            <q-item-section>
+              <q-item-label class="text-uppercase text-center">
+                <h6>{{ org_b.name }} Grievances</h6></q-item-label>
+            </q-item-section>
+            <AddConflictItem
+            entityType="grievance"
+            :userOrganizationId="user_organization_id"
+            :conflictId="conflictId"
+            :organizationId="org_b.id"
+            :organizationName="org_b.name"
+            :fn="reload" />
+            <h6 class="text-center text-subtitle2 text-grey-9" v-if="!grievances[org_b.name].length">no grievances</h6>
+            <div v-if="grievances[org_b.name].length">
+              <ConflictComponent v-for="grievance in grievances[org_b.name]"
+              entityType="grievance"
+              :key="grievance.id"
+              :entityId="grievance.id"
+              :title="grievance.title"
+              :description="grievance.description"
+              :organization="grievance.organization.name"
+              :organizationId="grievance.organization.id"
+              :organizationAvatarUrl="grievance.organization.avatar_url"
+              :orgAname="org_a.name"
+              :orgBname="org_b.name"
+              :orgAid="org_a.id"
+              :orgBid="org_b.id" />
             </div>
-            <div class="col col-6">
-              <!-- org b offers -->
-              <q-list bordered>
-                <q-item-section>
-                  <q-item-label class="text-uppercase text-center">
-                    <q-avatar square size="400px" class="q-ma-md">
-                      <q-img class="card-image" :src="org_b.avatar_url"></q-img>
-                    </q-avatar>
-                    <h6>{{ org_b.name }} Offers</h6></q-item-label>
-                </q-item-section>
-                <AddConflictItem entityType="offer" :userOrganizationId="user_organization_id" :conflictId="conflictId" :organizationId="org_b.id" :organizationName="org_b.name" :fn="reload" />
-                <h6 class="text-center text-subtitle2 text-grey-9" v-if="!offers[org_b.name].length">no offers</h6>
-                <div v-if="offers[org_b.name].length">
-                  <ConflictComponent v-for="offer in offers[org_b.name]" entityType="offer" :key="offer.id" :entityId="offer.id" :title="offer.title" :description="offer.description" :organization="offer.organization.name" :organizationId="offer.organization.id" :organizationAvatarUrl="offer.organization.avatar_url" :orgAname="org_a.name" :orgBname="org_b.name" :orgAid="org_a.id" :orgBid="org_b.id" /> </div>
-              </q-list>
-            </div>
-          </div>
+          </q-list>
         </q-tab-panel>
+          <!-- org a offers -->
+        <q-tab-panel :name="org_a.name + '_offers'">
+          <q-list bordered>
+            <q-item-section>
+              <q-item-label class="text-uppercase text-center">
+                <h6>{{ org_a.name }} Offers</h6></q-item-label>
+            </q-item-section>
+            <AddConflictItem entityType="offer"
+            :userOrganizationId="user_organization_id"
+            :conflictId="conflictId"
+            :organizationId="org_a.id"
+            :organizationName="org_a.name"
+            :fn="reload" />
+            <h6 class="text-center text-subtitle2 text-grey-9" v-if="!offers[org_a.name].length">no offers</h6>
+            <div v-if="offers[org_a.name].length">
+              <ConflictComponent v-for="offer in offers[org_a.name]"
+              entityType="offer"
+              :key="offer.id"
+              :entityId="offer.id"
+              :title="offer.title"
+              :description="offer.description"
+              :organization="offer.organization.name"
+              :organizationId="offer.organization.id"
+              :organizationAvatarUrl="offer.organization.avatar_url"
+              :orgAname="org_a.name"
+              :orgBname="org_b.name"
+              :orgAid="org_a.id"
+              :orgBid="org_b.id" /> </div>
+          </q-list>
+        </q-tab-panel>
+          <!-- org b offers -->
+        <q-tab-panel :name="org_b.name + '_offers'">
+          <q-list bordered>
+            <q-item-section>
+              <q-item-label class="text-uppercase text-center">
+                <h6>{{ org_b.name }} Offers</h6></q-item-label>
+            </q-item-section>
+            <AddConflictItem entityType="offer"
+            :userOrganizationId="user_organization_id"
+            :conflictId="conflictId"
+            :organizationId="org_b.id"
+            :organizationName="org_b.name"
+            :fn="reload" />
+            <h6 class="text-center text-subtitle2 text-grey-9" v-if="!offers[org_b.name].length">no offers</h6>
+            <div v-if="offers[org_b.name].length">
+              <ConflictComponent v-for="offer in offers[org_b.name]"
+              entityType="offer"
+              :key="offer.id"
+              :entityId="offer.id"
+              :title="offer.title"
+              :description="offer.description"
+              :organization="offer.organization.name"
+              :organizationId="offer.organization.id"
+              :organizationAvatarUrl="offer.organization.avatar_url"
+              :orgAname="org_a.name"
+              :orgBname="org_b.name"
+              :orgAid="org_a.id"
+              :orgBid="org_b.id" /> </div>
+          </q-list>
+        </q-tab-panel>
+          <!-- treaties panel -->
         <q-tab-panel name="treaties">
           <TreatyListComponent
           :conflictId="conflictId"
-          :userOrganizationId="user_organization_id"
-           />
+          :userOrganizationId="user_organization_id" />
         </q-tab-panel>
       </q-tab-panels>
+      <!-- END PANELS -->
     </div>
     <q-dialog v-model="verify_org" persistent>
       <q-card>
@@ -127,14 +161,14 @@
 import ConflictComponent from 'components/conflict/ConflictComponent.vue'
 import TreatyListComponent from 'components/treaty/TreatyListComponent.vue'
 import AddConflictItem from 'components/conflict/AddConflictItem.vue'
-import EditConflictWidget from 'components/conflict/EditConflictWidget.vue'
+import ConflictHeaderSection from 'components/conflict/ConflictHeaderSection.vue'
 export default {
   meta () {
     return {
       title: this.name
     }
   },
-  components: { ConflictComponent, AddConflictItem, EditConflictWidget, TreatyListComponent },
+  components: { ConflictComponent, AddConflictItem, TreatyListComponent, ConflictHeaderSection },
   async mounted () {
     this.reload()
   },
@@ -216,7 +250,6 @@ export default {
       grievances: {},
       offers: {},
       loading: true,
-      expanded: false,
       user_organization_id: null,
       user_organization_name: 'n/a',
       org_obj: {},

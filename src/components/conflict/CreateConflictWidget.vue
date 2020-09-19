@@ -36,7 +36,7 @@
         fill-input
         input-debounce="0"
         behavior="menu"
-        :options="organizationsA"
+        :options="optionsA"
         @filter="filterFnA"
         @input-value="setModelA"
         placeholder="Party A"
@@ -60,7 +60,7 @@
         fill-input
         input-debounce="0"
         behavior="menu"
-        :options="organizationsB"
+        :options="optionsB"
         @filter="filterFnB"
         @input-value="setModelB"
         placeholder="Party B"
@@ -94,6 +94,8 @@ export default {
       orgB: null,
       organizationsA: [],
       organizationsB: [],
+      optionsA: [],
+      optionsB: [],
       organizationsObj: [],
       name: '',
       description: '',
@@ -102,6 +104,8 @@ export default {
   },
   async created () {
     this.getOrgs()
+    this.optionsA = this.organizationsA
+    this.optionsB = this.organizationsB
   },
   methods: {
     getOrgs: async function () {
@@ -115,25 +119,25 @@ export default {
     filterFnA (val, update, abort) {
       if (val === '') {
         update(() => {
-          this.options = this.organizationsA
+          this.optionsA = this.organizationsA
         })
         return
       }
       update(() => {
         const needle = val.toLocaleLowerCase()
-        this.options = this.organizationsA.filter(v => v.toLocaleLowerCase().indexOf(needle) > -1)
+        this.optionsA = this.organizationsA.filter(v => v.toLocaleLowerCase().indexOf(needle) > -1)
       })
     },
     filterFnB (val, update, abort) {
       if (val === '') {
         update(() => {
-          this.options = this.organizationsB
+          this.optionsB = this.organizationsB
         })
         return
       }
       update(() => {
         const needle = val.toLocaleLowerCase()
-        this.options = this.organizationsB.filter(v => v.toLocaleLowerCase().indexOf(needle) > -1)
+        this.optionsB = this.organizationsB.filter(v => v.toLocaleLowerCase().indexOf(needle) > -1)
       })
     },
     setModelA (val) {

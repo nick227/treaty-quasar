@@ -1,23 +1,30 @@
-<template>
-    <q-page class="q-pa-md text-left full-width">
-      <h4 class="full-width text-left">Messages</h4>
-      <h3 v-if="!messages.length">Inbox is empty.</h3>
-      <q-list>
-        <div class="row q-pa-lg" style="border-bottom:1px solid lightgrey" v-for="message in messages" :key="message.id">
-          <div class="col col-1">
-            <q-img :src="message.creator_avatar" />
-          </div>
-          <div class="col q-pl-lg q-pr-sm q-pb-lg">
-            <h6 class="q-pa-none">{{ message.creator_name }}</h6>
-            <p class="q-pa-none">{{ message.create_date }}</p>
-            <div class="q-pt-sm"><span>{{ message.text }}</span><span v-if="message.hidden_text && message.show_more">{{ message.hidden_text}}</span></div><q-btn class="q-mt-md" v-if="message.hidden_text && !message.show_more" @click="message.show_more = true">show more</q-btn><q-btn class="q-mt-md" v-if="message.hidden_text && message.show_more" @click="message.show_more = false">hide</q-btn>
-          </div>
-          <div class="col col-1 text-right align-right flex-right">
-            <q-btn color="grey" @click="deleteMsg(message.id)" icon="delete" square size="11px" style="width:36px; height:30px;" />
-          </div>
+<template class="">
+  <q-page class="q-pa-none text-left full-width">
+    <h3 v-if="messages.length" class="full-width text-left bg-secondary q-pl-lg">Messages</h3>
+    <h4 v-if="!messages.length" class="full-width text-left bg-secondary q-pl-lg">Inbox is empty.</h4>
+        <transition
+          appear
+          enter-active-class="animated fadeIn"
+        >
+    <q-list>
+      <div class="row q-pa-lg" :class="{ unread: message.status }" style="border-bottom:1px solid lightgrey" v-for="message in messages" :key="message.id">
+        <div class="col col-1">
+          <q-img :src="message.creator_avatar" />
         </div>
-      </q-list>
-    </q-page>
+        <div class="col q-pl-lg q-pr-sm q-pb-lg">
+          <h6 class="q-pa-none">{{ message.creator_name }}</h6>
+          <p class="q-pa-none">{{ message.create_date }}</p>
+          <div class="q-pt-sm"><span>{{ message.text }}</span><span v-if="message.hidden_text && message.show_more">{{ message.hidden_text}}</span></div>
+          <q-btn class="q-mt-md text-black" v-if="message.hidden_text && !message.show_more" @click="message.show_more = true">show more</q-btn>
+          <q-btn class="q-mt-md" v-if="message.hidden_text && message.show_more" @click="message.show_more = false">hide</q-btn>
+        </div>
+        <div class="col col-1 text-right align-right flex-right">
+          <q-btn color="grey" @click="deleteMsg(message.id)" icon="delete" square size="11px" style="width:36px; height:30px;" />
+        </div>
+      </div>
+    </q-list>
+        </transition>
+  </q-page>
 </template>
 <script>
 export default {
@@ -40,8 +47,6 @@ export default {
         id: id,
         status: 2
       }
-      console.log(q)
-      console.log(payload)
       await this.$axios.patch(q, payload)
         .then((res) => {
           this.loadMessages()
@@ -59,7 +64,6 @@ export default {
     },
     loadMessages: async function () {
       const q = `${process.env.api}/user-messages?filter[where][and][0][user_id]=${this.$store.state.user.uid}&filter[where][and][1][status][lt]=2&filter[include][][relation]=creator&filter[order]=create_date%20DESC`
-      console.log(q)
       const messages = await this.$axios.get(q)
       this.messages = messages.data.map((obj) => {
         const messageTxt = this.trunc(obj.text)
@@ -68,8 +72,8 @@ export default {
           creator_name: obj.creator.name,
           text: messageTxt[0],
           id: obj.id,
-          create_date: obj.create_date,
           status: obj.status,
+          create_date: obj.create_date,
           hidden_text: messageTxt[1],
           show_more: false
         }
@@ -119,3 +123,8 @@ export default {
   }
 }
 </script>
+<style>
+.unread{
+  background-color:rgba(237, 240, 173, 0.8);
+}
+</style>

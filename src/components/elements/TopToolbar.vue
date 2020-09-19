@@ -84,10 +84,8 @@ export default {
     checkMessages: async function () {
       if (this.profile.id) {
         const q = `${process.env.api}/user-messages?filter[where][and][0][user_id]=${this.$store.state.user.uid}&filter[where][and][1][status]=0`
-        console.log(q)
         const newMessages = await this.$axios.get(q)
         this.newMessages = newMessages.data.length
-        console.log('this.newMessages: ', this.newMessages)
         if (this.newMessages) {
           this.$store.commit('user/updateMsgCount', this.newMessages)
         }

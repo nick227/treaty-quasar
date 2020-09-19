@@ -5,6 +5,7 @@
   </div>
   <div class="row full-width">
     <q-table
+    style="max-width:100%"
     class="full-width align-left table"
     dense
     flat
@@ -22,9 +23,8 @@
     </q-table>
   <q-dialog class="z-top" v-model="showTreaty">
     <TreatyDraft
-    :treatyId="childTreatyId"
-    :userOrganizationId="childOrganizationId"
-    :treatyName="childTreatyName" />
+    :userOrganizationId="userOrganizationId"
+    :treatyId="childTreatyId" />
   </q-dialog>
   <q-dialog v-model="createTreaty">
     <CreateTreaty
@@ -46,8 +46,6 @@ export default {
     return {
       treaties: [],
       childTreatyId: null,
-      childOrganizationId: null,
-      childTreatyName: null,
       pointer: 0,
       limit: 9,
       createTreaty: false,
@@ -57,9 +55,9 @@ export default {
       columns: [],
       initialPagination: {
         sortBy: 'desc',
-        descending: false,
+        descending: true,
         page: 1,
-        rowsPerPage: 10
+        rowsPerPage: 100
       }
     }
   },
@@ -73,8 +71,6 @@ export default {
     },
     openTreaty: function (row) {
       this.childTreatyId = row.id
-      this.childTreatyName = row.name
-      this.childOrganizationId = row.organization_id
       this.showTreaty = true
     },
     getTreaties: async function () {
@@ -83,13 +79,12 @@ export default {
       if (this.limit > treaties.data.length) {
         this.done = true
       }
-      const obj = treaties.data.map((obj) => { return { id: obj.id, name: obj.name, description: obj.description, status: obj.status.name, creator: obj.creator.name, organization_id: obj.organization.id, organization: obj.organization.name } })
+      const obj = treaties.data.map((obj) => { return { id: obj.id, avatar_url: obj.avatar_url, name: obj.name, description: obj.description, status: obj.status.name, creator: obj.creator.name, organization_id: obj.organization.id, organization: obj.organization.name } })
       this.treaties = this.treaties.concat(obj)
     },
     setupTable: function () {
       this.columns = [
         { name: 'name', label: 'Name', field: 'name', align: 'left' },
-        { name: 'description', label: 'Description', field: 'description', sortable: true, align: 'left' },
         { name: 'status', label: 'Status', field: 'status', sortable: true, align: 'left' },
         { name: 'organization', label: 'Organization', field: 'organization', sortable: true, align: 'left' },
         { name: 'creator', label: 'Creator', field: 'creator', sortable: true, align: 'left' },

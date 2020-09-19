@@ -1,5 +1,4 @@
 <template>
-  <q-page>
   <div class="row">
     <div class="col bg-blue-grey-1 col-12 q-pl-lg q-pr-lg q-pt-none q-pb-sm row flex-center">
       <h6 class="q-ma-lg">Do you agree to this treaty?</h6>
@@ -37,43 +36,22 @@
       </q-card>
     </q-dialog>
   </div>
-  <div class="row full-width">
-    <q-table
-    class="full-width align-left table"
-    title="Votes"
-    dense
-    flat
-    :data="votes"
-    :columns="columns"
-    row-key="id"
-    :pagination="initialPagination"
-    />
-  </div>
-  </q-page>
 </template>
 <script>
 export default {
-  name: 'VoteTreatyWidget',
-  props: ['id', 'userOrganizationId'],
+  name: 'TreatyVoteWidget',
+  props: ['id', 'userOrganizationId', 'votes', 'reload'],
   data () {
     return {
       num_yay: 0,
       num_nay: 0,
       voteVal: null,
       verify: false,
-      voteTxt: null,
-      columns: [],
-      votes: [],
-      initialPagination: {
-        sortBy: 'desc',
-        descending: false,
-        page: 1,
-        rowsPerPage: 10
-      }
+      voteTxt: null
     }
   },
   mounted () {
-    this.getVotes()
+    this.getSums()
   },
   methods: {
     confirm: async function (res) {
@@ -90,7 +68,8 @@ export default {
         vote_type: this.voteVal
       }
       await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } }).then(() => {
-        this.getVotes()
+        this.getSums()
+        this.reload()
         this.$q.notify({
           type: 'positive',
           message: 'Vote Received'
@@ -98,40 +77,15 @@ export default {
       }).catch((err) => {
         this.$q.notify({
           type: 'negative',
-          message: err
+          message: 'Voting error: ' + err
         })
       })
-    },
-    getVotes: async function () {
-      const q = `${process.env.api}/votes?filter[where][treaty_id]=${this.id}&filter[include][0][relation]=creator&filter[include][1][relation]=organization&filter[order]=create_date%20DESC`
-      const votes = await this.$axios.get(q)
-      this.votes = votes.data.map((item) => {
-        return {
-          date: item.create_date,
-          name: item.creator.name,
-          location: item.creator.location,
-          organization: item.organization.name,
-          vote: item.vote_type,
-          sortable: true
-        }
-      })
-      this.setupTable()
-      this.getSums()
     },
     getSums: function () {
       for (let i = 0; i < this.votes.length; i++) {
         this.num_yay += this.votes[i].vote ? 1 : 0
         this.num_nay += !this.votes[i].vote ? 1 : 0
       }
-    },
-    setupTable: function () {
-      this.columns = [
-        { name: 'vote', label: 'Vote', field: 'vote', format: val => val ? 'Yay' : 'Nay', sortable: true, align: 'left' },
-        { name: 'name', label: 'Name', field: 'name', align: 'left' },
-        { name: 'location', label: 'Location', field: 'location', sortable: true, align: 'left' },
-        { name: 'organization', label: 'Organization', field: 'organization', sortable: true, align: 'left' },
-        { name: 'date', label: 'Date', field: 'date', sortable: true, align: 'left' }
-      ]
     }
   }
 }
