@@ -1,5 +1,5 @@
 <template>
-<div class="row full-width">
+<div class="row" style="width:60px;">
   <div class="col col-6 text-center">
     <div @click="like">
       <q-icon name="thumb_up_alt" v-ripple color="blue" class="cursor-pointer" />
@@ -19,13 +19,17 @@
 </div>
 </template>
 <script>
+import { ErrorHelper } from 'components/mixins/ErrorHelper.js'
 export default {
   name: 'LikeButtons',
   props: ['entityType', 'entityId', 'organizationId', 'organizationName'],
+  mixins: [ErrorHelper],
   data () {
     return {
       numLikes: 0,
-      numDislikes: 0
+      numDislikes: 0,
+      org_a: {},
+      org_b: {}
     }
   },
   methods: {
@@ -36,6 +40,9 @@ export default {
       this.update(0)
     },
     update: async function (val) {
+      if (!this.isValid('organization', this.organizationId)) {
+        return false
+      }
       const q = `${process.env.api}/${this.entityType}-likes`
       const payload = {
         creator_user_id: this.$store.state.user.uid,
@@ -51,6 +58,7 @@ export default {
       const likes = await this.$axios.get(q)
       this.numLikes = 0
       this.numDislikes = 0
+      console.log(q)
       for (let i = 0; i < likes.data.length; i++) {
         if (likes.data[i].liked === 1) {
           this.numLikes = this.numLikes + 1

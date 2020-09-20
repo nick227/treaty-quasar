@@ -1,7 +1,7 @@
 <template>
 <div>
   <div class="text-center q-pa-lg z-top absolute-center">
-    <h1 class="text-white">CONCORDANT.IO</h1>
+    <h1 class="text-white welcome">CONCORDANT.IO</h1>
     <h4 class="q-mb-sm text-white">The treaty building platform</h4>
     <q-btn class="q-mb-sm " color="dark full-width">GET STARTED</q-btn>
     <p class="text-center z-top text-white">Giving PEACE a chance.</p>

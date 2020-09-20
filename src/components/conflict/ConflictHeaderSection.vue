@@ -7,7 +7,7 @@
       <div class="bg-grey-2 col col-md-5 text-right q-pr-md"> <a class="cursor-pointer" @click="$router.push('/organization/'+org_b.id)"><h6><q-avatar size="40px" square class="q-mr-md"><q-img rounded class="q-mt-none" :src="org_b.avatar_url"></q-img></q-avatar>{{ org_b.name }}</h6></a> </div>
     </div>
     <q-card class="q-pa-lg full-width full-height">
-      <q-expansion-item v-model="expanded" switch-toggle-side dense-toggle label="Edit Conflict" class="absolute-right z-top q-mr-lg q-mb-lg">
+      <q-expansion-item v-model="expanded" switch-toggle-side dense-toggle label="Edit Conflict" class="absolute-right q-mr-lg q-mb-lg">
         <EditConflictWidget :name="name" :avatar_url="avatar_url" :description="description" :status="status" :id="id" :reload="reload" /> </q-expansion-item>
       <q-card-section horizontal class="full-width items-start">
         <q-img :src="avatar_url" style="width:20%;" />

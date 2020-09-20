@@ -1,8 +1,8 @@
 <template>
-  <q-layout view="Lhh lpR fff" style="width:800px; max-width:99%;" container class="bg-white">
+  <q-layout view="Lhh lpR fff" style="" container class="bg-white fill-width">
     <q-header class="bg-primary">
       <q-toolbar>
-        <q-toolbar-title class="q-pl-lg"></q-toolbar-title>
+        <q-toolbar-title class="q-pl-lg text-center">CONCORDANT.IO TREATY</q-toolbar-title>
         <q-btn flat v-close-popup round dense icon="close" />
       </q-toolbar>
     </q-header>
@@ -31,12 +31,12 @@
           <div v-for="(provision, index) in provisions" :key="provision.id" class="full-width q-mb-sm">
             <TreatyProvisionComponent
                 :provision="provision"
-                :index="index" />
+                :index="index"
+                :userOrganizationId="userOrganizationId" />
           </div>
         </q-list>
         <TreatyVoteWidget class="q-mt-lg q-mb-sm"
         :reload="getVotes"
-        :key="'vote' + counter"
         :votes="votes"
         :id="treatyId"
         :userOrganizationId="userOrganizationId" />
@@ -95,7 +95,6 @@ export default {
   },
   methods: {
     getTreaty: async function () {
-      // , 'userOrganizationId', 'treatyName', 'treatyDesc', 'treatyCreator', 'treatyAvatarUrl'
       const q = `${process.env.api}/treaties/${this.treatyId}`
       const treaty = await this.$axios.get(q)
       this.treaty = treaty.data

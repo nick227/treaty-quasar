@@ -1,3 +1,4 @@
+@import './mobile.scss';
 p,
 h1,
 h2,
@@ -8,6 +9,10 @@ h6 {
   margin: 0;
   padding: 10px 0;
 }
+h1.welcome{
+  font-size:5vw;
+  line-height: 3vw;
+}
 .q-page-container {
   display: flex;
   align-items: center;
@@ -17,9 +22,15 @@ h6 {
 .q-page {
   background-repeat: no-repeat;
   background-size: cover;
+  max-width:100%;
+  width:98%;
 }
 .q-item{
 	min-height: 1px;
+}
+.fill-width{
+  max-width: 100% !important;
+  width: 90vw !important;
 }
 .transparent{
   background: transparent;

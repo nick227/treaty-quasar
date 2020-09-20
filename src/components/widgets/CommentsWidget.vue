@@ -13,7 +13,7 @@
       <q-list>
         <q-separator spaced />
         <div v-if="!comments.length" class="text-center q-pa-lg">no comments</div>
-        <q-item style="border-bottom:1px solid rgba(0, 0, 0, 0.12)" class="q-pa-lg q-ma-sm" v-for="comment in comments" :key="comment.id">
+        <q-item style="border-bottom:1px solid rgba(0, 0, 0, 0.12)" class="q-pa-lg q-ma-sm" v-for="comment in readyComments" :key="comment.id">
           <q-item-section top avatar>
             <q-avatar size="50px" class="q-mr-md">
               <q-img rounded class="avatar" :src="comment.creator.avatar_url"></q-img>
@@ -21,7 +21,7 @@
           </q-item-section>
           <q-item-section>
             <q-item-label>{{ comment.creator.name }} says:</q-item-label>
-            <q-item-label caption lines="10">{{ comment.text }}</q-item-label>
+            <q-item-label caption lines="10" v-html="comment.text"></q-item-label>
             <q-item-label>
               <q-badge outline class="q-mt-sm" color="secondary" :label="comment.create_date" />
             </q-item-label>
@@ -35,6 +35,17 @@
 <script>
 export default {
   name: 'CommentsWidget',
+  computed: {
+    readyComments: function () {
+      const embedHtml = '<iframe type="text/html" width="480" height="320" src="http://www.youtube.com/embed/embed_code_target" frameborder="0"></iframe>'
+      return this.comments.map((comment) => {
+        const ytMatch = comment.text.match(/(http:|https:)?(\/\/)?(www\.)?(youtube.com|youtu.be)\/(watch|embed)?(\?v=|\/)?(\S+)?/)
+        comment.text = ytMatch ? comment.text.replace(ytMatch[0], function (a, b) { return embedHtml.replace('embed_code_target', ytMatch[7].split('&')[0]) }) : comment.text
+        comment.text = comment.text.replaceAll('<script>', '')
+        return comment
+      })
+    }
+  },
   methods: {
     loadComments: function () {
       if (!this.open) {
