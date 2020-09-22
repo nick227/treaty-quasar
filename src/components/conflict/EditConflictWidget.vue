@@ -70,6 +70,7 @@ export default {
       this.$emit('msgChange', value)
     },
     postForm: async function (e) {
+      if (!this.$errorHandler.loggedInCheck()) { return false }
       const payload = {
         name: this.data_name,
         description: this.data_description,

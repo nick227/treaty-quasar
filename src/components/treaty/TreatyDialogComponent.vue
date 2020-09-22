@@ -8,7 +8,7 @@
     </q-header>
     <q-page-container>
       <q-page padding>
-        <div class="row relative-position q-mb-sm full-width" style="height:35px;">
+        <div v-if="isUser" class="row relative-position q-mb-sm full-width" style="height:35px;">
           <q-expansion-item switch-toggle-side dense-toggle label="Edit Treaty" class="absolute-right z-top">
             <EditTreatyWidget
     :name="treaty.name"
@@ -20,8 +20,8 @@
         <RatingWidget :entityId="treatyId" :userOrganizationId="userOrganizationId" entityType="treaty" />
         <h4 class="q-pb-sm">{{ treaty.name }}</h4>
         <p class="q-pt-none">{{ treaty.description }}</p>
-        <p class="caption q-pt-none">Created by: {{ treaty.creator_user_id }}</p>
-        <q-expansion-item v-model="expanded" label="Add Provision" class="full-width q-mb-sm bg-blue-grey-1">
+        <p class="caption q-pt-none">Created by: {{ creatorName }}</p>
+        <q-expansion-item v-if="isUser" v-model="expanded" label="Add Provision" class="full-width q-mb-sm bg-blue-grey-1">
           <AddProvision
           :treatyId="treatyId"
           :numProvisions="numProvisions"
@@ -68,7 +68,7 @@ export default {
       title: this.treatyName
     }
   },
-  props: ['treatyId', 'userOrganizationId'],
+  props: ['treatyId', 'userOrganizationId', 'creatorName', 'creatorId'],
   components: { AddProvision, CommentsWidget, TreatyVoteWidget, RatingWidget, TreatyVotesTable, EditTreatyWidget, TreatyProvisionComponent },
   data () {
     return {
@@ -78,6 +78,7 @@ export default {
       provisions: [],
       columns: [],
       numProvisions: 0,
+      isUser: false,
       votes: [],
       treaty: {},
       initialPagination: {
@@ -111,6 +112,7 @@ export default {
       const votes = await this.$axios.get(q)
       this.votes = votes.data.map((item) => {
         return {
+          creatorUserId: item.creator_user_id,
           date: item.create_date,
           name: item.creator.name,
           location: item.creator.location,
@@ -129,6 +131,7 @@ export default {
     }
   },
   created () {
+    this.isUser = this.$errorHandler.isLoggedInUser(this.creatorUserId)
     this.getTreaty()
     this.getVotes()
     this.loadProvisions()

@@ -1,22 +1,52 @@
 <template>
-  <div>
+  <div class="">
   <q-item>
-    <q-item-section top>
-      <q-item-label class="q-mb-sm"><q-badge color="grey">{{ organization }} {{ entityType }}</q-badge></q-item-label>
-      <q-item-label><q-avatar size="40px" square class="q-mr-sm"><q-img rounded class="q-mt-none" :src="entity.creator.avatar_url"></q-img></q-avatar>{{ entity.creator.name }} writes:</q-item-label>
-      <q-item-label><h6 class="q-pa-none">{{ entity.title }}</h6></q-item-label>
-      <q-item-label caption class="q-pb-md">{{ entity.description }}</q-item-label>
+    <q-item-section>
+      <div class="row full-width">
+        <div class="col col-2">
+          <div class="text-center q-pa-sm">{{ creator.name }}</div>
+          <div class="text-center"><q-avatar size="100px" round class="q-mr-sm text-center q-mb-lg"><img class="" :src="creator.avatar_url" /></q-avatar></div>
+        </div>
+        <div class="col q-pt-lg q-mt-lg"><h6 class="q-pa-none">{{ title }}</h6><p class="q-pa-none">{{ description }}</p></div>
+      </div>
     </q-item-section>
-    <q-item-section side style="">
+    <!-- user equals org a -->
+    <q-item-section v-if="userOrganizationId == orgAid" side style="text-center">
+      <div class="text-center q-pa-sm">{{ orgAname }}</div>
       <LikeButtons
       :entityType='entityType'
       :entityId="entityId"
-      :organizationId="userOrganizationId" />
+      readonly=false
+      :organizationId="orgAid" />
+      <div class="text-center q-pa-sm">{{ orgBname }}</div>
+      <LikeButtons
+      :entityType='entityType'
+      :entityId="entityId"
+      readonly=true
+      :organizationId="orgBid" />
     </q-item-section>
+    <!-- end equals org a -->
+    <!-- user equals org b -->
+    <q-item-section v-if="userOrganizationId == orgBid" side style="text-center">
+      <div class="text-center q-pa-sm">{{ orgAname }}</div>
+      <LikeButtons
+      :entityType='entityType'
+      :entityId="entityId"
+      readonly=true
+      :organizationId="orgAid" />
+      <div class="text-center q-pa-sm">{{ orgBname }}</div>
+      <LikeButtons
+      :entityType='entityType'
+      :entityId="entityId"
+      readonly=false
+      :organizationId="orgBid" />
+    </q-item-section>
+    <!-- end equals org b -->
     </q-item>
     <CommentsWidget
           :entityId="entityId"
           :entityType="entityType"
+          :userOrganizationId="userOrganizationId"
     ></CommentsWidget>
 </div>
 </template>
@@ -35,7 +65,7 @@ export default {
       type: Number,
       required: true
     },
-    entity: {
+    creator: {
       type: Object,
       required: true
     },

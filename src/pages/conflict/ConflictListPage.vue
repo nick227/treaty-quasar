@@ -1,6 +1,6 @@
 <template>
   <q-page padding class="river-width">
-  <q-expansion-item switch-toggle-side dense-toggle label="Create Conflict">
+  <q-expansion-item @before-show="userCheck" v-model="expanded" switch-toggle-side dense-toggle label="Create Conflict">
     <CreateConflictWidget />
   </q-expansion-item>
     <q-list padding>
@@ -46,13 +46,17 @@ export default {
       pointer: 0,
       limit: 2,
       done: false,
-      loadNum: 0
+      loadNum: 0,
+      expanded: false
     }
   },
   async created () {
     this.loadConflicts()
   },
   methods: {
+    userCheck (e) {
+      if (!this.$errorHandler.loggedInCheck()) { this.expanded = false }
+    },
     onIntersection: function (index, done) {
       if (this.loadNum > 1) {
         this.pointer = this.pointer + this.limit

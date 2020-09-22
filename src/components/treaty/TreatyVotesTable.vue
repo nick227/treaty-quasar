@@ -1,7 +1,7 @@
 <template>
   <div class="row full-width">
     <q-table
-    class="full-width align-left table"
+    class="full-width align-left table q-pa-sm"
     title="Votes"
     dense
     flat

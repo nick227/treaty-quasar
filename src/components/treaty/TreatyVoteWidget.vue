@@ -38,11 +38,9 @@
   </div>
 </template>
 <script>
-import { ErrorHelper } from 'components/mixins/ErrorHelper.js'
 export default {
   name: 'TreatyVoteWidget',
   props: ['id', 'userOrganizationId', 'votes', 'reload'],
-  mixins: [ErrorHelper],
   data () {
     return {
       num_yay: 0,
@@ -57,14 +55,12 @@ export default {
   },
   methods: {
     confirm: async function (res) {
+      if (!this.$errorHandler.organizationCheck(this.userOrganizationId)) { return false }
       this.voteVal = res
       this.voteTxt = res ? 'Yay' : 'Nay'
       this.verify = true
     },
     vote: async function () {
-      if (!this.isValid('organization', this.userOrganizationId)) {
-        return false
-      }
       const q = `${process.env.api}/votes`
       const payload = {
         creator_user_id: this.$store.state.user.uid,

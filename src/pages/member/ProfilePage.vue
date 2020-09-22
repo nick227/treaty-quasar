@@ -1,7 +1,7 @@
 <template>
   <q-page class="river-width" :style="'background-image:url(' + this.user.profile_background_url + ');'">
-    <div class="row relative-position">
-        <q-expansion-item v-model="expanded" switch-toggle-side dense-toggle label="Edit Profile" class="absolute-right z-top q-mb-lg q-mb-lg">
+    <div class="row relative-position" v-if="isUser">
+        <q-expansion-item v-model="expanded" switch-toggle-side dense-toggle label="Edit Profile" class="absolute-right z-top q-pr-lg q-mr-lg">
           <EditProfileWidget
            :name="user.name"
            :avatar_url="user.avatar_url"
@@ -80,7 +80,8 @@ export default {
       style: '',
       expanded: false,
       sendMessage: false,
-      visitorUserId: this.$store.state.user.uid
+      visitorUserId: this.$store.state.user.uid,
+      isUser: false
     }
   },
   async created () {
@@ -99,6 +100,8 @@ export default {
       const q = `${process.env.api}/users/${this.$route.params.id}`
       const user = await this.$axios.get(q)
       this.user = user.data
+      this.isUser = this.$errorHandler.isLoggedInUser(this.user.id)
+      console.log(this.isUser, this.user.id)
     },
     getOrganizations: async function () {
       const q = `${process.env.api}/users/${this.$route.params.id}/organizations`

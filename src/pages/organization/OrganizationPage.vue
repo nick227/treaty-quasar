@@ -67,6 +67,7 @@ export default {
       this.loadConflicts()
     },
     join: async function (id) {
+      if (!this.$errorHandler.loggedInCheck()) { return false }
       const q = `${process.env.api}/user-to-organizations`
       const payload = {
         creator_user_id: this.$store.state.user.uid,
@@ -76,7 +77,8 @@ export default {
       this.reload()
     },
     unjoin: async function (id) {
-      let q = `${process.env.api}/user-to-organizations?filter[where][and][0][creator_user_id]=${this.$store.state.user.uid}&filter[where][and][1][organization_id]=${this.org.id}&filter[fields][name]=true&filter[fields][description]=true&filter[fields][avatar_url]=true`
+      if (!this.$errorHandler.loggedInCheck()) { return false }
+      let q = `${process.env.api}/user-to-organizations?filter[where][and][0][creator_user_id]=${this.$store.state.user.uid}&filter[where][and][1][organization_id]=${this.org.id}&filter[fields][id]=true`
       const obj = await this.$axios.get(q)
       q = `${process.env.api}/user-to-organizations/${obj.data[0].id}`
       await this.$axios.delete(q)
@@ -91,8 +93,7 @@ export default {
       const q = `${process.env.api}/organizations/${this.$route.params.id}/users`
       const members = await this.$axios.get(q)
       this.members = members.data
-      const uidList = this.members.map((obj) => { return obj.id })
-      this.isMember = uidList.includes(this.$store.state.user.uid)
+      this.isMember = this.members.filter((obj) => { return obj.id === this.$store.state.user.uid }).length > 0
     },
     loadConflicts: async function () {
       const q = `${process.env.api}/conflicts?filter[where][or][0][organization_a_id]=${this.$route.params.id}&filter[where][or][1][organization_b_id]=${this.$route.params.id}`

@@ -1,12 +1,11 @@
 <template>
   <div>
   <div class="full-width q-pa-sm q-mb-lg">
-    <q-btn class="full-width text-center" @click="createTreaty = true" color="primary">Create Treaty</q-btn>
+    <q-btn class="full-width text-center" @click="openCreateTreaty" color="primary">Create Treaty</q-btn>
   </div>
   <div class="row full-width">
     <q-table
-    style="max-width:100%"
-    class="full-width align-left table"
+    class="full-width align-left table q-pa-sm"
     dense
     flat
     @row-click="onRowClick"
@@ -23,6 +22,8 @@
     </q-table>
   <q-dialog v-model="showTreaty" class="z-top">
     <TreatyDialogComponent class="z-top"
+    :creatorName="creatorName"
+    :creatorId="creatorId"
     :userOrganizationId="userOrganizationId"
     :treatyId="childTreatyId" />
   </q-dialog>
@@ -46,6 +47,8 @@ export default {
     return {
       treaties: [],
       childTreatyId: null,
+      creatorName: null,
+      creatorId: null,
       pointer: 0,
       limit: 9,
       createTreaty: false,
@@ -62,6 +65,10 @@ export default {
     }
   },
   methods: {
+    openCreateTreaty: function () {
+      if (!this.$errorHandler.organizationCheck(this.userOrganizationId)) { return false }
+      this.createTreaty = true
+    },
     reset: function () {
       this.createTreaty = false
       this.getTreaties()
@@ -70,6 +77,8 @@ export default {
       this.openTreaty(row)
     },
     openTreaty: function (row) {
+      this.creatorId = row.creatorId
+      this.creatorName = row.creatorName
       this.childTreatyId = row.id
       this.showTreaty = true
     },
@@ -79,7 +88,7 @@ export default {
       if (this.limit > treaties.data.length) {
         this.done = true
       }
-      const obj = treaties.data.map((obj) => { return { id: obj.id, avatar_url: obj.avatar_url, name: obj.name, description: obj.description, status: obj.status.name, creator: obj.creator.name, organization_id: obj.organization.id, organization: obj.organization.name } })
+      const obj = treaties.data.map((obj) => { return { id: obj.id, avatar_url: obj.avatar_url, name: obj.name, description: obj.description, status: obj.status.name, creatorId: obj.creator.id, creatorName: obj.creator.name, organization_id: obj.organization.id, organization: obj.organization.name } })
       this.treaties = this.treaties.concat(obj)
     },
     setupTable: function () {
@@ -87,7 +96,7 @@ export default {
         { name: 'name', label: 'Name', field: 'name', align: 'left' },
         { name: 'status', label: 'Status', field: 'status', sortable: true, align: 'left' },
         { name: 'organization', label: 'Organization', field: 'organization', sortable: true, align: 'left' },
-        { name: 'creator', label: 'Creator', field: 'creator', sortable: true, align: 'left' },
+        { name: 'creatorName', label: 'Creator', field: 'creatorName', sortable: true, align: 'left' },
         { name: 'actions', label: 'View', field: '', align: 'center' }
       ]
     }

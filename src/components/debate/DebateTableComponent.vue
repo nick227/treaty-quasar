@@ -1,12 +1,12 @@
 <template>
   <div>
-      <q-expansion-item v-model="new_debate" switch-toggle-side dense-toggle label="Add Topic">
+      <q-expansion-item @before-show="userCheck" v-model="expanded" switch-toggle-side dense-toggle label="Add Topic">
         <CreateDebateWidget :conflictId="conflictId" :userOrganizationId="userOrganizationId" :reload="reload" />
       </q-expansion-item>
   <div class="row full-width">
     <q-table
-    style="max-width:100%"
-    class="full-width align-left table"
+    style=""
+    class="full-width align-left table q-pa-sm"
     dense
     flat
     @row-click="onRowClick"
@@ -40,7 +40,7 @@ export default {
   components: { CreateDebateWidget, DebateDialogComponent },
   data () {
     return {
-      new_debate: false,
+      expanded: false,
       childDebateId: null,
       debates: [],
       pointer: 0,
@@ -74,8 +74,10 @@ export default {
     }
   },
   methods: {
+    userCheck (e) {
+      if (!this.$errorHandler.organizationCheck(this.userOrganizationId)) { this.expanded = false }
+    },
     truncate: function (str) {
-      console.log('......', str)
       const max = 8
       return str.length > max ? str.slice(0, max) + '...' : str
     },

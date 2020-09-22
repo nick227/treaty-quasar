@@ -19,7 +19,7 @@
     </div>
     <q-card class="q-pl-lg q-pr-lg full-width full-height">
       <div class="row relative-position full-width" style="height: 40px;">
-        <q-expansion-item v-model="expanded" switch-toggle-side dense-toggle label="Edit Conflict" class="absolute-right z-100">
+        <q-expansion-item v-model="expanded" v-if="isUser" switch-toggle-side dense-toggle label="Edit Conflict" class="absolute-right z-100">
           <EditConflictWidget :name="name" :avatar_url="avatar_url" :description="description" :status="status" :id="id" :reload="reloadComponent" />
         </q-expansion-item>
       </div>
@@ -40,11 +40,12 @@
 import EditConflictWidget from 'components/conflict/EditConflictWidget.vue'
 export default {
   name: 'ConflictHeaderSection',
-  props: ['name', 'avatar_url', 'description', 'status', 'id', 'reload', 'user_organization_name', 'org_a', 'org_b'],
+  props: ['name', 'avatar_url', 'description', 'status', 'id', 'reload', 'user_organization_name', 'org_a', 'org_b', 'creatorUserId'],
   components: { EditConflictWidget },
   data () {
     return {
-      expanded: false
+      expanded: false,
+      isUser: false
     }
   },
   methods: {
@@ -53,6 +54,8 @@ export default {
       this.reload()
     }
   },
-  mounted () {}
+  created () {
+    this.isUser = this.$errorHandler.isLoggedInUser(this.creatorUserId)
+  }
 }
 </script>

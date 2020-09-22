@@ -21,7 +21,6 @@
   </div>
 </template>
 <script>
-import { ErrorHelper } from 'components/mixins/ErrorHelper.js'
 export default {
   name: 'AddConflictItem',
   data () {
@@ -31,14 +30,11 @@ export default {
       description: ''
     }
   },
-  mixins: [ErrorHelper],
   mounted () {},
   props: ['entityType', 'conflictId', 'organizationId', 'fn', 'organizationName', 'userOrganizationId'],
   methods: {
     openForm: function () {
-      if (!this.isValid('organization', this.userOrganizationId)) {
-        return false
-      }
+      if (!this.$errorHandler.organizationCheck(this.userOrganizationId)) { return false }
       this.prompt = true
     },
     clearForm: function () {

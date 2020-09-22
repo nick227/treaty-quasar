@@ -14,8 +14,8 @@
         <div v-if="!comments.length" class="text-center q-pa-lg">no comments</div>
         <q-item style="border-bottom:1px solid rgba(0, 0, 0, 0.12)" class="q-pa-lg q-ma-sm" v-for="comment in readyComments" :key="comment.id">
           <q-item-section top avatar>
-            <q-avatar size="50px" class="q-mr-md">
-              <q-img rounded class="avatar" :src="comment.creator.avatar_url"></q-img>
+            <q-avatar round size="50px" class="q-mr-md">
+              <img round class="avatar" :src="comment.creator.avatar_url" />
             </q-avatar>
           </q-item-section>
           <q-item-section>
@@ -32,7 +32,6 @@
   </div>
 </template>
 <script>
-import { ErrorHelper } from 'components/mixins/ErrorHelper.js'
 export default {
   name: 'CommentsWidget',
   computed: {
@@ -46,7 +45,6 @@ export default {
       })
     }
   },
-  mixins: [ErrorHelper],
   methods: {
     loadComments: function () {
       if (!this.open) {
@@ -74,6 +72,10 @@ export default {
       this.commentCount = res.data.count
     },
     postComment: async function () {
+      if (!this.$errorHandler.organizationCheck(this.userOrganizationId)) {
+        this.newComment = ''
+        return false
+      }
       const q = `${process.env.api}/${this.entityType}-comments`
       const payload = {
         creator_user_id: this.$store.state.user.uid,
@@ -101,6 +103,10 @@ export default {
   },
   props: {
     entityId: {
+      type: Number,
+      required: true
+    },
+    userOrganizationId: {
       type: Number,
       required: true
     },

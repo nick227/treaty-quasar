@@ -1,16 +1,16 @@
 <template>
 <div class="row" style="width:60px;">
   <div class="col col-6 text-center">
-    <div @click="like">
-      <q-icon name="thumb_up_alt" v-ripple color="blue" class="cursor-pointer" />
+    <div>
+      <q-icon @click="like" name="thumb_up_alt" v-ripple color="blue" class="cursor-pointer" />
     </div>
     <div>
       <span class="text-weight-bolder">{{ numLikes }}</span>
     </div>
   </div>
   <div class="col col-6 text-center">
-    <div @click="dislike" ripple>
-      <q-icon name="thumb_down_alt" v-ripple color="red" class="cursor-pointer" />
+    <div ripple>
+      <q-icon @click="dislike" name="thumb_down_alt" v-ripple color="red" class="cursor-pointer" />
     </div>
     <div>
       <span class="text-weight-bolder">{{ numDislikes }}</span>
@@ -19,11 +19,9 @@
 </div>
 </template>
 <script>
-import { ErrorHelper } from 'components/mixins/ErrorHelper.js'
 export default {
   name: 'LikeButtons',
-  props: ['entityType', 'entityId', 'organizationId', 'organizationName'],
-  mixins: [ErrorHelper],
+  props: ['entityType', 'entityId', 'organizationId', 'organizationName', 'readonly'],
   data () {
     return {
       numLikes: 0,
@@ -40,7 +38,13 @@ export default {
       this.update(0)
     },
     update: async function (val) {
-      if (!this.isValid('organization', this.organizationId)) {
+      if (!this.$errorHandler.loggedInCheck()) { return false }
+      console.log(this.readonly)
+      if (this.readonly === 'true') {
+        this.$q.notify({
+          type: 'negative',
+          message: 'Wrong Organization'
+        })
         return false
       }
       const q = `${process.env.api}/${this.entityType}-likes`

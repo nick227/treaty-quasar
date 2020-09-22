@@ -26,11 +26,9 @@
   </div>
 </template>
 <script>
-import { ErrorHelper } from 'components/mixins/ErrorHelper.js'
 export default {
   name: 'RateTreatyWidget',
   props: ['entityId', 'userOrganizationId', 'entityType'],
-  mixins: [ErrorHelper],
   data () {
     return {
       ratingVal: 0,
@@ -50,9 +48,7 @@ export default {
       this.ratingVal = Math.round(this.ratings.reduce((total, next) => total + next.value, 0) / this.ratings.length)
     },
     postForm: async function (e) {
-      if (!this.isValid('organization', this.userOrganizationId)) {
-        return false
-      }
+      if (!this.$errorHandler.organizationCheck(this.userOrganizationId)) { return false }
       const q = `${process.env.api}/${this.entityType}-ratings`
       const payload = {
         creator_user_id: this.$store.state.user.uid,

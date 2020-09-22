@@ -1,6 +1,6 @@
 <template>
   <q-page class="full-height river-width">
-    <ConflictHeaderSection :name="name" :avatar_url="avatar_url" :description="description" :status="status" :id="id" :reload="reload" :org_a="org_a" :org_b="org_b" :user_organization_name="user_organization_name" />
+    <ConflictHeaderSection v-if="conflict_creator_user_id" :creatorUserId="conflict_creator_user_id" :name="name" :avatar_url="avatar_url" :description="description" :status="status" :id="id" :reload="reload" :org_a="org_a" :org_b="org_b" :user_organization_name="user_organization_name" />
     <q-separator />
     <!-- START TABS -->
     <div class="q-ma-none" v-if="!loading">
@@ -11,7 +11,7 @@
         <q-tab name="debates" label="Debates" />
       </q-tabs>
       <!-- START PANELS -->
-      <q-tab-panels v-model="tab" animated transition-prev="fade" transition-next="fade" class="full-width q-pa-none">
+      <q-tab-panels v-if="user_organization_id" v-model="tab" animated transition-prev="fade" transition-next="fade" class="full-width q-pa-none q-mb-lg">
         <q-tab-panel name="grievances" class="q-pa-none bg-grey-2">
           <!-- org a grievances -->
           <q-btn-toggle
@@ -46,9 +46,9 @@
             <div v-if="grievances[org_a.name].length">
               <ConflictItemComponent v-for="grievance in grievances[org_a.name]"
               entityType="grievance"
-              :entity="grievance"
               :key="grievance.id"
               :entityId="grievance.id"
+              :creator="grievance.creator"
               :userOrganizationId="user_organization_id"
               :title="grievance.title"
               :description="grievance.description"
@@ -83,6 +83,7 @@
               entityType="grievance"
               :key="grievance.id"
               :entityId="grievance.id"
+              :creator="grievance.creator"
               :userOrganizationId="user_organization_id"
               :title="grievance.title"
               :description="grievance.description"
@@ -131,6 +132,7 @@
               entityType="offer"
               :key="offer.id"
               :entityId="offer.id"
+              :creator="offer.creator"
               :userOrganizationId="user_organization_id"
               :title="offer.title"
               :description="offer.description"
@@ -164,6 +166,7 @@
               entityType="offer"
               :key="offer.id"
               :entityId="offer.id"
+              :creator="offer.creator"
               :userOrganizationId="user_organization_id"
               :title="offer.title"
               :description="offer.description"
@@ -248,16 +251,20 @@ export default {
       }
     },
     reload: async function () {
-      let q = `${process.env.api}/conflicts/${this.$route.params.id}?filter={"order":["create_date DESC"], "include": [{"relation": "offers", "scope":{"include":[{"relation":"organization"}]}}, {"relation":"grievances", "scope":{"include":[{"relation":"organization"}, {"relation":"creator"}]}}]}`
+      let q = `${process.env.api}/conflicts/${this.$route.params.id}?filter={"order":["create_date DESC"], "include": [{"relation": "offers", "scope":{"include":[{"relation":"organization"}, {"relation":"creator"}]}}, {"relation":"grievances", "scope":{"include":[{"relation":"organization"}, {"relation":"creator"}]}}]}`
+      console.log(q)
       const conflict = await this.$axios.get(q)
       this.conflictId = conflict.data.id
       this.name = conflict.data.name
       this.status = conflict.data.status
+      this.conflict_creator_user_id = conflict.data.creator_user_id
       this.description = conflict.data.description
       this.avatar_url = conflict.data.avatar_url
       q = `${process.env.api}/organizations/?filter[where][or][0][id]=${conflict.data.organization_a_id}&filter[where][or][1][id]=${conflict.data.organization_b_id}`
       const orgs = await this.$axios.get(q)
       this.org_a = orgs.data[0]
+      console.log('+++++++++')
+      console.log(this.org_a)
       this.org_b = orgs.data[1]
       this.org_obj[this.org_a.id] = this.org_a.name
       this.org_obj[this.org_b.id] = this.org_b.name
@@ -278,7 +285,8 @@ export default {
       this.offers[this.org_a.name] = []
       this.offers[this.org_b.name] = []
       if (typeof obj.offers === 'object') {
-        for (let i = 0; i < obj.offers.length; i++) {
+        for (let i = obj.offers.length - 1; i >= 0; i--) {
+          console.log(obj.offers[i])
           this.offers[obj.offers[i].organization.name].push(obj.offers[i])
         }
       }
@@ -287,9 +295,10 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      tab: 'debates',
+      tab: 'offers',
       name: '',
       status: '',
+      conflict_creator_user_id: null,
       description: '',
       avatar_url: '',
       org_a: {},

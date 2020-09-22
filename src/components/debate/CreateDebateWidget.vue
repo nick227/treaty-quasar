@@ -24,7 +24,7 @@
     type="url"
     />
     <div class="text-right q-mt-lg">
-        <q-btn label="Cancel" @click="reload" class="q-mr-md" color="secondary"/> <q-btn label="Submit" type="submit" color="primary"/>
+        <q-btn label="Submit" type="submit" color="primary"/>
     </div>
   </q-form>
   </div>

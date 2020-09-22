@@ -147,6 +147,7 @@ export default {
       this.orgB = val
     },
     postForm: async function () {
+      if (!this.$errorHandler.loggedInCheck()) { return false }
       if (this.orgValidate()) {
         const q = `${process.env.api}/conflicts`
         const payload = {

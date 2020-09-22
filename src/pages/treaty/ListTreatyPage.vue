@@ -1,6 +1,6 @@
 <template>
   <q-page padding class="river-width">
-    <q-btn label="Create Treaty" @click="createTreaty = true" class="full-width" />
+    <q-btn label="Create Treaty" @click="openCreateTreaty()" class="full-width" />
     <q-list padding>
       <div v-for="treaty in treaties" :key="treaty.id">
         <q-item class="full-width" tag="a" :to="'/conflict/'+treaty.conflict_id">
@@ -32,7 +32,7 @@
       </div>
     </q-list>
   <q-dialog v-model="createTreaty">
-    <CreateTreaty
+    <CreateTreaty class="z-top"
     :userOrganizationId="false"
     :conflictId="false"
     :reset="reset" />
@@ -60,6 +60,9 @@ export default {
     }
   },
   methods: {
+    openCreateTreaty: function () {
+      if (this.$errorHandler.loggedInCheck()) { this.createTreaty = true }
+    },
     loadTreaties: async function () {
       const q = `${process.env.api}/treaties?filter={"skip":${this.pointer},"limit":${this.limit},"order":["create_date DESC"], "include": [{"relation": "organization"}, {"relation":"creator"}, {"relation": "conflict", "scope":{"include":[{"relation":"offers"}, {"relation":"grievances"}, {"relation":"organization_a"}, {"relation":"organization_b"}]}}, {"relation":"votes"}, {"relation": "ratings"}]}`
       const treaties = await this.$axios.get(q)

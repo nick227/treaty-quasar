@@ -62,6 +62,7 @@ export default {
       this.loadNum++
     },
     join: async function (id) {
+      if (!this.$errorHandler.loggedInCheck()) { return false }
       const q = `${process.env.api}/user-to-organizations`
       const payload = {
         creator_user_id: this.$store.state.user.uid,
@@ -71,6 +72,7 @@ export default {
       this.reload()
     },
     unjoin: async function (id) {
+      if (!this.$errorHandler.loggedInCheck()) { return false }
       const relId = this.joined.filter((obj) => { return obj.organization_id === id })[0].id
       const q = `${process.env.api}/user-to-organizations/${relId}`
       await this.$axios.delete(q)
