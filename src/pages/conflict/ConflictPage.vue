@@ -1,24 +1,39 @@
 <template>
-  <q-page class="full-width full-height">
+  <q-page class="full-height river-width">
     <ConflictHeaderSection :name="name" :avatar_url="avatar_url" :description="description" :status="status" :id="id" :reload="reload" :org_a="org_a" :org_b="org_b" :user_organization_name="user_organization_name" />
     <q-separator />
     <!-- START TABS -->
-    <div class="q-mb-lg" v-if="!loading">
-      <q-tabs v-model="tab" dense class="bg-grey-3 text-grey-7" active-color="primary" indicator-color="purple" align="left">
+    <div class="q-ma-none" v-if="!loading">
+      <q-tabs v-model="tab" dense class="q-mb-sm text-grey-7" active-color="primary" indicator-color="purple" align="left">
         <q-tab name="treaties" label="Treaties" />
-        <q-tab :name="org_a.name + '_grievances'" :label="org_a.name + ' Grievances'" />
-        <q-tab :name="org_b.name + '_grievances'" :label="org_b.name + ' Grievances'" />
-        <q-tab :name="org_a.name + '_offers'" :label="org_a.name + ' Offers'" />
-        <q-tab :name="org_b.name + '_offers'" :label="org_b.name + ' Offers'" />
+        <q-tab name="grievances" label="Grievances" />
+        <q-tab name="offers" label="Offers" />
+        <q-tab name="debates" label="Debates" />
       </q-tabs>
       <!-- START PANELS -->
-      <q-tab-panels v-model="tab" animated transition-prev="fade" transition-next="fade" class="">
-        <q-tab-panel :name="org_a.name + '_grievances'">
+      <q-tab-panels v-model="tab" animated transition-prev="fade" transition-next="fade" class="full-width q-pa-none">
+        <q-tab-panel name="grievances" class="q-pa-none bg-grey-2">
           <!-- org a grievances -->
-          <q-list bordered>
+          <q-btn-toggle
+        v-model="menuOne"
+        spread
+        no-caps
+        toggle-color="purple"
+        color="white"
+        text-color="black"
+        :options="[
+          {label: org_a.name, value: 'one'},
+          {label: org_b.name, value: 'two'}
+        ]"
+      />
+          <q-list bordered v-if="menuOne==='one'">
             <q-item-section>
               <q-item-label class="text-uppercase text-center">
-                <h6>{{ org_a.name }} Grievances</h6></q-item-label>
+                <h6 class="q-mt-lg">{{ org_a.name }} Grievances</h6>
+                    <q-avatar square size="400px" class="q-ma-none">
+                      <q-img class="card-image q-ma-none q-pt-none" :src="org_a.avatar_url"></q-img>
+                    </q-avatar>
+              </q-item-label>
             </q-item-section>
             <AddConflictItem
             entityType="grievance"
@@ -29,10 +44,12 @@
             :fn="reload" />
             <h6 class="text-center text-subtitle2 text-grey-9" v-if="!grievances[org_a.name].length">no grievances</h6>
             <div v-if="grievances[org_a.name].length">
-              <ConflictComponent v-for="grievance in grievances[org_a.name]"
+              <ConflictItemComponent v-for="grievance in grievances[org_a.name]"
               entityType="grievance"
+              :entity="grievance"
               :key="grievance.id"
               :entityId="grievance.id"
+              :userOrganizationId="user_organization_id"
               :title="grievance.title"
               :description="grievance.description"
               :organization="grievance.organization.name"
@@ -43,13 +60,15 @@
               :orgAid="org_a.id"
               :orgBid="org_b.id" /> </div>
           </q-list>
-        </q-tab-panel>
           <!-- org b grievances -->
-        <q-tab-panel :name="org_b.name + '_grievances'">
-          <q-list bordered>
+          <q-list bordered v-if="menuOne==='two'">
             <q-item-section>
               <q-item-label class="text-uppercase text-center">
-                <h6>{{ org_b.name }} Grievances</h6></q-item-label>
+                <h6 class="q-mt-lg">{{ org_b.name }} Grievances</h6>
+                    <q-avatar square size="400px" class="q-ma-none">
+                      <q-img class="card-image q-ma-none q-pt-none" :src="org_b.avatar_url"></q-img>
+                    </q-avatar>
+              </q-item-label>
             </q-item-section>
             <AddConflictItem
             entityType="grievance"
@@ -60,10 +79,11 @@
             :fn="reload" />
             <h6 class="text-center text-subtitle2 text-grey-9" v-if="!grievances[org_b.name].length">no grievances</h6>
             <div v-if="grievances[org_b.name].length">
-              <ConflictComponent v-for="grievance in grievances[org_b.name]"
+              <ConflictItemComponent v-for="grievance in grievances[org_b.name]"
               entityType="grievance"
               :key="grievance.id"
               :entityId="grievance.id"
+              :userOrganizationId="user_organization_id"
               :title="grievance.title"
               :description="grievance.description"
               :organization="grievance.organization.name"
@@ -77,11 +97,27 @@
           </q-list>
         </q-tab-panel>
           <!-- org a offers -->
-        <q-tab-panel :name="org_a.name + '_offers'">
-          <q-list bordered>
+        <q-tab-panel name="offers" class="q-pa-none bg-grey-2">
+          <q-btn-toggle
+        v-model="menuTwo"
+        spread
+        no-caps
+        toggle-color="purple"
+        color="white"
+        text-color="black"
+        :options="[
+          {label: org_a.name, value: 'one'},
+          {label: org_b.name, value: 'two'}
+        ]"
+      />
+          <q-list bordered v-if="menuTwo==='one'">
             <q-item-section>
               <q-item-label class="text-uppercase text-center">
-                <h6>{{ org_a.name }} Offers</h6></q-item-label>
+                <h6 class="q-mt-lg">{{ org_a.name }} Offers</h6>
+                    <q-avatar square size="400px" class="q-ma-none">
+                      <q-img class="card-image q-ma-none q-pt-none" :src="org_a.avatar_url"></q-img>
+                    </q-avatar>
+              </q-item-label>
             </q-item-section>
             <AddConflictItem entityType="offer"
             :userOrganizationId="user_organization_id"
@@ -91,10 +127,11 @@
             :fn="reload" />
             <h6 class="text-center text-subtitle2 text-grey-9" v-if="!offers[org_a.name].length">no offers</h6>
             <div v-if="offers[org_a.name].length">
-              <ConflictComponent v-for="offer in offers[org_a.name]"
+              <ConflictItemComponent v-for="offer in offers[org_a.name]"
               entityType="offer"
               :key="offer.id"
               :entityId="offer.id"
+              :userOrganizationId="user_organization_id"
               :title="offer.title"
               :description="offer.description"
               :organization="offer.organization.name"
@@ -105,13 +142,15 @@
               :orgAid="org_a.id"
               :orgBid="org_b.id" /> </div>
           </q-list>
-        </q-tab-panel>
           <!-- org b offers -->
-        <q-tab-panel :name="org_b.name + '_offers'">
-          <q-list bordered>
+          <q-list bordered v-if="menuTwo==='two'">
             <q-item-section>
               <q-item-label class="text-uppercase text-center">
-                <h6>{{ org_b.name }} Offers</h6></q-item-label>
+                <h6 class="q-mt-lg">{{ org_b.name }} Offers</h6>
+                    <q-avatar square size="400px" class="q-ma-none">
+                      <q-img class="card-image q-ma-none q-pt-none" :src="org_b.avatar_url"></q-img>
+                    </q-avatar>
+              </q-item-label>
             </q-item-section>
             <AddConflictItem entityType="offer"
             :userOrganizationId="user_organization_id"
@@ -121,10 +160,11 @@
             :fn="reload" />
             <h6 class="text-center text-subtitle2 text-grey-9" v-if="!offers[org_b.name].length">no offers</h6>
             <div v-if="offers[org_b.name].length">
-              <ConflictComponent v-for="offer in offers[org_b.name]"
+              <ConflictItemComponent v-for="offer in offers[org_b.name]"
               entityType="offer"
               :key="offer.id"
               :entityId="offer.id"
+              :userOrganizationId="user_organization_id"
               :title="offer.title"
               :description="offer.description"
               :organization="offer.organization.name"
@@ -137,8 +177,14 @@
           </q-list>
         </q-tab-panel>
           <!-- treaties panel -->
-        <q-tab-panel name="treaties">
-          <TreatyListComponent
+        <q-tab-panel name="treaties" class="q-pa-none bg-grey-2">
+          <TreatyTableComponent
+          :conflictId="conflictId"
+          :userOrganizationId="user_organization_id" />
+        </q-tab-panel>
+          <!-- debates panel -->
+        <q-tab-panel name="debates" class="q-pa-none bg-grey-2">
+          <DebateTableComponent
           :conflictId="conflictId"
           :userOrganizationId="user_organization_id" />
         </q-tab-panel>
@@ -158,18 +204,19 @@
   </q-page>
 </template>
 <script>
-import ConflictComponent from 'components/conflict/ConflictComponent.vue'
-import TreatyListComponent from 'components/treaty/TreatyListComponent.vue'
-import AddConflictItem from 'components/conflict/AddConflictItem.vue'
 import ConflictHeaderSection from 'components/conflict/ConflictHeaderSection.vue'
+import ConflictItemComponent from 'components/conflict/ConflictItemComponent.vue'
+import AddConflictItem from 'components/conflict/AddConflictItem.vue'
+import TreatyTableComponent from 'components/treaty/TreatyTableComponent.vue'
+import DebateTableComponent from 'components/debate/DebateTableComponent.vue'
 export default {
   meta () {
     return {
       title: this.name
     }
   },
-  components: { ConflictComponent, AddConflictItem, TreatyListComponent, ConflictHeaderSection },
-  async mounted () {
+  components: { ConflictItemComponent, AddConflictItem, TreatyTableComponent, ConflictHeaderSection, DebateTableComponent },
+  async created () {
     this.reload()
   },
   methods: {
@@ -201,7 +248,7 @@ export default {
       }
     },
     reload: async function () {
-      let q = `${process.env.api}/conflicts/${this.$route.params.id}?filter={"order":["create_date DESC"], "include": [{"relation": "offers", "scope":{"include":[{"relation":"organization"}]}}, {"relation":"grievances", "scope":{"include":[{"relation":"organization"}]}}]}`
+      let q = `${process.env.api}/conflicts/${this.$route.params.id}?filter={"order":["create_date DESC"], "include": [{"relation": "offers", "scope":{"include":[{"relation":"organization"}]}}, {"relation":"grievances", "scope":{"include":[{"relation":"organization"}, {"relation":"creator"}]}}]}`
       const conflict = await this.$axios.get(q)
       this.conflictId = conflict.data.id
       this.name = conflict.data.name
@@ -240,7 +287,7 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      tab: 'treaties',
+      tab: 'debates',
       name: '',
       status: '',
       description: '',
@@ -255,7 +302,9 @@ export default {
       org_obj: {},
       joinedList: [],
       verify_org: false,
-      conflictId: null
+      conflictId: null,
+      menuOne: 'one',
+      menuTwo: 'one'
     }
   }
 }

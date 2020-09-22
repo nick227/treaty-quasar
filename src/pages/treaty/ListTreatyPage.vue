@@ -1,5 +1,5 @@
 <template>
-  <q-page padding class="river-column">
+  <q-page padding class="river-width">
     <q-btn label="Create Treaty" @click="createTreaty = true" class="full-width" />
     <q-list padding>
       <div v-for="treaty in treaties" :key="treaty.id">

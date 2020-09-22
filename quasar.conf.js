@@ -48,7 +48,7 @@ module.exports = function (/* ctx */) {
       vueRouterMode: 'history', // available values: 'hash', 'history'
 
       env: {
-        api: 'http://localhost:3000'
+        api: 'http://192.168.0.10:3000'
       },
       // transpile: false,
 

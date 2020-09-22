@@ -58,7 +58,6 @@ export default {
       const likes = await this.$axios.get(q)
       this.numLikes = 0
       this.numDislikes = 0
-      console.log(q)
       for (let i = 0; i < likes.data.length; i++) {
         if (likes.data[i].liked === 1) {
           this.numLikes = this.numLikes + 1

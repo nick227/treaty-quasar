@@ -1,5 +1,5 @@
 <template>
-  <q-page class="river-column flex-middle">
+  <q-page class="river-width flex-middle">
     <div class="q-mt-xl">
       <q-btn color="primary" push class="full-width" icon="facebook" label="Login with Facebook" size="md" @click="auth('facebook')">
       </q-btn>

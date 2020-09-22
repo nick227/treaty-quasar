@@ -1,23 +1,6 @@
 <template>
-  <q-page class="full-width full-height" :style="'background-image:url(' + this.user.profile_background_url + ');'">
-<q-card class="q-pa-lg full-width full-height  bg-semi-trans">
-      <q-card-section horizontal class="full-width">
-      <q-avatar size="250px" class="q-mr-md q-mb-lg items-start">
-        <q-img
-          class="self-start"
-          :src="user.avatar_url"
-          style="max-height:80vh"
-        />
-      </q-avatar>
-        <q-card-section class="q-pb-md q-pt-none">
-          <h2>{{ user.name }}</h2>
-          <q-btn @click="sendMessage = true" style="height:40px;" class="q-mb-md" square color="dark">
-            <q-icon left size="2em" name="mail" />
-            <div>Message</div>
-          </q-btn>
-          <h6 class="q-pa-none">Location: {{ user.location }}</h6>
-          <p class="q-pa-none" style="max-width:60%;">{{ user.biography }}</p>
-        </q-card-section>
+  <q-page class="river-width" :style="'background-image:url(' + this.user.profile_background_url + ');'">
+    <div class="row relative-position">
         <q-expansion-item v-model="expanded" switch-toggle-side dense-toggle label="Edit Profile" class="absolute-right z-top q-mb-lg q-mb-lg">
           <EditProfileWidget
            :name="user.name"
@@ -29,12 +12,29 @@
            :reload="reload"
            />
         </q-expansion-item>
+    </div>
+<q-card class="q-pa-lg full-width full-height  bg-semi-trans">
+      <q-card-section class="full-width">
+      <q-avatar style="width:100%; height:400px;" square class="q-mr-md q-mb-lg items-start">
+        <q-img
+          :src="user.avatar_url"
+        />
+      </q-avatar>
+        <q-card-section class="q-pb-md q-pt-none">
+          <h2>{{ user.name }}</h2>
+          <q-btn @click="sendMessage = true" style="height:40px;" class="q-mb-md" square color="dark">
+            <q-icon left size="2em" name="mail" />
+            <div>Message</div>
+          </q-btn>
+          <h6 class="q-pa-none">Location: {{ user.location }}</h6>
+          <p class="q-pa-none" style="max-width:98%;">{{ user.biography }}</p>
+        </q-card-section>
       </q-card-section>
       <q-separator v-if="orgs.length" />
       <h6 class="q-mt-lg q-ml-lg">Member of:</h6>
     <div class="row q-pa-lg justify-start content-start">
       <p v-if="!orgs.length">No Groups</p>
-      <div class="col col-shrink" v-for="org in orgs" :key="org.id">
+      <div class="col col-shrink q-ma-sm" v-for="org in orgs" :key="org.id">
         <q-card class="org-card flex-break q-mr-md transparent">
       <div :style="'background-image:url(' + org.avatar_url + ')'" class="card-image"></div>
       <q-card-section>

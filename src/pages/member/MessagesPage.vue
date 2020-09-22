@@ -1,5 +1,5 @@
 <template class="">
-  <q-page class="q-pa-none text-left full-width">
+  <q-page class="q-pa-none text-left river-width">
     <h3 v-if="messages.length" class="full-width text-left bg-secondary q-pl-lg">Messages</h3>
     <h4 v-if="!messages.length" class="full-width text-left bg-secondary q-pl-lg">Inbox is empty.</h4>
         <transition

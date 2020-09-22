@@ -1,5 +1,5 @@
 <template>
-  <q-page padding class="river-column">
+  <q-page padding class="river-width">
     <div class="q-pa-md q-gutter-sm">
       <div class="text-center">
         <h3>{{org.name}}</h3>

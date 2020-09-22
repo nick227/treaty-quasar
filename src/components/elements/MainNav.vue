@@ -41,7 +41,6 @@ export default {
   mounted () {},
   methods: {
     logout () {
-      console.log('logout')
       this.$store.commit('user/updateUid', null)
       this.$store.commit('user/updateAvatar', null)
       if (this.$hello.getAuthResponse('facebook') == null) {

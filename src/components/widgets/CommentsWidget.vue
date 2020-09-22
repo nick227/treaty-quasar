@@ -3,7 +3,7 @@
     <q-expansion-item icon="comment" :label="capitalize(entityType) + ' Comments ' + commentCount" class="bg-grey-trans" @click="loadComments">
       <div class="q-pa-md full-width">
         <q-form @submit="postComment">
-          <q-input filled type="textarea" autogrow placeholder="Type comment here" v-model="newComment" :key="entityId" />
+          <q-input filled type="textarea" required autogrow placeholder="Type comment here" v-model="newComment" :key="entityId" />
           <div class="row">
             <q-space />
             <q-btn type="submit" color="primary q-mt-lg">submit</q-btn>
@@ -11,7 +11,6 @@
         </q-form>
       </div>
       <q-list>
-        <q-separator spaced />
         <div v-if="!comments.length" class="text-center q-pa-lg">no comments</div>
         <q-item style="border-bottom:1px solid rgba(0, 0, 0, 0.12)" class="q-pa-lg q-ma-sm" v-for="comment in readyComments" :key="comment.id">
           <q-item-section top avatar>
@@ -33,6 +32,7 @@
   </div>
 </template>
 <script>
+import { ErrorHelper } from 'components/mixins/ErrorHelper.js'
 export default {
   name: 'CommentsWidget',
   computed: {
@@ -46,6 +46,7 @@ export default {
       })
     }
   },
+  mixins: [ErrorHelper],
   methods: {
     loadComments: function () {
       if (!this.open) {

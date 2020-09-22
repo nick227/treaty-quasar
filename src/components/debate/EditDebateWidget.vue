@@ -1,12 +1,12 @@
 <template>
-  <div class="dialog-width">
+  <div class="full-width">
   <q-form @submit="postForm" greedy class="q-pa-md bg-grey-4">
     <q-input
      filled
      stack-label
-     v-model="data_name"
+     v-model="data_title"
      @input="handleInput"
-      label="Name"
+      label="Title"
     />
       <q-separator />
     <q-input
@@ -14,7 +14,7 @@
      stack-label
      label="description"
      @input="handleInput"
-     name="description"
+     title="description"
      v-model="data_description"
      type="textarea"
      autogrow
@@ -24,7 +24,7 @@
     filled
      stack-label
      @input="handleInput"
-     name="avatar_url"
+     title="avatar_url"
      v-model="data_avatar_url"
     label="Avatar URL"
     type="url"
@@ -37,15 +37,15 @@
 </template>
 <script>
 export default {
-  name: 'EditConflictWidget',
-  props: ['name', 'description', 'avatar_url', 'id', 'status', 'reload'],
+  title: 'EditDebateWidget',
+  props: ['title', 'description', 'avatar_url', 'id', 'reload'],
   model: {
-    prop: 'name',
+    prop: 'title',
     event: 'blur'
   },
   watch: {
-    name (newVal) {
-      this.data_name = newVal
+    title (newVal) {
+      this.data_title = newVal
     },
     description (newVal) {
       this.data_description = newVal
@@ -56,13 +56,13 @@ export default {
   },
   data () {
     return {
-      data_name: this.name,
+      data_title: this.title,
       data_description: this.description,
       data_avatar_url: this.avatar_url
     }
   },
   mounted () {
-    this.data_name = this.name
+    this.data_title = this.title
     this.$mount()
   },
   methods: {
@@ -71,11 +71,11 @@ export default {
     },
     postForm: async function (e) {
       const payload = {
-        name: this.data_name,
+        title: this.data_title,
         description: this.data_description,
         avatar_url: this.data_avatar_url
       }
-      const q = `${process.env.api}/conflicts/${this.id}`
+      const q = `${process.env.api}/debates/${this.id}`
       await this.$axios.patch(q, payload, { headers: { Accept: 'application/json' } })
         .then((res) => {
           this.reload()

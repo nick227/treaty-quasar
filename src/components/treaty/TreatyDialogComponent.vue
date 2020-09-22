@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="Lhh lpR fff" style="" container class="bg-white fill-width">
+  <q-layout view="Lhh lpR fff" style="" container class="bg-white river-width">
     <q-header class="bg-primary">
       <q-toolbar>
         <q-toolbar-title class="q-pl-lg text-center">CONCORDANT.IO TREATY</q-toolbar-title>
@@ -8,8 +8,8 @@
     </q-header>
     <q-page-container>
       <q-page padding>
-        <div class="row relative-position q-mb-sm" style="height:35px;">
-          <q-expansion-item switch-toggle-side dense-toggle label="Edit Treaty" class="absolute-left z-top full-width">
+        <div class="row relative-position q-mb-sm full-width" style="height:35px;">
+          <q-expansion-item switch-toggle-side dense-toggle label="Edit Treaty" class="absolute-right z-top">
             <EditTreatyWidget
     :name="treaty.name"
     :description="treaty.description"
@@ -62,7 +62,7 @@ import TreatyVoteWidget from 'components/treaty/TreatyVoteWidget.vue'
 import TreatyVotesTable from 'components/treaty/TreatyVotesTable.vue'
 import TreatyProvisionComponent from 'components/treaty/TreatyProvisionComponent.vue'
 export default {
-  name: 'TreatyDraft',
+  name: 'TreatyDialogComponent',
   meta () {
     return {
       title: this.treatyName

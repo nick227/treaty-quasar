@@ -1,6 +1,6 @@
 <template>
-  <div style="width:500px">
-  <q-form @submit="postForm" greedy class="self-center">
+  <div class="dialog-width">
+  <q-form @submit="postForm" greedy class="q-pa-md bg-grey-4">
     <q-input
      filled
      stack-label

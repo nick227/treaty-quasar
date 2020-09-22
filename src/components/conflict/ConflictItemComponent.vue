@@ -2,29 +2,22 @@
   <div>
   <q-item>
     <q-item-section top>
-      <q-item-label class="bg-blue-grey-1"><small>{{ organization }} {{ entityType }}</small></q-item-label>
-      <q-item-label><h5 class="q-pt-none">{{ title }}</h5></q-item-label>
-      <q-item-label caption lines="200">{{ description }}</q-item-label>
+      <q-item-label class="q-mb-sm"><q-badge color="grey">{{ organization }} {{ entityType }}</q-badge></q-item-label>
+      <q-item-label><q-avatar size="40px" square class="q-mr-sm"><q-img rounded class="q-mt-none" :src="entity.creator.avatar_url"></q-img></q-avatar>{{ entity.creator.name }} writes:</q-item-label>
+      <q-item-label><h6 class="q-pa-none">{{ entity.title }}</h6></q-item-label>
+      <q-item-label caption class="q-pb-md">{{ entity.description }}</q-item-label>
     </q-item-section>
-    <q-item-section side top style="width:95px;">
-      <div class="text-center full-width">{{ orgAname }}</div>
+    <q-item-section side style="">
       <LikeButtons
       :entityType='entityType'
       :entityId="entityId"
-      :organizationId="orgAid" />
-      <q-separator class="q-mt-sm" />
-      <div class="q-mt-sm text-center full-width">{{ orgBname }}</div>
-      <LikeButtons
-      :entityType='entityType'
-      :entityId="entityId"
-      :organizationId="orgBid" />
+      :organizationId="userOrganizationId" />
     </q-item-section>
     </q-item>
     <CommentsWidget
           :entityId="entityId"
           :entityType="entityType"
     ></CommentsWidget>
-        <q-separator spaced inset />
 </div>
 </template>
 <script>
@@ -36,8 +29,17 @@ export default {
   data () {
     return {}
   },
+  mounted () {},
   props: {
     entityId: {
+      type: Number,
+      required: true
+    },
+    entity: {
+      type: Object,
+      required: true
+    },
+    userOrganizationId: {
       type: Number,
       required: true
     },
@@ -83,5 +85,4 @@ export default {
     }
   }
 }
-
 </script>

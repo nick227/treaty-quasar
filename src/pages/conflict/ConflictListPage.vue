@@ -1,5 +1,5 @@
 <template>
-  <q-page padding class="river-column">
+  <q-page padding class="river-width">
   <q-expansion-item switch-toggle-side dense-toggle label="Create Conflict">
     <CreateConflictWidget />
   </q-expansion-item>

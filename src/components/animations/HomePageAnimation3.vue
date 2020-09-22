@@ -3,11 +3,11 @@
   <div class="text-center q-pa-lg z-top absolute-center">
     <h1 class="text-white welcome">CONCORDANT.IO</h1>
     <h4 class="q-mb-sm text-white">The treaty building platform</h4>
-    <q-btn class="q-mb-sm " color="dark full-width">GET STARTED</q-btn>
+    <q-btn class="q-mb-sm" to="/treaties" color="dark full-width">GET STARTED</q-btn>
     <p class="text-center z-top text-white">Giving PEACE a chance.</p>
   </div>
 <canvas id='funbars'></canvas>
-<p class="caption fixed-bottom-right z-top" style="margin-right:100px;"><a class="text-white q-mr-lg text-weight-bold" href="https://codepen.io/towc" target="_blank">Animation by Matei Copot</a></p>
+<p class="home-credit"><a class="text-white text-weight-bold" href="https://codepen.io/towc" target="_blank">Animation by Matei Copot</a></p>
 </div>
 </template>
 <script>

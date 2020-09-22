@@ -1,7 +1,7 @@
 <template>
   <div>
     <h6 class="q-mb-sm q-mt-lg">New Conflict</h6>
-  <q-form @submit="postForm" greedy class="self-center">
+  <q-form @submit="postForm" greedy class="q-pa-md bg-grey-4">
     <q-input
      filled
      required

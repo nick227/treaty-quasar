@@ -1,6 +1,6 @@
 <template>
-  <div style="width:100%">
-  <q-form @submit="postForm" greedy class="self-center q-pa-md bg-grey-4">
+  <div class="dialog-width">
+  <q-form @submit="postForm" greedy class="q-pa-md bg-grey-4">
     <q-input
      filled
      stack-label
@@ -77,8 +77,6 @@ export default {
         id: this.id
       }
       const q = `${process.env.api}/treaties/${this.id}`
-      console.log(q)
-      console.log(payload)
       await this.$axios.patch(q, payload, { headers: { Accept: 'application/json' } })
         .then((res) => {
           this.reload()

@@ -1,6 +1,6 @@
 <template>
   <div>
-  <q-form @submit="postForm">
+  <q-form @submit="postForm" greedy class="q-pa-md bg-grey-4">
     <q-input
      filled
      required

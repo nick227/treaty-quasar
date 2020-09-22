@@ -2,15 +2,23 @@
   <q-layout view="lHh Lpr lFf">
     <TopToolbar></TopToolbar>
     <!--
-    <q-footer reveal elevated class="bg-cyan">
+    <q-footer reveal elevated class="bg-grey">
         <q-toolbar>
-          <q-toolbar-title></q-toolbar-title>
+          <q-toolbar-title class="text-h6 text-center">GIVE PEACE A CHANCE</q-toolbar-title>
         </q-toolbar>
       </q-footer>
     -->
+     <transition
+        name="fade"
+        mode="out-in"
+        @beforeLeave="beforeLeave"
+        @enter="enter"
+        @afterEnter="afterEnter"
+       >
     <q-page-container>
       <router-view />
     </q-page-container>
+    </transition>
     <q-ajax-bar
       ref="bar"
       position="bottom"
@@ -27,7 +35,22 @@ export default {
   name: 'MainLayout',
   components: { TopToolbar },
   data () {
-    return {}
+    return {
+      prevHeight: 0
+    }
+  },
+  methods: {
+    beforeLeave (element) {
+      this.prevHeight = getComputedStyle(element).height
+    },
+    enter (element) {
+      const { height } = getComputedStyle(element)
+      element.style.height = this.prevHeight
+      setTimeout(() => { element.style.height = height })
+    },
+    afterEnter (element) {
+      element.style.height = 'auto'
+    }
   }
 }
 </script>

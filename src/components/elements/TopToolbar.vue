@@ -1,7 +1,7 @@
 <template>
   <div>
   <q-header elevated reveal class="bg-black">
-    <q-toolbar style="overflow:visible;">
+    <q-toolbar>
       <q-btn
         flat
         dense
@@ -18,13 +18,6 @@
         <q-btn v-if="newMessages" round color="dark" to="/messages" class="q-pa-none q-ml-md" icon="email"><q-badge style="font-size:0.70em" class="" floating color="accent">new {{ newMessages }}</q-badge></q-btn>
         <q-btn v-if="!profile.id" to="/login" class="q-ml-lg" outline style="color: goldenrod;" label="Login" />
       </q-toolbar-title>
-          <q-form @submit="search">
-      <q-input class="q-pa-none" style="width:300px;" dark v-model="searchTerm" label="Search">
-        <template v-slot:append>
-          <q-icon v-ripple clickable class="cursor-pointer" @click="search" name="search" />
-        </template>
-      </q-input>
-        </q-form>
     </q-toolbar>
   </q-header>
   <q-drawer
@@ -61,18 +54,14 @@ export default {
   data () {
     return {
       profile: {},
-      leftDrawerOpen: true,
-      miniState: false,
-      searchTerm: '',
+      leftDrawerOpen: false,
+      miniState: true,
       newMessages: false
     }
   },
   methods: {
     showProfile: function () {
       this.$router.push({ path: '/profile/' + this.$store.state.user.uid })
-    },
-    search: function () {
-      console.log('searching:', this.searchTerm)
     },
     getProfile: function (network) {
       if (this.$hello.getAuthResponse(network) == null) {

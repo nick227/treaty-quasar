@@ -1,7 +1,7 @@
 <template>
   <div>
   <div class="full-width q-pa-sm q-mb-lg">
-    <q-btn class="full-width" @click="createTreaty = true" color="primary">Create Treaty</q-btn>
+    <q-btn class="full-width text-center" @click="createTreaty = true" color="primary">Create Treaty</q-btn>
   </div>
   <div class="row full-width">
     <q-table
@@ -21,12 +21,12 @@
           </q-td>
         </template>
     </q-table>
-  <q-dialog class="z-top" v-model="showTreaty">
-    <TreatyDraft
+  <q-dialog v-model="showTreaty" class="z-top">
+    <TreatyDialogComponent class="z-top"
     :userOrganizationId="userOrganizationId"
     :treatyId="childTreatyId" />
   </q-dialog>
-  <q-dialog v-model="createTreaty">
+  <q-dialog v-model="createTreaty" class="z-top">
     <CreateTreaty
     :userOrganizationId="userOrganizationId"
     :conflictId="conflictId"
@@ -36,11 +36,11 @@
   </div>
 </template>
 <script>
-import TreatyDraft from 'components/treaty/TreatyDraft.vue'
+import TreatyDialogComponent from 'components/treaty/TreatyDialogComponent.vue'
 import CreateTreaty from 'components/treaty/CreateTreaty.vue'
 export default {
-  name: 'TreatyListComponent',
-  components: { TreatyDraft, CreateTreaty },
+  name: 'TreatyTableComponent',
+  components: { TreatyDialogComponent, CreateTreaty },
   props: ['userOrganizationId', 'conflictId'],
   data () {
     return {

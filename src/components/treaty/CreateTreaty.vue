@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="Lhh lpR fff" style="width:550px; max-width:99%;" container class="bg-white">
+  <q-layout view="Lhh lpR fff" container class="bg-white river-width">
     <q-header class="bg-primary">
       <q-toolbar>
         <q-toolbar-title class="q-pl-lg">Create Treaty</q-toolbar-title>
@@ -11,7 +11,7 @@
         <q-form>
           <q-list class="full-width">
             <q-list>
-              <q-item-section style="width:500px;">
+              <q-item-section class="dialog-width">
                 <q-select class="q-mb-sm"
                   v-if="!conflictId"
                   outlined
