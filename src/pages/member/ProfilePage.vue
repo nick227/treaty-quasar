@@ -1,5 +1,6 @@
 <template>
-  <q-page class="river-width" :style="'background-image:url(' + this.user.profile_background_url + ');'">
+  <q-page class="justify-center" :style="'background-image:url(' + this.user.profile_background_url + '); flex-center;display:flex;'">
+    <div class="river-width self-center">
     <div class="row relative-position" v-if="isUser">
         <q-expansion-item v-model="expanded" switch-toggle-side dense-toggle label="Edit Profile" class="absolute-right z-top q-pr-lg q-mr-lg">
           <EditProfileWidget
@@ -13,16 +14,22 @@
            />
         </q-expansion-item>
     </div>
-<q-card class="q-pa-lg full-width full-height  bg-semi-trans">
+    <q-card class="q-pa-lg full-width full-height  bg-semi-trans">
       <q-card-section class="full-width">
+      <transition
+        appear
+        enter-active-class="animated fadeIn"
+        leave-active-class="animated fadeOut"
+      >
       <q-avatar style="width:100%; height:400px;" square class="q-mr-md q-mb-lg items-start">
         <q-img
           :src="user.avatar_url"
         />
       </q-avatar>
+    </transition>
         <q-card-section class="q-pb-md q-pt-none">
           <h2>{{ user.name }}</h2>
-          <q-btn @click="sendMessage = true" style="height:40px;" class="q-mb-md" square color="dark">
+          <q-btn @click="openSendMessage" style="height:40px;" class="q-mb-md" square color="dark">
             <q-icon left size="2em" name="mail" />
             <div>Message</div>
           </q-btn>
@@ -59,6 +66,7 @@
       :receiverName="user.name"
       :done="closeMsg" />
     </q-dialog>
+    </div>
     </q-page>
 </template>
 <script>
@@ -81,7 +89,8 @@ export default {
       expanded: false,
       sendMessage: false,
       visitorUserId: this.$store.state.user.uid,
-      isUser: false
+      isUser: false,
+      testColor: 'green'
     }
   },
   async created () {
@@ -89,6 +98,10 @@ export default {
     this.getOrganizations()
   },
   methods: {
+    openSendMessage: function () {
+      if (!this.$errorHandler.loggedInCheck()) { return false }
+      this.sendMessage = true
+    },
     closeMsg: function () {
       this.sendMessage = false
     },
@@ -111,3 +124,12 @@ export default {
   }
 }
 </script>
+<style>
+.q-page-container{
+  padding-left:0 !important;
+  padding-right:0 !important;
+}
+.q-page{
+  width:100%;
+}
+</style>

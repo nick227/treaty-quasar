@@ -252,7 +252,6 @@ export default {
     },
     reload: async function () {
       let q = `${process.env.api}/conflicts/${this.$route.params.id}?filter={"order":["create_date DESC"], "include": [{"relation": "offers", "scope":{"include":[{"relation":"organization"}, {"relation":"creator"}]}}, {"relation":"grievances", "scope":{"include":[{"relation":"organization"}, {"relation":"creator"}]}}]}`
-      console.log(q)
       const conflict = await this.$axios.get(q)
       this.conflictId = conflict.data.id
       this.name = conflict.data.name
@@ -263,8 +262,6 @@ export default {
       q = `${process.env.api}/organizations/?filter[where][or][0][id]=${conflict.data.organization_a_id}&filter[where][or][1][id]=${conflict.data.organization_b_id}`
       const orgs = await this.$axios.get(q)
       this.org_a = orgs.data[0]
-      console.log('+++++++++')
-      console.log(this.org_a)
       this.org_b = orgs.data[1]
       this.org_obj[this.org_a.id] = this.org_a.name
       this.org_obj[this.org_b.id] = this.org_b.name
@@ -286,7 +283,6 @@ export default {
       this.offers[this.org_b.name] = []
       if (typeof obj.offers === 'object') {
         for (let i = obj.offers.length - 1; i >= 0; i--) {
-          console.log(obj.offers[i])
           this.offers[obj.offers[i].organization.name].push(obj.offers[i])
         }
       }
@@ -295,7 +291,7 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      tab: 'offers',
+      tab: 'treaties',
       name: '',
       status: '',
       conflict_creator_user_id: null,

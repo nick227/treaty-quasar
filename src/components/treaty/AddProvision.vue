@@ -26,7 +26,7 @@
 <script>
 export default {
   name: 'AddProvision',
-  props: ['treatyId', 'numProvisions', 'reload'],
+  props: ['id', 'numProvisions', 'reload'],
   data () {
     return {
       title: '',
@@ -38,7 +38,7 @@ export default {
       const q = `${process.env.api}/treaty-provisions`
       const payload = {
         creator_user_id: this.$store.state.user.uid,
-        treaty_id: this.treatyId,
+        treaty_id: this.id,
         status_id: 1,
         title: this.title,
         description: this.description,

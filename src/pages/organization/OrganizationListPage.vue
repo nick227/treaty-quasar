@@ -7,17 +7,17 @@
     <q-list padding>
       <q-separator />
     <div v-for="org in organizations" :key="org.id">
-      <q-item class="full-width" tag="a" :to="'/organization/'+org.id">
+      <q-item class="full-width">
          <q-card class="full-width">
-      <q-img rounded class="q-mt-none" :src="org.avatar_url"></q-img>
+      <q-img rounded clickable v-ripple @click="goto('/organization/'+org.id)" class="q-mt-none cursor-pointer" :src="org.avatar_url"></q-img>
       <q-card-section>
-        <div class="text-h6">{{ org.name }}</div>
+        <div clickable v-ripple @click="goto('/organization/'+org.id)" class="text-h6 cursor-pointer">{{ org.name }}</div>
       </q-card-section>
       <q-card-section class="q-pt-none">
         {{ org.description }}
       </q-card-section>
       <div class="text-right q-pa-lg">
-        <q-btn class="style=z-index:999;" :label="joinedList.indexOf(org.id) === -1 ? 'Join' : 'Unjoin'" :color="joinedList.indexOf(org.id) === -1 ? 'primary' : 'secondary'" style="width:100px" :ripple="{ center: true }" @click="joinedList.indexOf(org.id) === -1 ? join(org.id) : unjoin(org.id)"></q-btn>
+        <q-btn :label="joinedList.indexOf(org.id) === -1 ? 'Join' : 'Unjoin'" :color="joinedList.indexOf(org.id) === -1 ? 'primary' : 'secondary'" style="width:100px" :ripple="{ center: true }" @click="joinBtn(org.id)"></q-btn>
         </div>
     </q-card>
       </q-item>
@@ -54,12 +54,22 @@ export default {
     this.reload()
   },
   methods: {
+    goto: function (url) {
+      this.$router.push({ path: url })
+    },
     onIntersection: function (index, done) {
       if (this.loadNum > 1) {
         this.pointer = this.pointer + this.limit
         this.loadOrgs()
       }
       this.loadNum++
+    },
+    joinBtn: function (id) {
+      if (this.joinedList.includes(id)) {
+        this.unjoin(id)
+      } else {
+        this.join(id)
+      }
     },
     join: async function (id) {
       if (!this.$errorHandler.loggedInCheck()) { return false }
@@ -69,20 +79,25 @@ export default {
         organization_id: id
       }
       await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } })
-      this.reload()
+      this.joinedList = []
+      this.loadJoined()
     },
     unjoin: async function (id) {
-      if (!this.$errorHandler.loggedInCheck()) { return false }
       const relId = this.joined.filter((obj) => { return obj.organization_id === id })[0].id
       const q = `${process.env.api}/user-to-organizations/${relId}`
       await this.$axios.delete(q)
-      this.reload()
+      this.joinedList = []
+      this.loadJoined()
     },
     reload: function () {
+      this.joined = []
+      this.joinedList = []
+      this.organizations = []
       this.loadJoined()
       this.loadOrgs()
     },
     loadJoined: async function () {
+      if (!this.$store.state.user.uid) { return false }
       const q = `${process.env.api}/user-to-organizations?filter[where][creator_user_id]=${this.$store.state.user.uid}`
       const joined = await this.$axios.get(q)
       this.joined = joined.data

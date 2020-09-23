@@ -31,7 +31,7 @@
     <CreateTreaty
     :userOrganizationId="userOrganizationId"
     :conflictId="conflictId"
-    :reset="reset" />
+    :reload="reload" />
   </q-dialog>
   </div>
   </div>
@@ -69,7 +69,7 @@ export default {
       if (!this.$errorHandler.organizationCheck(this.userOrganizationId)) { return false }
       this.createTreaty = true
     },
-    reset: function () {
+    reload: function () {
       this.createTreaty = false
       this.getTreaties()
     },

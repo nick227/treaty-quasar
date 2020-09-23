@@ -1,66 +1,69 @@
 <template>
-  <q-layout view="Lhh lpR fff" style="" container class="bg-white river-width">
-    <q-header class="bg-primary">
-      <q-toolbar>
-        <q-toolbar-title class="q-pl-lg text-center">CONCORDANT.IO TREATY</q-toolbar-title>
-        <q-btn flat v-close-popup round dense icon="close" />
-      </q-toolbar>
-    </q-header>
-    <q-page-container>
+    <q-page-container class="river-width">
       <q-page padding>
         <div v-if="isUser" class="row relative-position q-mb-sm full-width" style="height:35px;">
-          <q-expansion-item switch-toggle-side dense-toggle label="Edit Treaty" class="absolute-right z-top">
+          <q-expansion-item switch-toggle-side dense-toggle label="Edit Treaty" class="z-top">
             <EditTreatyWidget
     :name="treaty.name"
     :description="treaty.description"
     :avatarUrl="treaty.avatar_url"
-    :id="treatyId" />
+    :id="treaty.id" />
           </q-expansion-item>
         </div>
-        <RatingWidget :entityId="treatyId" :userOrganizationId="userOrganizationId" entityType="treaty" />
+        <RatingWidget v-if="userOrganizationId" :entityId="treaty.id" :userOrganizationId="userOrganizationId" entityType="treaty" />
         <div class="row">
           <div class="col col-3"><q-img :src="treaty.avatar_url" /></div>
           <div class="col q-pl-md">
-            <h4 class="q-pb-sm">{{ treaty.name }}</h4>
+            <div class="">{{ org_a.name }} vs. {{ org_b.name }}</div>
+            <h4 class="q-pa-none">{{ treaty.name }}</h4>
             <p class="q-pt-none">{{ treaty.description }}</p>
-            <p class="caption q-pt-none">Created by: {{ creatorName }}</p>
+            <p v-if="treaty.creator" class="caption q-pt-none">Created by: {{ treaty.creator.name }}</p>
           </div>
         </div>
         <h5>Provisions:</h5>
         <q-separator class="q-mb-md" />
         <q-expansion-item v-if="isUser" v-model="expanded" label="Add Provision" class="full-width q-mb-sm bg-blue-grey-1">
           <AddProvision
-          :treatyId="treatyId"
+          :id="treaty.id"
           :numProvisions="numProvisions"
           :reload="loadProvisions" />
         </q-expansion-item>
         <q-list class="full-width">
           <div v-for="(provision, index) in provisions" :key="provision.id" class="full-width q-mb-sm">
-            <TreatyProvisionComponent
+            <TreatyProvisionComponent v-if="userOrganizationId"
                 :provision="provision"
                 :index="index"
                 :userOrganizationId="userOrganizationId"
-                :creatorId="creatorId" />
+                :creatorId="treaty.creator.id" />
           </div>
         </q-list>
-        <TreatyVoteWidget class="q-mt-lg q-mb-sm"
+        <TreatyVoteWidget class="q-mt-lg q-mb-sm" v-if="userOrganizationId"
         :reload="getVotes"
         :votes="votes"
-        :id="treatyId"
+        :id="treaty.id"
         :userOrganizationId="userOrganizationId" />
         <TreatyVotesTable
       :reload="getVotes"
       :key="'votes' + counter"
       :votes="votes"
-      :id="treatyId" />
-        <CommentsWidget
-              :entityId="treatyId"
+      :id="treaty.id" />
+        <CommentsWidget v-if="userOrganizationId"
+              :entityId="treaty.id"
               entityType="treaty"
               :userOrganizationId="userOrganizationId"
         ></CommentsWidget>
+        <q-dialog v-model="verify_org" persistent>
+          <q-card>
+            <q-card-section class="row items-center">
+              <q-avatar icon="done_outline" color="primary" text-color="white" /> <span class="q-ml-sm">Choose ONE organization to comment as.</span> </q-card-section>
+            <q-card-actions align="right">
+              <q-btn flat label="Cancel" color="primary" v-close-popup />
+              <q-btn flat :label="org_a.name" color="primary" @click="setOrg(org_a)" v-close-popup />
+              <q-btn flat :label="org_b.name" color="primary" @click="setOrg(org_b)" v-close-popup /> </q-card-actions>
+          </q-card>
+        </q-dialog>
       </q-page>
     </q-page-container>
-  </q-layout>
 </template>
 <script>
 import RatingWidget from 'components/widgets/RatingWidget.vue'
@@ -71,16 +74,19 @@ import TreatyVoteWidget from 'components/treaty/TreatyVoteWidget.vue'
 import TreatyVotesTable from 'components/treaty/TreatyVotesTable.vue'
 import TreatyProvisionComponent from 'components/treaty/TreatyProvisionComponent.vue'
 export default {
-  name: 'TreatyDialogComponent',
+  name: 'TreatyPage',
   meta () {
     return {
       title: this.treatyName
     }
   },
-  props: ['treatyId', 'userOrganizationId', 'creatorName', 'creatorId'],
+  props: [],
   components: { AddProvision, CommentsWidget, TreatyVoteWidget, RatingWidget, TreatyVotesTable, EditTreatyWidget, TreatyProvisionComponent },
   data () {
     return {
+      userOrganizationId: null,
+      creatorName: null,
+      creatorId: null,
       counter: 0,
       expanded: false,
       provisions: [],
@@ -89,6 +95,9 @@ export default {
       isUser: false,
       votes: [],
       treaty: {},
+      verify_org: false,
+      org_a: {},
+      org_b: {},
       initialPagination: {
         sortBy: 'desc',
         descending: false,
@@ -99,10 +108,39 @@ export default {
   },
   methods: {
     getTreaty: async function () {
-      const q = `${process.env.api}/treaties/${this.treatyId}`
+      const q = `${process.env.api}/treaties/${this.$route.params.id}?filter={"include":[{"relation":"creator"},{"relation":"conflict", "scope":{"include":[{"relation":"organization_a"},{"relation":"organization_b"}]}}]}`
       const treaty = await this.$axios.get(q)
       this.treaty = treaty.data
-      console.log(treaty.data)
+      this.org_a = this.treaty.conflict.organization_a
+      this.org_b = this.treaty.conflict.organization_b
+      this.getUserOrg()
+      this.getVotes()
+      this.loadProvisions()
+      this.setupTable()
+      this.isUser = this.$errorHandler.isLoggedInUser(this.treaty.creator_user_id)
+    },
+    setOrg: function (obj) {
+      this.userOrganizationName = obj.name
+      this.userOrganizationId = obj.id
+      this.reload()
+    },
+    getUserOrg: async function () {
+      const q = `${process.env.api}/user-to-organizations?filter[where][and][0][creator_user_id]=${this.$store.state.user.uid}&filter[where][or][1][organization_id]=${this.org_a.id}&filter[where][or][2][organization_id]=${this.org_b.id}`
+      const joined = await this.$axios.get(q)
+      this.joined = joined.data
+      if (this.joined.length > 1) {
+        this.verify_org = true
+      }
+      if (this.joined.length === 1) {
+        this.userOrganizationId = this.joined[0].organization_id
+        this.userOrganizationName = this.joined[0].name
+      }
+      if (this.joined.length === 0) {
+        this.$q.notify({
+          type: 'info',
+          message: 'Please join organization to comment'
+        })
+      }
     },
     setupTable: function () {
       this.columns = [
@@ -112,7 +150,7 @@ export default {
       ]
     },
     getVotes: async function () {
-      const q = `${process.env.api}/votes?filter[where][treaty_id]=${this.treatyId}&filter[include][0][relation]=creator&filter[include][1][relation]=organization&filter[order]=create_date%20DESC`
+      const q = `${process.env.api}/votes?filter[where][treaty_id]=${this.$route.params.id}&filter[include][0][relation]=creator&filter[include][1][relation]=organization&filter[order]=create_date%20DESC`
       const votes = await this.$axios.get(q)
       this.votes = votes.data.map((item) => {
         return {
@@ -128,18 +166,14 @@ export default {
       this.counter = this.counter + 1
     },
     loadProvisions: async function () {
-      const q = `${process.env.api}/treaty-provisions?filter[where][treaty_id]=${this.treatyId}&filter[order]=position%20ASC`
+      const q = `${process.env.api}/treaty-provisions?filter[where][treaty_id]=${this.$route.params.id}&filter[order]=position%20ASC`
       const provisions = await this.$axios.get(q)
       this.provisions = provisions.data
       this.numProvisions = this.provisions.length ? this.provisions.length : 0
     }
   },
   created () {
-    this.isUser = this.$errorHandler.isLoggedInUser(this.treaty.creatorUserId)
     this.getTreaty()
-    this.getVotes()
-    this.loadProvisions()
-    this.setupTable()
   }
 }
 </script>

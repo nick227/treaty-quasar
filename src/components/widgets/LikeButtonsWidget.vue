@@ -39,7 +39,6 @@ export default {
     },
     update: async function (val) {
       if (!this.$errorHandler.loggedInCheck()) { return false }
-      console.log(this.readonly)
       if (this.readonly === 'true') {
         this.$q.notify({
           type: 'negative',

@@ -12,43 +12,32 @@
           <q-list class="full-width">
             <q-list>
               <q-item-section class="dialog-width">
-                <q-select class="q-mb-sm"
-                  v-if="!conflictId"
-                  outlined
-                  required
-                  transition-show
-                  use-input
-                  autofocus
-                  hide-selected
-                  fill-input
-                  input-debounce="0"
-                  behavior="menu"
-                  error-message
-                  emit-value
-                  label="Conflict"
-                  v-model="conflictSelect"
-                  :options="options"
-                  @filter="filterFn"
-                >
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No results
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-              <div v-if="!conflictId && !userOrganizationIdSelect" class="full-width text-right q-mb-sm">Conflict not listed?</div>
-              <div v-if="!conflictId && !userOrganizationIdSelect" class="full-width text-center q-mb-sm"><q-btn class="full-width" icon="add" label="ADD CONFLICT" /></div>
-              <p v-if="userOrganizationNameSelect" class="q-pt-none">Creating as: {{ userOrganizationNameSelect }}</p>
+                <q-select class="q-mb-sm" v-if="!conflictId" outlined required transition-show use-input autofocus hide-selected fill-input input-debounce="0" behavior="menu" error-message emit-value label="Conflict" v-model="conflictSelect" :options="options" @filter="filterFn">
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        No results
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                </q-select>
+                <div v-if="!conflictId && !userOrganizationIdSelect" class="full-width text-right q-mb-sm">Conflict not listed?</div>
+                <div v-if="!conflictId && !userOrganizationIdSelect" class="full-width text-center q-mb-sm">
+                  <q-btn class="full-width" icon="add" label="ADD CONFLICT" />
+                </div>
+                <p v-if="userOrganizationNameSelect" class="q-pt-none">Creating as: {{ userOrganizationNameSelect }}</p>
                 <q-input class="q-mb-sm" outlined required v-model="name" label="Name" />
                 <q-input class="q-mb-sm" outlined required v-model="description" label="Description" />
                 <q-input class="q-mb-sm" outlined required v-model="avatar_url" label="Avatar URL" />
                 <div class="q-mt-sm" v-for="(count, i) in provisions" :key="i">
                   <q-separator />
                   <div class="row" style="">
-                    <div class="col col-10"><h6 class="caption text-grey">Provision {{i + 1}}</h6></div>
-                    <div class="col text-right"><q-btn square color="grey" @click="removeProvision(i)" size="12px" class="q-mt-sm" icon="close" /></div>
+                    <div class="col col-10">
+                      <h6 class="caption text-grey">Provision {{i + 1}}</h6>
+                    </div>
+                    <div class="col text-right">
+                      <q-btn square color="grey" @click="removeProvision(i)" size="12px" class="q-mt-sm" icon="close" />
+                    </div>
                   </div>
                   <q-input class="q-mb-sm" required filled v-model="provisionNames[count]" label="Title" />
                   <q-input type="textarea" required class="q-mb-sm" filled v-model="provisionText[count]" label="Provision Text" />
@@ -71,7 +60,8 @@
             <q-card-actions align="right">
               <q-btn flat label="Cancel" color="primary" v-close-popup />
               <q-btn flat :label="org_a.name" color="primary" @click="setOrg('org_a')" v-close-popup />
-              <q-btn flat :label="org_b.name" color="primary" @click="setOrg('org_b')" v-close-popup /> </q-card-actions>
+              <q-btn flat :label="org_b.name" color="primary" @click="setOrg('org_b')" v-close-popup />
+            </q-card-actions>
           </q-card>
         </q-dialog>
       </q-page>
@@ -82,7 +72,7 @@
 export default {
   name: 'CreateTreaty',
   components: {},
-  props: ['userOrganizationId', 'conflictId', 'reset'],
+  props: ['userOrganizationId', 'conflictId', 'reload'],
   data () {
     return {
       name: '',
@@ -204,7 +194,7 @@ export default {
         type: 'positive',
         message: 'Treaty created'
       })
-      this.reset()
+      this.reload()
     },
     removeProvision: function (index) {
       this.provisions.splice(index, 1)
@@ -215,4 +205,5 @@ export default {
     }
   }
 }
+
 </script>

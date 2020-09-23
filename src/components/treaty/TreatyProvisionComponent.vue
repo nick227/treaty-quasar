@@ -27,6 +27,7 @@
     <CommentsWidget
                 :entityId="provision.id"
                 entityType="provision"
+                :userOrganizationId="userOrganizationId"
               ></CommentsWidget>
   </div>
 </template>

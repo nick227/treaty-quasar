@@ -5,7 +5,13 @@
         <h3>{{org.name}}</h3>
         <h6>{{org.description}}</h6>
       </div>
+      <transition
+  appear
+  enter-active-class="animated fadeIn"
+  leave-active-class="animated fadeOut"
+>
     <q-img class="full-width q-mt-none" :src="org.avatar_url"></q-img>
+    </transition>
   </div>
   <q-btn class="full-width" :label="!isMember ? 'Join' : 'Unjoin'" :color="!isMember ? 'primary' : 'secondary'" style="width:100px" :ripple="{ center: true }" @click="!isMember ? join(org.id) : unjoin(org.id)"></q-btn>
   <div v-if="members.length" class="q-pa-md q-gutter-sm">
