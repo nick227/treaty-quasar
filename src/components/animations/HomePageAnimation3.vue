@@ -139,7 +139,7 @@ export default {
   width:100%;
 }
 canvas {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   background-color: black;

@@ -11,7 +11,7 @@
         <q-form>
           <q-list class="full-width">
             <q-list>
-              <q-item-section class="dialog-width">
+              <q-item-section class="full-width">
                 <q-select class="q-mb-sm" v-if="!conflictId" outlined required transition-show use-input autofocus hide-selected fill-input input-debounce="0" behavior="menu" error-message emit-value label="Conflict" v-model="conflictSelect" :options="options" @filter="filterFn">
                   <template v-slot:no-option>
                     <q-item>

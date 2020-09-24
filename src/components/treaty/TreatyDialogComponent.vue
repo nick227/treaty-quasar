@@ -43,6 +43,7 @@
                 :creatorId="creatorId" />
           </div>
         </q-list>
+        <h5>Votes:</h5>
         <TreatyVoteWidget class="q-mt-lg q-mb-sm"
         :reload="getVotes"
         :votes="votes"
@@ -56,7 +57,6 @@
         <CommentsWidget
               :entityId="treatyId"
               entityType="treaty"
-              :userOrganizationId="userOrganizationId"
         ></CommentsWidget>
       </q-page>
     </q-page-container>
@@ -102,7 +102,6 @@ export default {
       const q = `${process.env.api}/treaties/${this.treatyId}`
       const treaty = await this.$axios.get(q)
       this.treaty = treaty.data
-      console.log(treaty.data)
     },
     setupTable: function () {
       this.columns = [

@@ -2,11 +2,14 @@
     <q-page-container class="river-width">
       <q-page padding>
         <div v-if="isUser" class="row relative-position q-mb-sm full-width" style="height:35px;">
-          <q-expansion-item switch-toggle-side dense-toggle label="Edit Treaty" class="z-top">
+          <q-expansion-item v-model="editExpanded" switch-toggle-side dense-toggle label="Edit Treaty" class="z-top">
             <EditTreatyWidget
     :name="treaty.name"
     :description="treaty.description"
     :avatarUrl="treaty.avatar_url"
+    :provisions="provisions"
+    :reload="getTreaty"
+    :key="'edit' + counter"
     :id="treaty.id" />
           </q-expansion-item>
         </div>
@@ -40,17 +43,18 @@
         <TreatyVoteWidget class="q-mt-lg q-mb-sm" v-if="userOrganizationId"
         :reload="getVotes"
         :votes="votes"
+        :key="'votesw' + counter"
         :id="treaty.id"
         :userOrganizationId="userOrganizationId" />
+        <h5>Votes:</h5>
         <TreatyVotesTable
       :reload="getVotes"
-      :key="'votes' + counter"
+      :key="'votest' + counter"
       :votes="votes"
       :id="treaty.id" />
         <CommentsWidget v-if="userOrganizationId"
               :entityId="treaty.id"
               entityType="treaty"
-              :userOrganizationId="userOrganizationId"
         ></CommentsWidget>
         <q-dialog v-model="verify_org" persistent>
           <q-card>
@@ -88,6 +92,7 @@ export default {
       creatorName: null,
       creatorId: null,
       counter: 0,
+      editExpanded: false,
       expanded: false,
       provisions: [],
       columns: [],
@@ -108,6 +113,7 @@ export default {
   },
   methods: {
     getTreaty: async function () {
+      this.editExpanded = this.expanded = false
       const q = `${process.env.api}/treaties/${this.$route.params.id}?filter={"include":[{"relation":"creator"},{"relation":"conflict", "scope":{"include":[{"relation":"organization_a"},{"relation":"organization_b"}]}}]}`
       const treaty = await this.$axios.get(q)
       this.treaty = treaty.data
@@ -166,6 +172,7 @@ export default {
       this.counter = this.counter + 1
     },
     loadProvisions: async function () {
+      this.editExpanded = this.expanded = false
       const q = `${process.env.api}/treaty-provisions?filter[where][treaty_id]=${this.$route.params.id}&filter[order]=position%20ASC`
       const provisions = await this.$axios.get(q)
       this.provisions = provisions.data

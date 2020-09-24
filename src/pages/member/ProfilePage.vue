@@ -54,7 +54,7 @@
       </div>
     </div>
       <q-separator />
-    <CommentsWidget v-if="user.id"
+    <CommentsWidget :key="'comments' + counter" v-if="user.id"
           :entityId="user.id"
           entityType="user"
     ></CommentsWidget>
@@ -86,6 +86,7 @@ export default {
       user: {},
       orgs: {},
       style: '',
+      counter: 0,
       expanded: false,
       sendMessage: false,
       visitorUserId: this.$store.state.user.uid,
@@ -114,7 +115,6 @@ export default {
       const user = await this.$axios.get(q)
       this.user = user.data
       this.isUser = this.$errorHandler.isLoggedInUser(this.user.id)
-      console.log(this.isUser, this.user.id)
     },
     getOrganizations: async function () {
       const q = `${process.env.api}/users/${this.$route.params.id}/organizations`

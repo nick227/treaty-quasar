@@ -1,5 +1,5 @@
 <template>
-<div class="">
+<div class="river-width">
 <div class="row q-pa-lg">
   <div class="col col-shrink q-mb-lg" v-for="user in users" :key="user.id">
     <q-card class="flex-break q-ma-lg">

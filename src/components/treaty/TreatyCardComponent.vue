@@ -16,7 +16,7 @@
           <div class="col text-right">Rated {{ treaty.rating }}/5</div>
         </div>
       </q-card-section>
-      <q-expansion-item class="bg-blue-grey-5" switch-toggle-side dense-toggle :label="'Provisions ' + treaty.provisions.length">
+      <q-expansion-item v-if="treaty.provisions" class="bg-blue-grey-5" switch-toggle-side dense-toggle :label="'Provisions ' + treaty.provisions.length">
         <div class="q-pl-lg q-pt-sm q-pr-lg q-pb-sm" v-for="(provision, i) in treaty.provisions" :key="provision.id"><q-badge class="q-mr-sm" color="grey">{{ i + 1 }}</q-badge> {{ provision.title }}</div>
       </q-expansion-item>
     </q-card>

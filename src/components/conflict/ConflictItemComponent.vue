@@ -46,7 +46,6 @@
     <CommentsWidget
           :entityId="entityId"
           :entityType="entityType"
-          :userOrganizationId="userOrganizationId"
     ></CommentsWidget>
 </div>
 </template>

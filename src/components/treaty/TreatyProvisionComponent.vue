@@ -5,7 +5,8 @@
         <h4 class="border text-center q-pa-sm bg-blue-grey-1">{{ index + 1 }}</h4>
       </div>
       <div class="col text-left q-pl-md">
-        <h6 class="q-pa-none">{{ title }} <q-icon v-if="isUser" name="edit" class="cursor-pointer" clickable v-ripple size="13px" />
+        <h6 class="q-pa-none">{{ title }}
+          <q-icon v-if="isUser" name="edit" class="cursor-pointer" clickable v-ripple size="13px" />
           <q-popup-edit v-model="title" buttons :validate="edit">
             <q-input v-model="title" :validate="edit" auto-save label-set="Save" dense autofocus counter />
           </q-popup-edit>
@@ -27,7 +28,6 @@
     <CommentsWidget
                 :entityId="provision.id"
                 entityType="provision"
-                :userOrganizationId="userOrganizationId"
               ></CommentsWidget>
   </div>
 </template>

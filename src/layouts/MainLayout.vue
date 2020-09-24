@@ -8,17 +8,9 @@
         </q-toolbar>
       </q-footer>
     -->
-     <transition
-        name="fade"
-        mode="out-in"
-        @beforeLeave="beforeLeave"
-        @enter="enter"
-        @afterEnter="afterEnter"
-       >
     <q-page-container>
       <router-view />
     </q-page-container>
-    </transition>
     <q-ajax-bar
       ref="bar"
       position="bottom"

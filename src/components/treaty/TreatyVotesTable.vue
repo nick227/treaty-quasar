@@ -2,7 +2,7 @@
   <div class="row full-width">
     <q-table
     class="full-width align-left table q-pa-sm"
-    title="Votes"
+    title=""
     dense
     flat
     :data="votes"
@@ -30,11 +30,11 @@ export default {
   methods: {
     setupTable: function () {
       this.columns = [
-        { name: 'vote', label: 'Vote', field: 'vote', format: val => val ? 'Yay' : 'Nay', sortable: true, align: 'left' },
-        { name: 'name', label: 'Name', field: 'name', align: 'left', sortable: true },
-        { name: 'location', label: 'Location', field: 'location', sortable: true, align: 'left' },
-        { name: 'organization', label: 'Organization', field: 'organization', sortable: true, align: 'left' },
-        { name: 'date', label: 'Date', field: 'date', sortable: true, align: 'left' }
+        { name: 'vote', label: 'Vote', field: 'vote', format: val => val ? 'Yay' : 'Nay', sortable: true, align: 'left', class: 'q-pa-sm' },
+        { name: 'name', label: 'Name', field: 'name', align: 'left', sortable: true, class: 'q-pa-sm' },
+        { name: 'location', label: 'Location', field: 'location', sortable: true, align: 'left', class: 'q-pa-sm' },
+        { name: 'organization', label: 'Organization', field: 'organization', sortable: true, align: 'left', class: 'q-pa-sm' },
+        { name: 'date', label: 'Date', field: 'date', sortable: true, align: 'left', class: 'q-pa-sm' }
       ]
     }
   },

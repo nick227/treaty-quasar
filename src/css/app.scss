@@ -21,6 +21,9 @@ h1.welcome{
   flex-direction: column;
   width: 100%;
 }
+.q-layout-padding{
+  min-height: 100px !important;
+}
 .q-page {
   background-repeat: no-repeat;
   background-size: cover;
@@ -59,6 +62,7 @@ h1.welcome{
   background-position: center center;
 }
 .dialog-width{
+  width:640px;
   max-width: 98%;
 }
 .river-width{

@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div class="col bg-blue-grey-1 col-12 q-pl-lg q-pr-lg q-pt-none q-pb-sm row flex-center">
+    <div class="col bg-blue-grey-1 col-12 q-pl-lg q-pr-lg q-pt-sm q-pb-sm row flex-center">
       <h6 class="q-ma-lg">Do you agree to this treaty?</h6>
       <div class="row flex-center text-center" style="flex-wrap:nowrap; white-space:nowrap;">
         <q-btn
@@ -43,19 +43,16 @@ export default {
   props: ['id', 'userOrganizationId', 'votes', 'reload'],
   data () {
     return {
-      num_yay: 0,
-      num_nay: 0,
+      count: 0,
+      num_yay: this.votes.filter((o) => { return o.vote === 1 }).length,
+      num_nay: this.votes.filter((o) => { return o.vote === 0 }).length,
       voteVal: null,
       verify: false,
       voteTxt: null
     }
   },
-  mounted () {
-    this.getSums()
-  },
   methods: {
     confirm: async function (res) {
-      if (!this.$errorHandler.organizationCheck(this.userOrganizationId)) { return false }
       this.voteVal = res
       this.voteTxt = res ? 'Yay' : 'Nay'
       this.verify = true
@@ -69,7 +66,6 @@ export default {
         vote_type: this.voteVal
       }
       await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } }).then(() => {
-        this.getSums()
         this.reload()
         this.$q.notify({
           type: 'positive',
@@ -81,12 +77,6 @@ export default {
           message: 'Voting error: ' + err
         })
       })
-    },
-    getSums: function () {
-      for (let i = 0; i < this.votes.length; i++) {
-        this.num_yay += this.votes[i].vote ? 1 : 0
-        this.num_nay += !this.votes[i].vote ? 1 : 0
-      }
     }
   }
 }

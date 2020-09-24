@@ -29,7 +29,20 @@
     label="Avatar URL"
     type="url"
     />
+    <div>
+      <p class="text-grey-8 q-ml-sm q-pb-none">Delete Provisions:</p>
+      <q-chip v-for="provision in provisions" :key="provision.id"
+      @remove="deleteProvision(provision)"
+        removable
+        v-model="data_provisions[provision.id]"
+        color="grey"
+        dense
+        text-color="black"
+        :label="provision.title"
+      />
+    </div>
     <div class="full-width  text-right q-mt-md">
+      <q-btn label="CANCEL" @click="reload" type="button" color="accent" class="q-mr-sm"/>
       <q-btn label="SUBMIT" type="submit" color="primary"/>
     </div>
   </q-form>
@@ -38,7 +51,7 @@
 <script>
 export default {
   name: 'EditTreatyWidget',
-  props: ['name', 'description', 'avatarUrl', 'id', 'reload'],
+  props: ['name', 'description', 'avatarUrl', 'id', 'reload', 'provisions'],
   model: {
     prop: 'name',
     event: 'blur'
@@ -56,6 +69,9 @@ export default {
   },
   data () {
     return {
+      confirm: false,
+      provisionsToDelete: [],
+      data_provisions: [],
       data_name: this.name,
       data_description: this.description,
       data_avatar_url: this.avatarUrl
@@ -66,10 +82,26 @@ export default {
     this.$mount()
   },
   methods: {
+    deleteProvision (provision) {
+      this.provisionsToDelete.push(provision.id)
+    },
     handleInput (value) {
       this.$emit('msgChange', value)
     },
+    deleteProvisions: async function () {
+      let q = null
+      for (let i = 0; i < this.provisionsToDelete.length; i++) {
+        q = `${process.env.api}/treaty-provisions/${this.provisionsToDelete[0]}/provision-likes`
+        await this.$axios.delete(q)
+        q = `${process.env.api}/treaty-provisions/${this.provisionsToDelete[0]}/provision-comments`
+        await this.$axios.delete(q)
+        q = `${process.env.api}/treaty-provisions/${this.provisionsToDelete[0]}`
+        console.log(q)
+        await this.$axios.delete(q)
+      }
+    },
     postForm: async function (e) {
+      this.deleteProvisions()
       const payload = {
         name: this.data_name,
         description: this.data_description,

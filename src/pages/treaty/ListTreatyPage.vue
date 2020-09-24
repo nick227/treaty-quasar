@@ -5,6 +5,7 @@
       <div v-for="treaty in treaties" :key="treaty.id">
         <TreatyCardComponent :treaty="treaty" />
       </div>
+      <h3 class="q-ma-lg text-center" v-if="!treaties.length">No treaties found.</h3>
       <div v-if="!done" v-intersection="onIntersection" class="full-width text-center">
         <q-spinner-dots color="primary" size="40px" />
       </div>
@@ -78,7 +79,6 @@ export default {
           rating: o.ratings ? Math.round(o.ratings.reduce((total, next) => total + next.value, 0) / o.ratings.length) : 0
         }
       })
-      console.log(obj)
       this.treaties = this.treaties.concat(obj)
     },
     reload: function () {
