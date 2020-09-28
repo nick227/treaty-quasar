@@ -5,13 +5,13 @@
      filled
      required
       v-model="name"
-      placeholder="Name"
+      label="Name"
     />
       <q-separator />
     <q-input
      filled
      required
-      placeholder="Description"
+      label="Description"
       v-model="description"
       autogrow
       type="textarea"
@@ -21,7 +21,7 @@
     filled
     required
     v-model="avatar_url"
-    placeholder="Avatar URL"
+    label="Avatar URL"
     />
     <div class="text-right q-mt-lg">
         <q-btn label="Submit" type="submit" color="primary"/>
@@ -32,6 +32,7 @@
 <script>
 export default {
   name: 'CreateOrganizationWidget',
+  props: ['reload'],
   data () {
     return {
       name: '',
@@ -49,10 +50,12 @@ export default {
         avatar_url: this.avatar_url,
         name: this.name
       }
-      const res = await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } })
-      this.$router.push('/organization/' + res.data.id)
+      await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } })
+      this.clear()
+      this.reload()
+      // this.$router.push('/organization/' + res.data.id)
     },
-    reload: function () {
+    clear: function () {
       this.description = ''
       this.name = ''
       this.avatar_url = ''

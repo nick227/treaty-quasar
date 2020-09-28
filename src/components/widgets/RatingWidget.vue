@@ -6,6 +6,7 @@
       size="2em"
       :max="5"
       color="primary"
+      :readonly="readonly"
     >
     <template v-slot:tip-1>
       <q-tooltip>Worst</q-tooltip>
@@ -27,8 +28,8 @@
 </template>
 <script>
 export default {
-  name: 'RateTreatyWidget',
-  props: ['entityId', 'userOrganizationId', 'entityType'],
+  name: 'RatingWidget',
+  props: ['entityId', 'userOrganizationId', 'entityType', 'readonly'],
   data () {
     return {
       ratingVal: 0,
@@ -41,7 +42,7 @@ export default {
   },
   methods: {
     getRating: async function () {
-      const q = `${process.env.api}/${this.entityType}-ratings/?filterp[where][${this.entityType}_id]=${this.entityId}&filter[fields][value]=true`
+      const q = `${process.env.api}/${this.entityType}-ratings/?filter[where][${this.entityType}_id]=${this.entityId}&filter[fields][value]=true`
       const ratings = await this.$axios.get(q)
       this.ratings = ratings.data
       this.numRatings = this.ratings.length

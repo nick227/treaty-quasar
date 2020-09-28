@@ -44,11 +44,17 @@ export default {
   data () {
     return {
       count: 0,
-      num_yay: this.votes.filter((o) => { return o.vote === 1 }).length,
-      num_nay: this.votes.filter((o) => { return o.vote === 0 }).length,
       voteVal: null,
       verify: false,
       voteTxt: null
+    }
+  },
+  computed: {
+    num_yay: function () {
+      return this.votes.filter((o) => { return o.vote === 1 }).length
+    },
+    num_nay: function () {
+      return this.votes.filter((o) => { return o.vote === 0 }).length
     }
   },
   methods: {
@@ -65,6 +71,8 @@ export default {
         organization_id: parseInt(this.userOrganizationId),
         vote_type: this.voteVal
       }
+      console.log(q)
+      console.log(payload)
       await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } }).then(() => {
         this.reload()
         this.$q.notify({

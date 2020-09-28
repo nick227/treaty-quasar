@@ -6,6 +6,7 @@
     :tag="item.tagType"
     :to="item.href ? item.href : null"
     :key="item.name"
+    v-show="item.visible"
     @mouseover="miniState = false"
     @mouseout="miniState = true"
     @click="item.fn ? item.fn() : null"
@@ -26,19 +27,19 @@ export default {
   data () {
     return {
       navItems: [
-        { tagType: 'a', iconName: 'home', href: '/', fn: false, text: 'Home' },
-        { tagType: 'a', iconName: 'article', href: '/treaties', fn: false, text: 'Treaties' },
-        { tagType: 'a', iconName: 'public', href: '/organizations', fn: false, text: 'Organizations' },
-        { tagType: 'a', iconName: 'flash_on', href: '/conflicts', fn: false, text: 'Conflicts' },
-        { tagType: 'a', iconName: 'person', href: '/members', fn: false, text: 'Members' },
-        { tagType: 'a', iconName: 'email', href: '/messages', fn: false, text: 'Messages' },
-        { tagType: 'a', iconName: 'login', href: '/login', fn: false, text: 'Login' },
-        { tagType: 'a', iconName: 'logout', fn: this.logout, text: 'Logout' }
+        { tagType: 'a', iconName: 'home', href: '/', fn: false, text: 'Home', visible: true },
+        { tagType: 'a', iconName: 'flash_on', href: '/conflicts', fn: false, text: 'Conflicts', visible: true },
+        { tagType: 'a', iconName: 'article', href: '/treaties', fn: false, text: 'Treaties', visible: true },
+        { tagType: 'a', iconName: 'public', href: '/organizations', fn: false, text: 'Organizations', visible: true },
+        { tagType: 'a', iconName: 'person', href: '/members', fn: false, text: 'Members', visible: true },
+        { tagType: 'a', iconName: 'whatshot', href: '/conversation', fn: false, text: 'Conversation', visible: true },
+        { tagType: 'a', iconName: 'email', href: '/messages', fn: false, text: 'Messages', visible: true },
+        { tagType: 'a', iconName: 'login', href: '/login', fn: false, text: 'Login', visible: !this.$store.state.user.uid },
+        { tagType: 'a', iconName: 'logout', fn: this.logout, text: 'Logout', visible: this.$store.state.user.uid }
       ],
       active: 'Home'
     }
   },
-  mounted () {},
   methods: {
     logout () {
       this.$store.commit('user/updateUid', null)
@@ -53,9 +54,11 @@ export default {
         alert('Signed out error: ' + e.error.message)
       })
     },
-    isLoggedIn () {
+    isLoggedIntoFb () {
       this.$hello('facebook').api('me')
-        .then((res) => {})
+        .then((res) => {
+          console.log(res)
+        })
     }
   }
 }

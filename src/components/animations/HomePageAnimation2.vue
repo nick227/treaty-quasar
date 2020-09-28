@@ -3,7 +3,7 @@
   <div class="text-center z-top">
     <h1 class="text-light">CONCORDANT.IO</h1>
     <h4 class="q-mb-sm">The treaty building platform</h4>
-    <q-btn class="q-mb-sm" color="dark full-width">GET STARTED</q-btn>
+    <q-btn class="q-mb-sm" :to="!$errorHandler.isLoggedIn() ? '/login' : '/treaties'" color="dark full-width">GET STARTED</q-btn>
     <p class="text-center z-top">Giving PEACE a chance.</p>
   </div>
   <p class="caption fixed-bottom-right z-top" style="margin-right:100px;"><a class="text-dark q-mr-lg text-weight-bold" href="https://codepen.io/rachelnabors" target="_blank">Animation by Rachel Nabors</a></p>

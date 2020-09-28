@@ -1,33 +1,30 @@
 <template>
   <q-page padding class="river-width">
-  <q-expansion-item @before-show="userCheck" v-model="expanded" switch-toggle-side dense-toggle label="Create Conflict">
-    <CreateConflictWidget />
-  </q-expansion-item>
-    <q-list padding>
+    <q-expansion-item @before-show="userCheck" v-model="expanded" switch-toggle-side dense-toggle label="Create Conflict">
+      <CreateConflictWidget />
+    </q-expansion-item>
+    <h6 class="q-mb-sm text-center">Conflicts</h6>
       <q-separator />
-    <div v-for="conflict in conflicts" :key="conflict.id">
-          <div class="row q-pl-md q-pr-md" style="">
-            <div class="col col-5"><h6>{{ conflict.organization_a.name }}</h6></div>
-            <div class="col col-2 text-center"><h6>vs.</h6></div>
-            <div class="col col-5 text-right"><h6>{{ conflict.organization_b.name }}</h6></div>
-          </div>
-      <q-item class="full-width" tag="a" :to="'/conflict/'+conflict.id">
-         <q-card class="full-width">
-      <q-img rounded class="q-mt-none" :src="conflict.avatar_url"></q-img>
-      <q-card-section>
-        <div class="text-h6">{{ conflict.name }}</div>
-      </q-card-section>
-      <q-card-section class="q-pt-none">
-        {{ conflict.description }}
-      </q-card-section>
-    </q-card>
-      </q-item>
-      <q-separator />
-    </div>
-  <div v-if="!done" v-intersection="onIntersection" class="full-width text-center">
-    <q-spinner-dots color="primary" size="40px" />
-  </div>
-  </q-list>
+    <q-list class="row">
+      <h3 class="q-ma-lg text-center" v-if="!conflicts.length && !done">LOADING...</h3>
+      <h3 class="q-ma-lg text-center" v-if="!conflicts.length && done">No conflicts found.</h3>
+      <div v-for="conflict in conflicts" class="col col-shrink info-card q-mb-lg" :key="conflict.id">
+        <q-card class="flex-break q-ma-lg">
+          <div :style="'background-image:url(' + conflict.avatar_url + ')'" class="card-image"></div>
+          <q-card-section>
+            <p>{{ conflict.organization_a.name }} vs. {{ conflict.organization_b.name }}</p>
+            <div clickable class="text-h6 cursor-pointer">{{ conflict.name }}</div>
+            <p class="ellipsis">{{ conflict.description }}</p>
+          </q-card-section>
+    <q-card-section>
+      <router-link :to="'/conflict/'+conflict.id"><q-btn class="full-width" color="primary" label="Visit" /></router-link>
+    </q-card-section>
+        </q-card>
+      </div>
+      <div v-if="!done" v-intersection="onIntersection" class="full-width text-center">
+        <q-spinner-dots color="primary" size="40px" />
+      </div>
+    </q-list>
   </q-page>
 </template>
 <script>
@@ -44,7 +41,7 @@ export default {
     return {
       conflicts: [],
       pointer: 0,
-      limit: 2,
+      limit: 10,
       done: false,
       loadNum: 0,
       expanded: false
@@ -71,6 +68,7 @@ export default {
         this.done = true
       }
       this.conflicts = this.conflicts.concat(conflicts.data)
+      console.log(this.conflicts[0])
     }
   }
 }

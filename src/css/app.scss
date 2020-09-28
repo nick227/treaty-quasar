@@ -33,21 +33,24 @@ h1.welcome{
 .q-item{
 	min-height: 1px;
 }
-.fill-width{
-  max-width: 100% !important;
-  width: 90vw !important;
-}
 .transparent{
   background: transparent;
 }
 .info-card{
   width:100%;
-  max-width: 250px;
+  width: 300px !important;
 }
 .org-card{
   width: 350px;
 }
 .message-card{
+  width:640px;
+  max-width: 100%;
+}
+.card-item{
+  width:250px;
+}
+.activity-width{
   width:640px;
   max-width: 100%;
 }
@@ -91,14 +94,11 @@ h1.welcome{
 .q-dialog__inner--minimized > div{
   max-width: 960px;
 }
-.table{
-  th{ padding:0 !important; }
-  td{ padding: 10px 0 !important;}
-  /* height or max-height is important */
-  .q-table__bottom{
-    /* bg color is important for th; just specify one */
-    padding: 20px 0;
-    }
+.capitalize{ text-transform: capitalize; }
+.q-table{
+  th{ text-transform: capitalize; }
+  .sub-row td{ padding: 0; }
+  td.wrap{  white-space: normal !important; }
 }
 .z-100{
   z-index: 100;

@@ -10,7 +10,7 @@
       <q-page padding>
       <div class="row relative-position full-width" style="height: 35px;">
         <q-expansion-item v-model="expanded" switch-toggle-side dense-toggle label="Edit Debate" class="absolute-right z-100">
-          <EditDebateWidget :title="debate.title" :avatar_url="debate.avatar_url" :description="debate.description" :id="debate.id" :reload="reload" />
+          <EditDebateWidget :title="debate.title" :avatar_url="debate.avatar_url" :description="debate.description" :id="debate.id" :reload="reload" :pageReload="pageReload" />
         </q-expansion-item>
       </div>
         <h3 class="q-pa-sm">{{ debate.title }}</h3>
@@ -20,14 +20,14 @@
             <q-avatar class="comment-q-avatar" round><img v-if="debate.creator" :src="debate.creator.avatar_url" /></q-avatar>
           </div>
           <div class="col p-pl-lg">
-            <div>{{ debate.create_date }}</div>
-            <p class="text-h6 q-pa-none" v-if="debate.creator">{{ debate.creator.name }}:</p>
+            <div>{{ readyDate }}</div>
+            <p class="text-h5 q-pa-none" v-if="debate.creator">{{ debate.creator.name }}:</p>
             <p class="q-pt-none">{{ debate.description }}</p>
           </div>
         </div>
         <q-separator />
         <div class="row">
-          <q-expansion-item v-model="add_reply[0]" dense-toggle label="Add Comment" style="z-index:5" class="full-width q-mb-lg text-right">
+          <q-expansion-item v-model="add_reply[0]" dense-toggle label="Add Response" style="z-index:5" class="full-width bg-grey-5 q-mb-lg text-right q-pb-lg">
             <AddDebateComment
             :debateId="debate.id"
             parentId=0
@@ -53,22 +53,23 @@
               />
             </div>
             <div class="text-small">{{ comment.create_date }}</div>
-            <p class="text-h6 q-pa-none">{{ comment.creator.name }}:</p>
+            <p class="text-h5 q-pa-none">{{ comment.creator.name }}:</p>
             <p class="q-pt-none">{{ comment.text }}</p>
         </div>
         </div>
         <div class="row">
-          <q-expansion-item v-model="add_reply[comment.id]" dense-toggle label="reply" style="z-index:4" class="full-width bg-grey-4 text-right q-mt-md">
+          <q-expansion-item v-model="add_reply[comment.id]" dense-toggle label="reply" style="z-index:4" class="full-width bg-blue-4 text-right q-mt-md q-pb-lg">
             <AddDebateComment
             :debateId="debate.id"
             :parentId="comment.id"
             :reload="reload" />
+          <q-separator />
           </q-expansion-item>
         </div>
-        <q-expansion-item v-if="debate.childKeys.indexOf(comment.id) > -1" class="text-right bg-grey-2 q-mb-md" :label="'replies ' + debate.childComments[comment.id].length">
-          <div v-for="commentInner in debate.childComments[comment.id]" :key="commentInner.id" class="">
-          <div class="row text-left bg-grey-2 q-pr-lg q-mt-md">
-            <div class="col col-2 text-center q-pt-sm"><q-avatar class="comment-q-avatar-inner" round><img :src="comment.creator.avatar_url" /></q-avatar></div>
+        <q-expansion-item v-if="debate.childKeys.indexOf(comment.id) > -1" class="text-right bg-grey-4 q-mb-md" :label="'replies ' + debate.childComments[comment.id].length">
+          <div v-for="commentInner in debate.childComments[comment.id]" :key="commentInner.id" class="q-pl-lg q-pb-lg">
+          <div class="row text-left bg-grey-4 q-pr-lg q-pb-lg">
+            <div class="col col-2 text-center"><q-avatar class="comment-q-avatar-inner" round><img :src="comment.creator.avatar_url" /></q-avatar></div>
             <div class="col p-pa-none">
               <div class="float-right">
                 {{ comment_likes_amounts[commentInner.id] }} <q-rating
@@ -85,7 +86,7 @@
                 />
               </div>
               <div>{{ commentInner.create_date }}</div>
-              <p class="text-h6 align-left q-pa-none">{{ commentInner.creator.name }}:</p>
+              <p class="text-h6 align-left q-pa-none ">{{ commentInner.creator.name }} replies:</p>
               <p class="q-pt-none q-pr-md align-left">{{ commentInner.text }}</p>
           </div>
           </div>
@@ -100,9 +101,12 @@
 <script>
 import EditDebateWidget from 'components/debate/EditDebateWidget.vue'
 import AddDebateComment from 'components/debate/AddDebateComment.vue'
+import TextToolsMixin from 'components/mixins/TextToolsMixin.vue'
+import { date } from 'quasar'
 export default {
   name: 'DebateDialogComponent',
-  props: ['debateId', 'userOrganizationId'],
+  mixins: [TextToolsMixin],
+  props: ['debateId', 'userOrganizationId', 'pageReload'],
   components: { AddDebateComment, EditDebateWidget },
   data () {
     return {
@@ -117,6 +121,18 @@ export default {
   },
   created () {
     this.getDebate()
+  },
+  computed: {
+    readyDate: function () {
+      return date.formatDate(this.debate.create_date, 'MMM Do, YYYY')
+    },
+    readyComments: function () {
+      return this.debate.comments.map((comment) => {
+        comment.text = this.checkStr(comment.text)
+        comment.create_date = date.formatDate(comment.create_date, 'MMM Do, YYYY')
+        return comment
+      })
+    }
   },
   methods: {
     like: async function (commentId) {
@@ -140,7 +156,7 @@ export default {
           this.reload()
           this.$q.notify({
             type: 'positive',
-            message: 'Update Success'
+            message: 'Like Success'
           })
         })
         .catch((err) => {
@@ -151,8 +167,8 @@ export default {
         })
     },
     reload: function () {
-      this.getDebate()
       this.expanded = false
+      this.getDebate()
       for (let i = 0; i < this.add_reply.length; i++) {
         this.add_reply[i] = false
       }
@@ -161,8 +177,10 @@ export default {
       const q = `${process.env.api}/debates/${this.debateId}?filter={"include":[{"relation":"creator"}, {"relation":"comments", "scope":{"include":[{"relation":"creator"}, {"relation":"likes"}]}}], "order": "create_date ASC"}`
       const debate = await this.$axios.get(q)
       this.debate = debate.data
-      this.setupLikes()
-      this.sortComments()
+      if (this.debate.comments) {
+        this.setupLikes()
+        this.sortComments()
+      }
     },
     setupLikes: function () {
       for (let i = 0; i < this.debate.comments.length; i++) {
@@ -175,10 +193,10 @@ export default {
       }
     },
     sortComments: function () {
-      const childComments = this.debate.comments.filter((obj) => { return obj.parent_comment_id })
+      const childComments = this.readyComments.filter((obj) => { return obj.parent_comment_id })
       this.debate.childComments = {}
       this.debate.childKeys = []
-      this.debate.topComments = this.debate.comments.filter((obj) => { return !obj.parent_comment_id })
+      this.debate.topComments = this.readyComments.filter((obj) => { return !obj.parent_comment_id })
       this.debate.topComments.sort((a, b) => (a.create_date < b.create_date) ? 1 : -1)
       for (let i = 0; i < childComments.length; i++) {
         if (typeof this.debate.childComments[childComments[i].parent_comment_id] !== 'object') {

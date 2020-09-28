@@ -2,7 +2,7 @@
 <div class="row" style="width:60px;">
   <div class="col col-6 text-center">
     <div>
-      <q-icon @click="like" name="thumb_up_alt" v-ripple color="blue" class="cursor-pointer" />
+      <q-icon @click="like" name="thumb_up" v-ripple color="blue" :class="!readonly ? 'cursor-pointer' : ''" />
     </div>
     <div>
       <span class="text-weight-bolder">{{ numLikes }}</span>
@@ -10,7 +10,7 @@
   </div>
   <div class="col col-6 text-center">
     <div ripple>
-      <q-icon @click="dislike" name="thumb_down_alt" v-ripple color="red" class="cursor-pointer" />
+      <q-icon @click="dislike" name="thumb_down" v-ripple color="red" :class="!readonly ? 'cursor-pointer' : ''" />
     </div>
     <div>
       <span class="text-weight-bolder">{{ numDislikes }}</span>
@@ -39,7 +39,8 @@ export default {
     },
     update: async function (val) {
       if (!this.$errorHandler.loggedInCheck()) { return false }
-      if (this.readonly === 'true') {
+      if (!this.$errorHandler.organizationCheck(this.organizationId)) { return false }
+      if (this.readonly) {
         this.$q.notify({
           type: 'negative',
           message: 'Wrong Organization'

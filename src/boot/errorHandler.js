@@ -22,6 +22,9 @@ export default async ({ Vue }) => {
     isLoggedInUser: function (uid) {
       return uid === store.state.user.uid
     },
+    isLoggedIn: function () {
+      return typeof store.state.user.uid === 'number'
+    },
     organizationCheck: function (key) {
       if (!this.loggedInCheck()) {
         return false

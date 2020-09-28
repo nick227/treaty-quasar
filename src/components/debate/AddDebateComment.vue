@@ -36,7 +36,7 @@ export default {
       }).catch((err) => {
         this.$q.notify({
           type: 'negative',
-          message: 'Error saving: ' + err
+          message: 'Error saving debate comment: ' + err
         })
       })
     }

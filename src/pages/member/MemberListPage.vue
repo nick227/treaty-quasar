@@ -1,7 +1,11 @@
 <template>
 <div class="river-width">
-<div class="row q-pa-lg">
-  <div class="col col-shrink q-mb-lg" v-for="user in users" :key="user.id">
+    <h6 class="q-mt-lg q-mb-lg q-pa-none text-center">Members</h6>
+<div class="row q-pl-lg q-pr-lg">
+      <q-separator />
+      <h3 class="q-ma-lg text-center" v-if="!users.length && !done">LOADING...</h3>
+      <h3 class="q-ma-lg text-center" v-if="!users.length && done">No members found.</h3>
+  <div class="col col-shrink info-card q-mb-lg" v-for="user in users" :key="user.id">
     <q-card class="flex-break q-ma-lg">
       <div :style="'background-image:url(' + user.avatar_url + ')'" class="card-image"></div>
       <q-card-section>
@@ -36,18 +40,18 @@ export default {
       loadNum: 0
     }
   },
-  mounted () {
-    this.getItems()
+  created () {
+    this.getUsers()
   },
   methods: {
     onIntersection: function (index, done) {
       if (this.loadNum > 1) {
         this.pointer = this.pointer + this.limit
-        this.getItems()
+        this.getUsers()
       }
       this.loadNum++
     },
-    getItems: async function () {
+    getUsers: async function () {
       const q = `${process.env.api}/users?filter[limit]=${this.limit}&filter[skip]=${this.pointer}`
       const users = await this.$axios.get(q)
       if (this.limit > users.data.length) {

@@ -1,9 +1,9 @@
 <template>
   <div>
-    <q-expansion-item dense-toggle icon="comment" :label="capitalize(entityType) + ' Comments ' + commentCount" class="bg-grey-trans" @click="loadComments">
+    <q-expansion-item dense-toggle icon="comment" :label="'Comments ' + commentCount" class="bg-grey-trans" @click="loadComments">
       <div class="q-pa-md full-width">
         <q-form @submit="postComment">
-          <q-input filled type="textarea" required autogrow class="bg-grey-5" placeholder="Type comment here" v-model="newComment" :key="entityId" />
+          <q-input filled type="textarea" required autogrow class="bg-grey-5" placeholder="Type comment here" v-model="newComment" />
           <div class="row">
             <q-space />
             <q-btn type="submit" color="primary q-mt-lg">submit</q-btn>
@@ -46,6 +46,7 @@
 </template>
 <script>
 import { date } from 'quasar'
+import TextToolsMixin from 'components/mixins/TextToolsMixin.vue'
 export default {
   name: 'CommentsWidget',
   mounted () {
@@ -64,10 +65,15 @@ export default {
       loaded: false
     }
   },
+  mixins: [TextToolsMixin],
   props: {
     entityId: {
       type: Number,
       required: true
+    },
+    userOrganizationId: {
+      type: Number,
+      required: false
     },
     entityType: {
       type: String,
@@ -76,11 +82,8 @@ export default {
   },
   computed: {
     readyComments: function () {
-      const embedHtml = '<iframe type="text/html" width="480" height="320" src="http://www.youtube.com/embed/embed_code_target" frameborder="0"></iframe>'
       return this.comments.map((comment) => {
-        const ytMatch = comment.text.match(/(http:|https:)?(\/\/)?(www\.)?(youtube.com|youtu.be)\/(watch|embed)?(\?v=|\/)?(\S+)?/)
-        comment.text = ytMatch ? comment.text.replace(ytMatch[0], function (a, b) { return embedHtml.replace('embed_code_target', ytMatch[7].split('&')[0]) }) : comment.text
-        comment.text = comment.text.replaceAll('<script>', '')
+        comment.text = this.checkStr(comment.text)
         comment.create_date = date.formatDate(comment.create_date, 'MMM Do, YYYY')
         return comment
       })
@@ -103,8 +106,9 @@ export default {
         q = `${process.env.api}/${this.entityType}-comment-likes`
         method = 'post'
       }
-      console.log(q)
-      console.log(payload)
+      if (this.userOrganizationId) {
+        payload.organization_id = this.userOrganizationId
+      }
       await this.$axios.[method](q, payload, { headers: { Accept: 'application/json' } })
         .then((res) => {
           this.getComments()

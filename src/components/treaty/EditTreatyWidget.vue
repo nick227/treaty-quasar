@@ -42,7 +42,6 @@
       />
     </div>
     <div class="full-width  text-right q-mt-md">
-      <q-btn label="CANCEL" @click="reload" type="button" color="accent" class="q-mr-sm"/>
       <q-btn label="SUBMIT" type="submit" color="primary"/>
     </div>
   </q-form>
@@ -96,7 +95,6 @@ export default {
         q = `${process.env.api}/treaty-provisions/${this.provisionsToDelete[0]}/provision-comments`
         await this.$axios.delete(q)
         q = `${process.env.api}/treaty-provisions/${this.provisionsToDelete[0]}`
-        console.log(q)
         await this.$axios.delete(q)
       }
     },

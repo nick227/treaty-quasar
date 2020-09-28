@@ -13,6 +13,7 @@ const routes = [
       { path: '/members', component: () => import('pages/member/MemberListPage.vue') },
       { path: '/profile/:id', component: () => import('pages/member/ProfilePage.vue') },
       { path: '/login', component: () => import('pages/LoginPage.vue') },
+      { path: '/conversation', component: () => import('pages/activity/ActivityListPage.vue') },
       { path: '/messages', component: () => import('pages/member/MessagesPage.vue') }
     ]
   }

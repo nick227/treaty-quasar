@@ -11,7 +11,7 @@
         @click="leftDrawerOpen = !leftDrawerOpen"
       />
       <q-toolbar-title style="overflow:visible;">
-        <span class="">CONCORDANT.IO</span>
+        <span class="cursor-pointer" @click="$router.push('/')">CONCORDANT.IO</span>
         <q-avatar class="q-ml-lg" v-if="profile.id">
           <img class="cursor-pointer" @click="showProfile()" :src="profile.avatar_url">
         </q-avatar>

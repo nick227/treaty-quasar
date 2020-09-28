@@ -1,5 +1,23 @@
 <template>
-    <q-page-container class="river-width">
+  <div>
+    <div class="row full-width q-pa-sm bg-grey-2">
+      <div class="col col-md-5">
+        <a class="cursor-pointer" @click="$router.push('/organization/'+org_a.id)">
+            <q-avatar size="40px" square class=""><q-img rounded class="q-mt-none" :src="org_a.avatar_url"></q-img></q-avatar><br />
+            {{ org_a.name }}
+        </a>
+      </div>
+      <div class="col col-md-2 text-center q-pt-md">
+        vs.
+      </div>
+      <div class="col col-md-5 text-right">
+        <a class="cursor-pointer" @click="$router.push('/organization/'+org_b.id)">
+            <q-avatar size="40px" square class=""><q-img rounded class="q-mt-none" :src="org_b.avatar_url"></q-img></q-avatar><br />
+            {{ org_b.name }}
+        </a>
+      </div>
+    </div>
+    <q-page-container class="river-width" v-if="!loading">
       <q-page padding>
         <div v-if="isUser" class="row relative-position q-mb-sm full-width" style="height:35px;">
           <q-expansion-item v-model="editExpanded" switch-toggle-side dense-toggle label="Edit Treaty" class="z-top">
@@ -13,17 +31,18 @@
     :id="treaty.id" />
           </q-expansion-item>
         </div>
-        <RatingWidget v-if="userOrganizationId" :entityId="treaty.id" :userOrganizationId="userOrganizationId" entityType="treaty" />
+        <RatingWidget :readonly="userOrganizationId ? false : true" :entityId="treaty.id" :userOrganizationId="userOrganizationId" entityType="treaty" />
         <div class="row">
           <div class="col col-3"><q-img :src="treaty.avatar_url" /></div>
           <div class="col q-pl-md">
-            <div class="">{{ org_a.name }} vs. {{ org_b.name }}</div>
+            <div class=""><router-link :to="'/conflict/'+treaty.conflict.id">{{ org_a.name }} vs. {{ org_b.name }}</router-link></div>
             <h4 class="q-pa-none">{{ treaty.name }}</h4>
             <p class="q-pt-none">{{ treaty.description }}</p>
-            <p v-if="treaty.creator" class="caption q-pt-none">Created by: {{ treaty.creator.name }}</p>
+            <p v-if="treaty.creator" class="caption q-pt-none">Created by: <router-link :to="'/profile/'+treaty.creator.id">{{ treaty.creator.name }}</router-link></p>
           </div>
         </div>
-        <h5>Provisions:</h5>
+        <q-separator class="q-mt-md" />
+        <h5 v-if="provisions.length">Provisions:</h5>
         <q-separator class="q-mb-md" />
         <q-expansion-item v-if="isUser" v-model="expanded" label="Add Provision" class="full-width q-mb-sm bg-blue-grey-1">
           <AddProvision
@@ -33,7 +52,7 @@
         </q-expansion-item>
         <q-list class="full-width">
           <div v-for="(provision, index) in provisions" :key="provision.id" class="full-width q-mb-sm">
-            <TreatyProvisionComponent v-if="userOrganizationId"
+            <TreatyProvisionComponent
                 :provision="provision"
                 :index="index"
                 :userOrganizationId="userOrganizationId"
@@ -46,7 +65,9 @@
         :key="'votesw' + counter"
         :id="treaty.id"
         :userOrganizationId="userOrganizationId" />
+        <q-separator class="q-mt-md" />
         <h5>Votes:</h5>
+        <q-separator class="q-mb-md" />
         <TreatyVotesTable
       :reload="getVotes"
       :key="'votest' + counter"
@@ -66,13 +87,16 @@
               <q-btn flat :label="org_b.name" color="primary" @click="setOrg(org_b)" v-close-popup /> </q-card-actions>
           </q-card>
         </q-dialog>
+        <RelatedTreatiesWidget :conflictId="treaty.conflict.id" :currentId="treaty.id" />
       </q-page>
     </q-page-container>
+  </div>
 </template>
 <script>
 import RatingWidget from 'components/widgets/RatingWidget.vue'
 import CommentsWidget from 'components/widgets/CommentsWidget.vue'
 import EditTreatyWidget from 'components/treaty/EditTreatyWidget.vue'
+import RelatedTreatiesWidget from 'components/treaty/RelatedTreatiesWidget.vue'
 import AddProvision from 'components/treaty/AddProvision.vue'
 import TreatyVoteWidget from 'components/treaty/TreatyVoteWidget.vue'
 import TreatyVotesTable from 'components/treaty/TreatyVotesTable.vue'
@@ -81,11 +105,11 @@ export default {
   name: 'TreatyPage',
   meta () {
     return {
-      title: this.treatyName
+      title: this.treaty.name
     }
   },
   props: [],
-  components: { AddProvision, CommentsWidget, TreatyVoteWidget, RatingWidget, TreatyVotesTable, EditTreatyWidget, TreatyProvisionComponent },
+  components: { AddProvision, CommentsWidget, TreatyVoteWidget, RatingWidget, TreatyVotesTable, EditTreatyWidget, TreatyProvisionComponent, RelatedTreatiesWidget },
   data () {
     return {
       userOrganizationId: null,
@@ -100,6 +124,7 @@ export default {
       isUser: false,
       votes: [],
       treaty: {},
+      loading: true,
       verify_org: false,
       org_a: {},
       org_b: {},
@@ -124,6 +149,7 @@ export default {
       this.loadProvisions()
       this.setupTable()
       this.isUser = this.$errorHandler.isLoggedInUser(this.treaty.creator_user_id)
+      this.loading = false
     },
     setOrg: function (obj) {
       this.userOrganizationName = obj.name

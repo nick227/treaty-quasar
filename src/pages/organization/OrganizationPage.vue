@@ -44,10 +44,15 @@
           </q-item-section>
         </q-item>
     </q-list>
-   </div>
+   </div>{{typeof org.id}}
+  <CommentsWidget
+        entityId="org.id"
+        entityType="organization"
+  ></CommentsWidget>
 </q-page>
 </template>
 <script>
+import CommentsWidget from 'components/widgets/CommentsWidget.vue'
 export default {
   meta () {
     return {
@@ -55,6 +60,7 @@ export default {
     }
   },
   name: 'Organization',
+  components: { CommentsWidget },
   data () {
     return {
       org: {},
@@ -94,6 +100,7 @@ export default {
       const q = `${process.env.api}/organizations/${this.$route.params.id}`
       const org = await this.$axios.get(q)
       this.org = org.data
+      console.log(this.org)
     },
     loadMembers: async function () {
       const q = `${process.env.api}/organizations/${this.$route.params.id}/users`

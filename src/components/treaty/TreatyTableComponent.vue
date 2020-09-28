@@ -1,7 +1,7 @@
 <template>
   <div>
   <div class="full-width q-pa-sm q-mb-lg">
-    <q-btn class="full-width text-center" @click="openCreateTreaty" color="primary">Create Treaty</q-btn>
+    <q-btn class="full-width text-center" @click="openCreateTreaty" color="accent">Add Treaty</q-btn>
   </div>
   <div class="row full-width">
     <q-table
@@ -14,6 +14,13 @@
     row-key="id"
     :pagination="initialPagination"
     >
+      <template v-slot:top-right>
+        <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+      </template>
     <template v-slot:body-cell-actions="props">
           <q-td :props="props">
             <q-btn  square flat color="grey" @click="openTreaty(props.row)" icon="launch"></q-btn>
@@ -39,12 +46,14 @@
 <script>
 import TreatyDialogComponent from 'components/treaty/TreatyDialogComponent.vue'
 import CreateTreaty from 'components/treaty/CreateTreaty.vue'
+import { date } from 'quasar'
 export default {
   name: 'TreatyTableComponent',
   components: { TreatyDialogComponent, CreateTreaty },
   props: ['userOrganizationId', 'conflictId'],
   data () {
     return {
+      filter: '',
       treaties: [],
       childTreatyId: null,
       creatorName: null,
@@ -88,15 +97,15 @@ export default {
       if (this.limit > treaties.data.length) {
         this.done = true
       }
-      const obj = treaties.data.map((obj) => { return { id: obj.id, avatar_url: obj.avatar_url, name: obj.name, description: obj.description, status: obj.status.name, creatorId: obj.creator.id, creatorName: obj.creator.name, organization_id: obj.organization.id, organization: obj.organization.name } })
+      const obj = treaties.data.map((obj) => { return { id: obj.id, avatar_url: obj.avatar_url, create_date: obj.create_date, name: obj.name, description: obj.description, status: obj.status.name, creatorId: obj.creator.id, creatorName: obj.creator.name, organization_id: obj.organization.id, organization: obj.organization.name } })
       this.treaties = this.treaties.concat(obj)
     },
     setupTable: function () {
       this.columns = [
         { name: 'name', label: 'Name', field: 'name', align: 'left' },
-        { name: 'status', label: 'Status', field: 'status', sortable: true, align: 'left' },
         { name: 'organization', label: 'Organization', field: 'organization', sortable: true, align: 'left' },
         { name: 'creatorName', label: 'Creator', field: 'creatorName', sortable: true, align: 'left' },
+        { name: 'create_date', label: 'Date', field: 'create_date', sortable: true, align: 'left', format: val => date.formatDate(val, 'M/D/YY') },
         { name: 'actions', label: 'View', field: '', align: 'center' }
       ]
     }

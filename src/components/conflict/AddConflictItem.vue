@@ -1,15 +1,15 @@
 <template>
   <div>
-      <q-btn class="full-width" color="accent" label="Add New" @click="openForm" />
+      <q-btn class="full-width" color="accent" :label="'Add '+entityType" @click="openForm" />
       <q-dialog v-model="prompt" persistent>
       <q-card style="min-width: 350px">
         <q-card-section color="secondary">
-          <div class="text-h6">Add {{ organizationName }} {{ entityType }}</div>
+          <div class="text-h6 capitalize">Add {{ entityType }}</div>
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <q-input required dense v-model="title" placeholder="title" autofocus />
-          <q-input required dense v-model="description" placeholder="description" autogrow />
+          <q-select v-model="type" :options="options" required label="Organization" />
+          <q-input autogrow required dense maxlength="100" @keyup="updateCount" :hint="charsRemain + ' characters'" v-model="title" label="Title" />
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
@@ -27,18 +27,29 @@ export default {
     return {
       prompt: false,
       title: '',
-      description: ''
+      description: '',
+      type: '',
+      options: [{ label: this.orgA.name, value: this.orgA.id }, { label: this.orgB.name, value: this.orgB.id }],
+      charsRemain: 100,
+      maxChars: 100
     }
   },
   mounted () {},
-  props: ['entityType', 'conflictId', 'organizationId', 'fn', 'organizationName', 'userOrganizationId'],
+  props: ['entityType', 'conflictId', 'reload', 'userOrganizationId', 'orgA', 'orgB'],
   methods: {
+    updateCount: function () {
+      this.charsRemain = this.maxChars - this.title.length
+    },
     openForm: function () {
       if (!this.$errorHandler.organizationCheck(this.userOrganizationId)) { return false }
+      this.title = ''
+      this.description = ''
       this.prompt = true
     },
     clearForm: function () {
       this.title = ''
+      this.type = ''
+      this.charsRemain = this.maxChars
       this.description = ''
     },
     submitForm: async function () {
@@ -47,13 +58,12 @@ export default {
         creator_user_id: this.$store.state.user.uid,
         creator_organization_id: this.userOrganizationId,
         title: this.title,
-        description: this.description,
-        organization_id: this.organizationId,
+        organization_id: this.type.value,
         conflict_id: this.conflictId
       }
       await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } })
       this.clearForm()
-      this.fn()
+      this.reload()
     }
   }
 }

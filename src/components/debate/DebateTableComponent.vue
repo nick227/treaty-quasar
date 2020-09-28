@@ -16,6 +16,13 @@
     row-key="id"
     :pagination="initialPagination"
     >
+      <template v-slot:top-right>
+        <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+      </template>
     <template v-slot:body-cell-actions="props">
           <q-td :props="props">
             <q-btn  square flat color="grey" @click="openDebate(props.row)" icon="launch"></q-btn>
@@ -27,6 +34,7 @@
   <q-dialog v-model="showDebate" class="z-top">
     <DebateDialogComponent class="z-top"
     :userOrganizationId="userOrganizationId"
+    :pageReload="reload"
     :debateId="childDebateId" />
   </q-dialog>
   </div>
@@ -34,17 +42,19 @@
 <script>
 import DebateDialogComponent from 'components/debate/DebateDialogComponent.vue'
 import CreateDebateWidget from 'components/debate/CreateDebateWidget.vue'
+import { date } from 'quasar'
 export default {
   name: 'DebateTableComponent',
   props: ['userOrganizationId', 'conflictId'],
   components: { CreateDebateWidget, DebateDialogComponent },
   data () {
     return {
+      filter: '',
       expanded: false,
       childDebateId: null,
       debates: [],
       pointer: 0,
-      limit: 5,
+      limit: 15,
       done: false,
       loading: false,
       loadNum: 0,
@@ -87,6 +97,7 @@ export default {
         { name: 'description', label: 'Description', field: 'description', sortable: true, align: 'left', classes: 'ellipsis', format: (val) => { return val.length > 50 ? val.slice(0, 50) + '...' : val } },
         { name: 'creator', label: 'Created by', field: 'creator_name', sortable: true, align: 'left' },
         { name: 'creator_organization', label: 'Organization', field: 'creator_organization_name', sortable: true, align: 'left' },
+        { name: 'create_date', label: 'Date', field: 'create_date', sortable: true, align: 'left', format: val => date.formatDate(val, 'M/D/YY') },
         { name: 'actions', label: 'View', field: '', align: 'center' }
       ]
     },
@@ -113,7 +124,8 @@ export default {
       this.debates = this.debates.concat(debates.data)
     },
     reload: function () {
-      this.new_debate = false
+      this.showDebate = false
+      this.expanded = false
       this.debates = []
       this.loadDebates()
     }

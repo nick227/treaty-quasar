@@ -3,7 +3,7 @@
   <div class="text-center q-pa-lg z-top absolute-center">
     <h1 class="text-white welcome">CONCORDANT.IO</h1>
     <h4 class="q-mb-sm text-white">The treaty building platform</h4>
-    <q-btn class="q-mb-sm" to="/treaties" color="dark full-width">GET STARTED</q-btn>
+    <q-btn class="q-mb-sm" :to="!$errorHandler.isLoggedIn() ? '/login' : '/treaties'" color="dark full-width">GET STARTED</q-btn>
     <p class="text-center z-top text-white">Giving PEACE a chance.</p>
   </div>
 <canvas id='funbars'></canvas>
@@ -13,7 +13,9 @@
 <script>
 export default {
   meta () {
-    return {}
+    return {
+      title: 'The treaty building platform'
+    }
   },
   name: '',
   components: {},

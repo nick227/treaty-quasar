@@ -37,12 +37,28 @@
           <p class="q-pa-none" style="max-width:98%;">{{ user.biography }}</p>
         </q-card-section>
       </q-card-section>
+      <q-separator />
+      <h6 class="q-mt-lg q-ml-lg">Treaties:</h6>
+    <div class="row q-pa-lg justify-start content-start">
+      <p v-if="!treaties.length">No Treaties</p>
+      <div class="col col-shrink q-ma-sm" v-for="treaty in treaties" :key="treaty.id">
+        <q-card class="flex-break q-mr-md transparent">
+      <div :style="'background-image:url(' + treaty.avatar_url + ')'" class="card-image"></div>
+      <q-card-section>
+        <div class="text-h6">{{ treaty.name }}</div>
+      </q-card-section>
+      <q-card-section class="q-pt-none">
+        <q-btn :to="'/treaty/'+treaty.id" class="full-width" color="dark">VISIT</q-btn>
+      </q-card-section>
+    </q-card>
+      </div>
+    </div>
       <q-separator v-if="orgs.length" />
       <h6 class="q-mt-lg q-ml-lg">Member of:</h6>
     <div class="row q-pa-lg justify-start content-start">
-      <p v-if="!orgs.length">No Groups</p>
+      <p v-if="!orgs.length">No Organizations</p>
       <div class="col col-shrink q-ma-sm" v-for="org in orgs" :key="org.id">
-        <q-card class="org-card flex-break q-mr-md transparent">
+        <q-card class="flex-break q-mr-md transparent">
       <div :style="'background-image:url(' + org.avatar_url + ')'" class="card-image"></div>
       <q-card-section>
         <div class="text-h6">{{ org.name }}</div>
@@ -83,6 +99,7 @@ export default {
   name: 'Profile',
   data () {
     return {
+      treaties: [],
       user: {},
       orgs: {},
       style: '',
@@ -97,6 +114,7 @@ export default {
   async created () {
     this.getProfile()
     this.getOrganizations()
+    this.getTreaties()
   },
   methods: {
     openSendMessage: function () {
@@ -120,6 +138,11 @@ export default {
       const q = `${process.env.api}/users/${this.$route.params.id}/organizations`
       const orgs = await this.$axios.get(q)
       this.orgs = orgs.data
+    },
+    getTreaties: async function () {
+      const q = `${process.env.api}/users/${this.$route.params.id}/treaties`
+      const treaties = await this.$axios.get(q)
+      this.treaties = treaties.data
     }
   }
 }

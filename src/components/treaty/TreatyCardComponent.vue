@@ -1,26 +1,24 @@
 <template>
-  <q-item class="full-width q-mb-lg">
-    <q-card class="full-width">
-      <div class="text-h4 q-pa-md">{{ treaty.name }}</div>
-      <q-img @click="goto('/treaty/'+treaty.id)" clickable v-ripple class="cursor-pointer" :src="treaty.avatar_url"></q-img>
-      <div class="q-pl-md bg-grey-3">{{ treaty.organization_a.name }} vs. {{ treaty.organization_b.name }}</div>
-      <q-card-section>
-        <q-btn align="around" class="float-right text-black" @click="goto('/treaty/'+treaty.id)" color="white" label="Visit" icon="launch" />
-        <div class="caption">Created by: {{ treaty.creator_name }}</div>
-        <div>Organization: {{ treaty.creator_organization_name }}</div>
-        <q-separator class="q-mt-sm q-mb-sm" />
-        <p class="q-pa-none">{{ treaty.description }}</p>
-        <q-separator class="q-mt-sm q-mb-sm" />
-        <div class="row">
-          <div class="col">Yay: {{ treaty.yay_votes }} Nay: {{ treaty.nay_votes }}</div>
-          <div class="col text-right">Rated {{ treaty.rating }}/5</div>
-        </div>
-      </q-card-section>
-      <q-expansion-item v-if="treaty.provisions" class="bg-blue-grey-5" switch-toggle-side dense-toggle :label="'Provisions ' + treaty.provisions.length">
-        <div class="q-pl-lg q-pt-sm q-pr-lg q-pb-sm" v-for="(provision, i) in treaty.provisions" :key="provision.id"><q-badge class="q-mr-sm" color="grey">{{ i + 1 }}</q-badge> {{ provision.title }}</div>
-      </q-expansion-item>
-    </q-card>
-  </q-item>
+  <q-card class="flex-break q-ma-lg">
+    <div :style="'background-image:url(' + treaty.avatar_url + ')'" class="card-image"></div>
+    <q-card-section>
+      <div class="">{{ treaty.organization_a.name }} vs. {{ treaty.organization_b.name }}</div>
+      <div class="text-h6">{{ treaty.name }}</div>
+      <div class="text-caption">Created by: {{ treaty.creator_name }}</div>
+      <div class="text-caption">Organization: {{ treaty.creator_organization_name }}</div>
+      <div>{{ treaty.provisions.length }} Provisions</div>
+    </q-card-section>
+    <q-card-section>
+      <q-btn class="full-width" @click="goto('/treaty/'+treaty.id)" color="primary" label="Visit" />
+    </q-card-section>
+    <q-card-section>
+      <q-separator class="q-mt-sm q-mb-sm" />
+      <div class="row">
+        <div class="col">Yay: {{ treaty.yay_votes }} Nay: {{ treaty.nay_votes }}</div>
+        <div class="col text-right">Rated {{ treaty.rating }}/5</div>
+      </div>
+    </q-card-section>
+  </q-card>
 </template>
 <script>
 export default {

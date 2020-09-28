@@ -17,17 +17,17 @@
     :id="treatyId" />
           </q-expansion-item>
         </div>
-        <RatingWidget :entityId="treatyId" :userOrganizationId="userOrganizationId" entityType="treaty" />
-        <div class="row">
-          <div class="col col-3"><q-img :src="treaty.avatar_url" /></div>
+        <RatingWidget :readonly="userOrganizationId ? false : true" :entityId="treatyId" :userOrganizationId="userOrganizationId" entityType="treaty" />
+        <div class="row q-mb-lg">
+          <div class="col col-3" v-if="treaty.avatar_url"><q-img :src="treaty.avatar_url" /></div>
           <div class="col q-pl-md">
             <h4 class="q-pb-sm">{{ treaty.name }}</h4>
             <p class="q-pt-none">{{ treaty.description }}</p>
             <p class="caption q-pt-none">Created by: {{ creatorName }}</p>
           </div>
         </div>
+        <q-separator class="q-mt-md" />
         <h5>Provisions:</h5>
-        <q-separator class="q-mb-md" />
         <q-expansion-item v-if="isUser" v-model="expanded" label="Add Provision" class="full-width q-mb-sm bg-blue-grey-1">
           <AddProvision
           :treatyId="treatyId"
@@ -43,17 +43,18 @@
                 :creatorId="creatorId" />
           </div>
         </q-list>
-        <h5>Votes:</h5>
-        <TreatyVoteWidget class="q-mt-lg q-mb-sm"
+        <TreatyVoteWidget class="q-mb-sm"
         :reload="getVotes"
         :votes="votes"
         :id="treatyId"
         :userOrganizationId="userOrganizationId" />
+        <h5>Votes:</h5>
         <TreatyVotesTable
       :reload="getVotes"
       :key="'votes' + counter"
       :votes="votes"
       :id="treatyId" />
+        <h5>Comments:</h5>
         <CommentsWidget
               :entityId="treatyId"
               entityType="treaty"
@@ -102,6 +103,7 @@ export default {
       const q = `${process.env.api}/treaties/${this.treatyId}`
       const treaty = await this.$axios.get(q)
       this.treaty = treaty.data
+      this.isUser = this.$errorHandler.isLoggedInUser(this.treaty.creator_user_id)
     },
     setupTable: function () {
       this.columns = [
@@ -134,7 +136,6 @@ export default {
     }
   },
   created () {
-    this.isUser = this.$errorHandler.isLoggedInUser(this.treaty.creatorUserId)
     this.getTreaty()
     this.getVotes()
     this.loadProvisions()

@@ -33,6 +33,18 @@
       <q-btn label="SUBMIT" type="submit" color="primary"/>
     </div>
   </q-form>
+  <q-dialog v-model="confirm" persistent>
+      <q-card>
+        <q-card-section class="row items-center">
+          <q-avatar icon="check" color="primary" text-color="white" />
+          <span class="q-ml-sm">Permanently delete this conflict?</span>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" color="primary" v-close-popup />
+          <q-btn flat label="DELETE FOREVER" @click="deleteConflict" color="primary" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 <script>
@@ -58,7 +70,8 @@ export default {
     return {
       data_name: this.name,
       data_description: this.description,
-      data_avatar_url: this.avatar_url
+      data_avatar_url: this.avatar_url,
+      confirm: false
     }
   },
   mounted () {
@@ -66,6 +79,24 @@ export default {
     this.$mount()
   },
   methods: {
+    deleteConflict: async function () {
+      const q = `${process.env.api}/conflicts/${this.id}`
+      await this.$axios.delete(q)
+        .then((res) => {
+          this.confirm = false
+          this.pageReload()
+          this.$q.notify({
+            type: 'positive',
+            message: 'Delete Success'
+          })
+        })
+        .catch((err) => {
+          this.$q.notify({
+            type: 'negative',
+            message: 'Error deleting: ' + err
+          })
+        })
+    },
     handleInput (value) {
       this.$emit('msgChange', value)
     },

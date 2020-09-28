@@ -24,7 +24,7 @@
         </q-expansion-item>
       </div>
       <q-card-section horizontal class="full-width items-start q-pb-lg">
-        <q-img :src="avatar_url" style="width: 50%;" />
+        <q-img :src="avatar_url" style="max-width: 50%; max-height:250px;" />
         <q-card-section class="q-pb-md q-pt-none" style="width: 50%;">
           <h5 class="q-pt-none">{{ name }}</h5>
           <p class="q-pt-none">{{ description }}</p>

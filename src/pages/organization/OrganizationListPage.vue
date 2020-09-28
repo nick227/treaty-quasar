@@ -1,27 +1,25 @@
 <template>
   <q-page padding class="river-width">
-  <q-expansion-item switch-toggle-side dense-toggle label="Create Organization">
-    <CreateOrganizationWidget />
+  <q-expansion-item switch-toggle-side dense-toggle v-model="expanded" label="Create Organization">
+    <CreateOrganizationWidget :reload="reload" />
   </q-expansion-item>
-    <h6 class="q-mb-sm">Organizations</h6>
-    <q-list padding>
-      <q-separator />
-    <div v-for="org in organizations" :key="org.id">
-      <q-item class="full-width">
-         <q-card class="full-width">
-      <q-img rounded clickable v-ripple @click="goto('/organization/'+org.id)" class="q-mt-none cursor-pointer" :src="org.avatar_url"></q-img>
+    <h6 class="q-mb-sm text-center">Organizations</h6>
+    <q-list class="row">
+      <h3 class="q-ma-lg text-center" v-if="!organizations.length && !done">LOADING...</h3>
+      <h3 class="q-ma-lg text-center" v-if="!organizations.length && done">No organizations found.</h3>
+    <div v-for="org in organizations" class="col col-shrink info-card q-mb-lg" :key="org.id">
+    <q-card class="flex-break q-ma-lg">
+  <router-link :to="'/organization/'+org.id"><div :style="'background-image:url(' + org.avatar_url + ')'" class="card-image"></div></router-link>
       <q-card-section>
-        <div clickable v-ripple @click="goto('/organization/'+org.id)" class="text-h6 cursor-pointer">{{ org.name }}</div>
+        <router-link :to="'/organization/'+org.id"><div class="text-h6 cursor-pointer">{{ org.name }}</div></router-link>
       </q-card-section>
       <q-card-section class="q-pt-none">
         {{ org.description }}
       </q-card-section>
-      <div class="text-right q-pa-lg">
-        <q-btn :label="joinedList.indexOf(org.id) === -1 ? 'Join' : 'Unjoin'" :color="joinedList.indexOf(org.id) === -1 ? 'primary' : 'secondary'" style="width:100px" :ripple="{ center: true }" @click="joinBtn(org.id)"></q-btn>
-        </div>
-    </q-card>
-      </q-item>
-      <q-separator />
+      <q-card-section class="q-pt-none">
+        <q-btn :label="joinedList.indexOf(org.id) === -1 ? 'Join' : 'Unjoin'" :color="joinedList.indexOf(org.id) === -1 ? 'primary' : 'secondary'" class="full-width" :ripple="{ center: true }" @click="joinBtn(org.id)"></q-btn>
+      </q-card-section>
+      </q-card>
       </div>
   <div v-if="!done" v-intersection="onIntersection" class="full-width text-center">
     <q-spinner-dots color="primary" size="40px" />
@@ -44,8 +42,9 @@ export default {
       joined: [],
       joinedList: [],
       organizations: [],
+      expanded: false,
       pointer: 0,
-      limit: 4,
+      limit: 10,
       done: false,
       loadNum: 0
     }
@@ -90,6 +89,7 @@ export default {
       this.loadJoined()
     },
     reload: function () {
+      this.expanded = false
       this.joined = []
       this.joinedList = []
       this.organizations = []
