@@ -50,6 +50,8 @@ module.exports = function (/* ctx */) {
 
       env: {
         api: 'http://localhost:3000'
+        // api: 'https://concordant-api.herokuapp.com'
+        // api: 'http://localhost:3000'
       },
       // transpile: false,
 
