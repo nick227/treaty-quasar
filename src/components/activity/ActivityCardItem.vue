@@ -9,13 +9,19 @@
         <div class="q-pb-lg" v-html="readyMessage"></div>
       </q-card-section>
     </q-card>
+    <CommentsWidget
+          :entityId="item.id"
+          entityType="activity"
+    ></CommentsWidget>
   </div>
 </template>
 <script>
+import CommentsWidget from 'components/widgets/CommentsWidget.vue'
 import TextToolsMixin from 'components/mixins/TextToolsMixin.vue'
 export default {
   name: 'ActivityCardItem',
   mixins: [TextToolsMixin],
+  components: { CommentsWidget },
   props: ['item'],
   data () {
     return {}

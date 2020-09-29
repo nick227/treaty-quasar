@@ -1,8 +1,8 @@
 <template>
   <q-page class="river-width flex flex-center">
     <div class="q-mt-xl">
-      <q-btn color="primary" push class="full-width" icon="facebook" label="Login with Facebook" size="md" @click="auth('facebook')">
-      </q-btn>
+      <q-btn color="primary" push class="full-width" icon="facebook" label="Login with Facebook" size="md" @click="auth('facebook')"></q-btn>
+      <q-btn color="white" push class="full-width q-mt-lg text-black" icon="login" label="Login as Admin" size="md" @click="adminlogin()"></q-btn>
     </div>
   </q-page>
 </template>
@@ -15,6 +15,12 @@ export default {
   },
   name: 'Login',
   methods: {
+    adminlogin: function () {
+      const obj = {
+        id: '*******'
+      }
+      this.checkUser(obj)
+    },
     auth: async function (network) {
       this.$hello(network).login()
         .then((e) => {

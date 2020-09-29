@@ -1,7 +1,6 @@
 body{
   background-color: $offwhite;
 }
-p,
 h1,
 h2,
 h3,
@@ -9,7 +8,27 @@ h4,
 h5,
 h6 {
   margin: 0;
-  padding: 10px 0;
+  padding: 1px 0 2px 0;
+}
+p{
+  padding-bottom: 5px;
+}
+ul{
+  list-style-type: none;
+  padding: 0;
+  margin:0;
+  li{
+    padding: 0 ;
+  }
+}
+ul.alt-color{
+  li:nth-of-type(odd){
+    background-color: white;
+  }
+  li:nth-of-type(even){
+    background-color: lightgrey;
+  }
+
 }
 h1.welcome{
   font-size:5vw;

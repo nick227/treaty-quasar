@@ -27,7 +27,7 @@ export default {
     return {
       items: [],
       pointer: 0,
-      limit: 9,
+      limit: 3,
       done: false,
       loadNum: 0
     }

@@ -31,7 +31,6 @@ export default {
         { tagType: 'a', iconName: 'flash_on', href: '/conflicts', fn: false, text: 'Conflicts', visible: true },
         { tagType: 'a', iconName: 'article', href: '/treaties', fn: false, text: 'Treaties', visible: true },
         { tagType: 'a', iconName: 'public', href: '/organizations', fn: false, text: 'Organizations', visible: true },
-        { tagType: 'a', iconName: 'person', href: '/members', fn: false, text: 'Members', visible: true },
         { tagType: 'a', iconName: 'whatshot', href: '/conversation', fn: false, text: 'Conversation', visible: true },
         { tagType: 'a', iconName: 'email', href: '/messages', fn: false, text: 'Messages', visible: true },
         { tagType: 'a', iconName: 'login', href: '/login', fn: false, text: 'Login', visible: !this.$store.state.user.uid },

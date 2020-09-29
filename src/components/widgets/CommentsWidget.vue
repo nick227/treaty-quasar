@@ -49,7 +49,7 @@ import { date } from 'quasar'
 import TextToolsMixin from 'components/mixins/TextToolsMixin.vue'
 export default {
   name: 'CommentsWidget',
-  mounted () {
+  created () {
     this.getCommentCount()
   },
   data () {
@@ -109,6 +109,8 @@ export default {
       if (this.userOrganizationId) {
         payload.organization_id = this.userOrganizationId
       }
+      console.log(q)
+      console.log(payload)
       await this.$axios.[method](q, payload, { headers: { Accept: 'application/json' } })
         .then((res) => {
           this.getComments()

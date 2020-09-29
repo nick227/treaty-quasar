@@ -44,9 +44,10 @@
           </q-item-section>
         </q-item>
     </q-list>
-   </div>{{typeof org.id}}
-  <CommentsWidget
-        entityId="org.id"
+   </div>
+  <CommentsWidget v-if="org.id"
+        :userOrganizationId="org.id"
+        :entityId="org.id"
         entityType="organization"
   ></CommentsWidget>
 </q-page>

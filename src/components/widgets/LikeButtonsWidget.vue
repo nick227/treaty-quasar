@@ -54,6 +54,8 @@ export default {
         liked: val
       }
       payload[this.entityType + '_id'] = this.entityId
+      console.log(q)
+      console.log(payload)
       await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } })
       this.getLikes()
     },
