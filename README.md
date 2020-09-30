@@ -2,7 +2,7 @@
 
 Treaties for People
 
-demo:https://alpine-spectacled-minotaurasaurus.glitch.me/
+demo: https://alpine-spectacled-minotaurasaurus.glitch.me/
 
 ## Install the dependencies
 ```bash
