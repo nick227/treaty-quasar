@@ -21,6 +21,7 @@
   </div>
 </template>
 <script>
+import AddAchievementMixin from 'components/mixins/AddAchievementMixin.vue'
 export default {
   name: 'AddConflictItem',
   data () {
@@ -34,6 +35,7 @@ export default {
       maxChars: 100
     }
   },
+  mixins: [AddAchievementMixin],
   mounted () {},
   props: ['entityType', 'conflictId', 'reload', 'userOrganizationId', 'orgA', 'orgB'],
   methods: {
@@ -62,6 +64,8 @@ export default {
         conflict_id: this.conflictId
       }
       await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } })
+      const key = this.entityType === 'grievance' ? 'Grievance Maker' : 'Offer Maker'
+      this.addAchievement(key)
       this.clearForm()
       this.reload()
     }

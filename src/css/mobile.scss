@@ -10,5 +10,15 @@
   .comment-q-avatar-inner{
     width:35px; height:35px;
   }
+  .info-card,  .card-item{
+    width: 100% !important;
+  }
+
+  .mobile-row {
+     flex-direction: column;
+    .col{
+      width:100%;
+    }
+  }
 
 }

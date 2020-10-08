@@ -22,6 +22,9 @@ export default {
   computed: {
     links: function () {
       return this.treaties.map((obj) => {
+        if (typeof obj.votes !== 'object') {
+          obj.votes = []
+        }
         return {
           url: '/treaty/' + obj.id,
           text: obj.name,

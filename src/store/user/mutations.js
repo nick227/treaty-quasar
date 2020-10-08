@@ -4,6 +4,9 @@ export const updateUid = (state, uid) => {
 export const updateAvatar = (state, avatarUrl) => {
   state.avatarUrl = avatarUrl
 }
+export const updateName = (state, name) => {
+  state.name = name
+}
 export const updateMsgCount = (state, unreadMsgCount) => {
   state.unreadMsgCount = unreadMsgCount
 }

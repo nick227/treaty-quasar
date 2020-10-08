@@ -1,15 +1,15 @@
 <template>
   <q-card class="flex-break q-ma-lg">
-    <div :style="'background-image:url(' + treaty.avatar_url + ')'" class="card-image"></div>
+    <router-link :to="'/treaty/'+treaty.id"><div :style="'background-image:url(' + treaty.avatar_url + ')'" class="card-image"></div></router-link>
     <q-card-section>
-      <div class="">{{ treaty.organization_a.name }} vs. {{ treaty.organization_b.name }}</div>
-      <div class="text-h6">{{ treaty.name }}</div>
-      <div class="text-caption">Created by: {{ treaty.creator_name }}</div>
-      <div class="text-caption">Organization: {{ treaty.creator_organization_name }}</div>
+      <router-link :to="'conflict/'+treaty.conflict_id"><div class="ellipsis">{{ treaty.organization_a.name }} vs. {{ treaty.organization_b.name }}</div></router-link>
+      <div class="text-h6 ellipsis">{{ treaty.name }}</div>
+      <div class="text-caption">Created by: <router-link :to="'profile/'+treaty.creator_user_id">{{ treaty.creator_name }}</router-link></div>
+      <div class="text-caption ellipsis">Organization: <router-link :to="'organization/'+treaty.creator_organization_id">{{ treaty.creator_organization_name }}</router-link></div>
       <div>{{ treaty.provisions.length }} Provisions</div>
     </q-card-section>
     <q-card-section>
-      <q-btn class="full-width" @click="goto('/treaty/'+treaty.id)" color="primary" label="Visit" />
+      <router-link :to="'/treaty/'+treaty.id"><q-btn class="full-width" color="primary" label="Visit" /></router-link>
     </q-card-section>
     <q-card-section>
       <q-separator class="q-mt-sm q-mb-sm" />
@@ -28,11 +28,7 @@ export default {
   data () {
     return {}
   },
-  methods: {
-    goto: function (url) {
-      this.$router.push({ path: url })
-    }
-  },
+  methods: {},
   mounted () {}
 }
 </script>

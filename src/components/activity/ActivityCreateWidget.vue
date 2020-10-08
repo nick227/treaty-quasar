@@ -1,5 +1,5 @@
 <template>
-<div class="q-pa-lg full-width">
+<div class="full-width">
   <q-form @submit="postActivity">
     <q-editor
       class="full-width bg-blue-grey-2"
@@ -22,8 +22,7 @@
       ]"
     />
     <div class="row">
-      <q-space />
-      <q-btn type="submit" color="primary q-mt-sm full-width">submit</q-btn>
+      <q-btn type="submit" color="primary full-width">submit</q-btn>
     </div>
   </q-form>
   </div>
@@ -31,7 +30,7 @@
 <script>
 export default {
   name: 'ActivityCreateWidget',
-  props: ['reload'],
+  props: ['reload', 'entityType', 'entityId'],
   components: {},
   data () {
     return {
@@ -43,8 +42,14 @@ export default {
       const q = `${process.env.api}/activities`
       const payload = {
         creator_user_id: this.$store.state.user.uid,
-        message: this.newActivity
+        message: this.newActivity,
+        entity_type: 'activity'
       }
+      if (typeof this.entity_id === 'number') {
+        payload.entity_id = this.entityId
+      }
+      console.log(q)
+      console.log(payload)
       await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } })
       this.newActivity = ''
       this.reload()

@@ -1,34 +1,44 @@
 <template>
   <div class="activity-width">
-    <div class="bg-blue-grey q-pa-md q-pt-lg">
-      <h5 class="q-pa-none">Welcome to Concordant!</h5>
+    <div class="q-pt-md q-pt-lg">
+      <h3 class="q-pa-none">Welcome to Concordant.io</h3>
     </div>
-    <h6 class="bg-grey q-pl-md">There are 5 ways to interact with the website</h6>
+    <h6 class="q-pt-sm">How to interact with the website:</h6>
+    <q-separator />
     <ul class="q-mt-lg">
       <li>
-        <h5>1. Conflict</h5>
-        <p>Each conflict is between two organizations that have problems to resolve. For example Liberals vs. Conservatives, Men vs. Women, Cats vs. Dogs. Discuss the problems and find solutions that most work for everyone.</p>
+        <h5>1. Conflicts</h5>
+        <p>Each conflict is between two organizations that have problems to resolve.</p>
       </li>
       <li>
-        <h5>2. Grievance</h5>
-        <p>Identify the problems between organizations. Other users rate and comment by organization on the grievance. This is how to communicate what the real issues dividing organizations are and have the community help prioritize their significance.</p>
+        <h5>2. Grievances</h5>
+        <p>Describe and prioritize issues between the organizations. </p>
       </li>
       <li>
-        <h5>3. Offer</h5>
-        <p>After you see what the opposition's problems are make offers. These are potential concessions that your organization is willing to make to broker a successul treaty. The community rates and comments by organization. A successful treaty consists of equal offers that resolve the oppositon's grievances.</p>
+        <h5>3. Offers</h5>
+        <p>These are potential concessions to broker a successul treaty.</p>
       </li>
       <li>
-        <h5>4. Debate</h5>
-        <p>Area designated for discussing the relevant topics. We do ask that debators stay civil and reasonable. Although no subject is off-limits the subject must be related to conflict and threats or harrassment will be deleted and users may be banned at admin discretion. </p>
+        <h5>4. Topics</h5>
+        <p>Post your thoughts and ideas. We ask members to stay civil and respectable.</p>
       </li>
       <li>
-        <h5>5. Treaty</h5>
-        <p>Treaties are a list of provisions that identify what each organization is willing to concede. A successful treaty is when a majority of voters from both organiztion vote YAY in agreement.</p>
+        <h5>5. Treaties</h5>
+        <p>A successful treaty is when a majority of voters from both organizations vote YAY.</p>
       </li>
     </ul>
+    <q-separator />
+    <div class="q-mt-lg q-mb-sm">
+      <h5>Site Rules:</h5>
+      <ul style="list-style-type:bullets;" class="q-pl-md">
+        <li>Be courteous and professional</li>
+        <li>Do not misrepresent yourself</li>
+        <li>Be honest and practice integrity</li>
+      </ul>
+    </div>
+    <q-separator />
     <div class="q-mt-lg q-mb-sm">
       <h5 class="q-pa-none q-ma-none">Next steps...</h5>
-      <q-separator />
     </div>
     <p class="q-mb-lg q-mt-lg">
       <router-link to="/login"><q-btn class="full-width" icon="login" color="primary" label="Step one is signup or login" /></router-link>
@@ -49,6 +59,11 @@
     <ul class="q-mb-lg q-pb-lg">
       <li v-for="treaty in treaties" :key="treaty.id"><router-link :to="'/treaty/'+treaty.id">{{ treaty.name }}</router-link></li>
       <li class="q-pt-md"><router-link to="/treaties"><q-btn class="full-width" color="accent" label="View all treaties" /></router-link></li>
+    </ul>
+    <q-space />
+    <h6>Check site activity</h6>
+    <ul class="q-mb-lg q-pb-lg">
+      <li class="q-pt-md"><router-link to="/activity"><q-btn class="full-width" color="accent" label="Site activity" /></router-link></li>
     </ul>
   </div>
 </template>

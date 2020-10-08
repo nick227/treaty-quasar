@@ -1,7 +1,6 @@
 <template>
   <div class="">
     <AddConflictItem
-    class="full-width q-pa-sm q-mb-lg"
     :entityType="entityType"
     :userOrganizationId="userOrganizationId"
     :conflictId="conflictId"
@@ -26,7 +25,7 @@
             key="organization"
             :props="props"
           > <q-avatar class="q-mr-sm" round size="sm">
-              <q-img :src="props.row.creator_organization_avatar" />
+              <img :src="props.row.creator_organization_avatar" />
             </q-avatar>
             <router-link :to="'/organization/'+props.row.creator_organization_id">{{ props.row.creator_organization_name }}</router-link>
           </q-td>
@@ -35,8 +34,8 @@
             key="title"
             :props="props"
           >
-            <p class="q-pa-none">{{ props.row.title }}</p>
-            <p class="q-pa-none text-caption">created by: <router-link :to="'/profile/'+props.row.creator_id">{{ props.row.creator_name }}</router-link> {{ props.row.create_date }}
+            <p class="q-pa-none q-ma-none">{{ props.row.title }}</p>
+            <p class="q-pa-none q-ma-none text-caption">created by: <router-link :to="'/profile/'+props.row.creator_id">{{ props.row.creator_name }}</router-link> {{ props.row.create_date }}
               <q-icon v-if="userCheck(props.row.creator_id)" name="edit" @click="editEntity(props.row.id, props.row.title)" class="cursor-pointer" clickable v-ripple size="13px" />
               <q-icon v-if="userCheck(props.row.creator_id)" name="delete" @click="promptDelete(props.row.id)" class="cursor-pointer" clickable v-ripple size="13px" />
             </p>

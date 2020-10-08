@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h6 class="q-mb-sm q-mt-lg">New Conflict</h6>
+  <div class="bg-grey-6">
+    <h6 class="q-pa-sm q-ml-md">New Conflict</h6>
   <q-form @submit="postForm" greedy class="q-pa-md bg-grey-4">
     <q-input
      filled
@@ -32,6 +32,7 @@
         required
         :value="orgA"
         use-input
+        :readonly="optAdisable"
         hide-selected
         fill-input
         input-debounce="0"
@@ -86,10 +87,12 @@
   </div>
 </template>
 <script>
+import AddAchievementMixin from 'components/mixins/AddAchievementMixin.vue'
 export default {
-  name: 'ConflictList',
+  name: 'CreateConflictWidget',
   data () {
     return {
+      optAdisable: false,
       orgA: null,
       orgB: null,
       organizationsA: [],
@@ -102,9 +105,26 @@ export default {
       avatar_url: ''
     }
   },
+  props: {
+    defaultOrgName: {
+      type: String,
+      required: false
+    },
+    reload: {
+      type: Function,
+      required: false
+    }
+  },
+  mixins: [AddAchievementMixin],
   async created () {
-    this.getOrgs()
-    this.optionsA = this.organizationsA
+    await this.getOrgs()
+    if (typeof this.defaultOrgName === 'string') {
+      this.orgA = this.defaultOrgName
+      this.optAdisable = true
+      this.optionsA = []
+    } else {
+      this.optionsA = this.organizationsA
+    }
     this.optionsB = this.organizationsB
   },
   methods: {
@@ -159,7 +179,12 @@ export default {
           avatar_url: this.avatar_url
         }
         const res = await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } })
-        this.$router.push('/conflict/' + res.data.id)
+        this.addAchievement('Added a Conflict')
+        if (typeof this.reload === 'function') {
+          this.reload(res)
+        } else {
+          this.$router.push('/conflict/' + res.data.id)
+        }
       }
     },
     orgValidate: function () {

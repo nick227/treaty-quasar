@@ -44,7 +44,7 @@
     filled
      stack-label
      @input="handleInput"
-     name="profile_background_url"
+     name="profileBackgroundUrl"
      v-model="data_profile_background_url"
     label="Profile Background Image"
     type="url"
@@ -58,7 +58,7 @@
 <script>
 export default {
   name: 'EditProfileWidget',
-  props: ['name', 'biography', 'avatar_url', 'location', 'profile_background_url', 'uid', 'reload'],
+  props: ['name', 'biography', 'avatar_url', 'location', 'profileBackgroundUrl', 'uid', 'reload'],
   model: {
     prop: 'name',
     event: 'blur'
@@ -76,7 +76,7 @@ export default {
     location (newVal) {
       this.data_location = newVal
     },
-    profile_background_url (newVal) {
+    profileBackgroundUrl (newVal) {
       this.data_profile_background_url = newVal
     }
   },
@@ -87,7 +87,7 @@ export default {
       data_avatar_url: this.avatar_url,
       data_location: this.location,
       data_biography: this.biography,
-      data_profile_background_url: this.profile_background_url
+      data_profile_background_url: this.profileBackgroundUrl
     }
   },
   mounted () {

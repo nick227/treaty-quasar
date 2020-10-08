@@ -1,23 +1,24 @@
 <template>
   <q-page padding class="river-width">
-    <q-btn label="Create Treaty" @click="openCreateTreaty()" class="full-width" />
+    <q-expansion-item switch-toggle-side dense-toggle v-model="expanded" label="Create Treaty">
+      <CreateTreaty
+      :userOrganizationId="false"
+      :conflictId="false"
+      :reload="reload" />
+    </q-expansion-item>
     <h6 class="q-mt-lg q-mb-lg q-pa-none text-center">Treaties</h6>
     <q-list class="row">
       <q-separator />
       <div v-for="treaty in treaties" :key="treaty.id" class="col col-shrink  info-card q-mb-lg">
         <TreatyCardComponent :treaty="treaty" />
       </div>
-      <h3 class="q-ma-lg text-center" v-if="!treaties.length && !done">LOADING...</h3>
-      <h3 class="q-ma-lg text-center" v-if="!treaties.length && done">No treaties found.</h3>
+      <h5 class="q-ma-lg text-center" v-if="!treaties.length && !done">LOADING...</h5>
+      <h5 class="q-ma-lg text-center" v-if="!treaties.length && done">No treaties found.</h5>
       <div v-if="!done" v-intersection="onIntersection" class="full-width text-center">
         <q-spinner-dots color="primary" size="40px" />
       </div>
     </q-list>
   <q-dialog v-model="createTreaty">
-    <CreateTreaty class="z-top"
-    :userOrganizationId="false"
-    :conflictId="false"
-    :reload="reload" />
   </q-dialog>
   </q-page>
 </template>
@@ -34,6 +35,7 @@ export default {
   components: { CreateTreaty, TreatyCardComponent },
   data () {
     return {
+      expanded: false,
       treaties: [],
       pointer: 0,
       limit: 10,
@@ -69,7 +71,9 @@ export default {
           description: o.description,
           avatar_url: o.avatar_url,
           creator_name: o.creator.name,
+          creator_user_id: o.creator.id,
           creator_organization_name: o.organization.name,
+          creator_organization_id: o.organization.id,
           conflict_id: o.conflict.id,
           organization_a: o.conflict.organization_a,
           organization_b: o.conflict.organization_b,

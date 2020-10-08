@@ -30,6 +30,7 @@
   </div>
 </template>
 <script>
+import AddAchievementMixin from 'components/mixins/AddAchievementMixin.vue'
 export default {
   name: 'CreateOrganizationWidget',
   props: ['reload'],
@@ -41,6 +42,7 @@ export default {
       organizations: []
     }
   },
+  mixins: [AddAchievementMixin],
   methods: {
     postForm: async function () {
       const q = `${process.env.api}/organizations`
@@ -51,8 +53,21 @@ export default {
         name: this.name
       }
       await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } })
-      this.clear()
-      this.reload()
+        .then((res) => {
+          this.clear()
+          this.reload()
+          this.addAchievement('Added an Organization')
+          this.$q.notify({
+            type: 'positive',
+            message: 'Create Success'
+          })
+        })
+        .catch((err) => {
+          this.$q.notify({
+            type: 'negative',
+            message: 'Error creating: ' + err
+          })
+        })
       // this.$router.push('/organization/' + res.data.id)
     },
     clear: function () {

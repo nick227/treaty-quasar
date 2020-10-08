@@ -31,7 +31,8 @@ export default {
         { tagType: 'a', iconName: 'flash_on', href: '/conflicts', fn: false, text: 'Conflicts', visible: true },
         { tagType: 'a', iconName: 'article', href: '/treaties', fn: false, text: 'Treaties', visible: true },
         { tagType: 'a', iconName: 'public', href: '/organizations', fn: false, text: 'Organizations', visible: true },
-        { tagType: 'a', iconName: 'whatshot', href: '/conversation', fn: false, text: 'Conversation', visible: true },
+        { tagType: 'a', iconName: 'whatshot', href: '/activity', fn: false, text: 'Activity', visible: true },
+        { tagType: 'a', iconName: 'perm_identity', href: '/members', fn: false, text: 'Members', visible: true },
         { tagType: 'a', iconName: 'email', href: '/messages', fn: false, text: 'Messages', visible: true },
         { tagType: 'a', iconName: 'login', href: '/login', fn: false, text: 'Login', visible: !this.$store.state.user.uid },
         { tagType: 'a', iconName: 'logout', fn: this.logout, text: 'Logout', visible: this.$store.state.user.uid }
@@ -43,8 +44,9 @@ export default {
     logout () {
       this.$store.commit('user/updateUid', null)
       this.$store.commit('user/updateAvatar', null)
+      this.$store.commit('user/updateName', null)
       if (this.$hello.getAuthResponse('facebook') == null) {
-        this.$router.push('/')
+        window.location.href = '/'
         return false
       }
       this.$hello('facebook').logout().then(function () {

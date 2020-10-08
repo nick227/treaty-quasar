@@ -1,15 +1,19 @@
 <template>
-  <div class="activity-width">
-    <div class="row q-pl-lg q-pr-lg">
-      <ActivityCreateWidget :reload="reload" />
-      <q-space />
-      <h3 class="q-ma-lg text-center" v-if="!items.length && !done">LOADING...</h3>
-      <h3 class="q-ma-lg text-center" v-if="!items.length && done">Nothing found.</h3>
-      <ActivityCardItem v-for="item in items" :item="item" :key="item.id" />
+  <div :class="!entityId ? 'river-width' : 'full-width'">
+  <div class="q-mt-lg">
+    <h6 class="q-mb-sm text-center" v-if="!entityId">Activity</h6>
+    <q-separator v-if="!entityId" class="q-mb-lg" />
+    <div class="row">
+      <ActivityCreateWidget class="q-pb-lg q-mb-lg" :reload="reload" :entityType="entityType" :entityId="entityId" />
+      <q-space /><q-space />
+      <h5 class="q-ma-lg text-center" v-if="!items.length && !done">LOADING...</h5>
+      <h5 class="q-ma-lg text-center" v-if="!items.length && done">Nothing found.</h5>
+      <ActivityCardItem v-for="item in items" :entityId="entityId" :entityType="entityType" :item="item" :reload="reload" :key="item.id" />
     </div>
     <div v-if="!done" v-intersection="onIntersection" class="full-width text-center">
       <q-spinner-dots color="primary" size="40px" />
     </div>
+  </div>
   </div>
 </template>
 <script>
@@ -18,18 +22,20 @@ import ActivityCreateWidget from 'components/activity/ActivityCreateWidget.vue'
 export default {
   meta () {
     return {
-      title: 'Activity'
+      title: typeof this.title === 'string' ? this.title : 'Activity'
     }
   },
   name: 'ActivityListPage',
   components: { ActivityCreateWidget, ActivityCardItem },
+  props: ['entityId', 'entityType', 'title'],
   data () {
     return {
       items: [],
       pointer: 0,
       limit: 3,
       done: false,
-      loadNum: 0
+      loadNum: 0,
+      expanded: false
     }
   },
   created () {
@@ -50,14 +56,14 @@ export default {
       this.getItems()
     },
     getItems: async function () {
-      const q = `${process.env.api}/activities?filter[limit]=${this.limit}&filter[skip]=${this.pointer}&filter[include][][relation]=creator&filter[order]=create_date%20DESC`
+      let q = `${process.env.api}/activities?filter[limit]=${this.limit}&filter[skip]=${this.pointer}&filter[include][0][relation]=creator&filter[include][1][relation]=emotions&filter[order]=create_date%20DESC`
+      q += typeof this.entityType === 'string' ? `&filter[where][and][2][entity_type]=${this.entityType}` : ''
+      q += typeof this.entityId === 'number' ? `&filter[where][and][3][entity_id]=${this.entityId}` : ''
       const items = await this.$axios.get(q)
-      console.log(q)
       if (this.limit > items.data.length) {
         this.done = true
       }
       this.items = this.items.concat(items.data)
-      console.log(this.items)
     }
   },
   mounted () {}

@@ -1,6 +1,6 @@
 <template>
   <q-layout view="Lhh lpR fff" container class="bg-white full-width">
-    <q-header class="z-max bg-primary">
+    <q-header class="z-max bg-grey">
       <q-toolbar>
         <q-toolbar-title class="q-pl-lg text-center">CONCORDANT.IO</q-toolbar-title>
         <q-btn flat v-close-popup round dense icon="close" />
@@ -13,7 +13,6 @@
           <EditDebateWidget :title="debate.title" :avatar_url="debate.avatar_url" :description="debate.description" :id="debate.id" :reload="reload" :pageReload="pageReload" />
         </q-expansion-item>
       </div>
-        <h3 class="q-pa-sm">{{ debate.title }}</h3>
         <div class="q-pt-sm full-width q-mb-lg"><q-img class="q-mb-lg" :src="debate.avatar_url" /></div>
         <div class="row q-pr-lg q-mt-lg q-mb-lg">
           <div class="col col-2">
@@ -21,13 +20,14 @@
           </div>
           <div class="col p-pl-lg">
             <div>{{ readyDate }}</div>
-            <p class="text-h5 q-pa-none" v-if="debate.creator">{{ debate.creator.name }}:</p>
+            <p class="text-h5 q-pa-none q-ma-none" v-if="debate.creator">{{ debate.creator.name }}:</p>
+            <h6 class="q-pa-none">{{ debate.title }}</h6>
             <p class="q-pt-none">{{ debate.description }}</p>
           </div>
         </div>
         <q-separator />
         <div class="row">
-          <q-expansion-item v-model="add_reply[0]" dense-toggle label="Add Response" style="z-index:5" class="full-width bg-grey-5 q-mb-lg text-right q-pb-lg">
+          <q-expansion-item v-model="add_reply[0]" dense-toggle label="Add Response" style="z-index:5" class="full-width bg-grey-5 q-mb-lg text-right">
             <AddDebateComment
             :debateId="debate.id"
             parentId=0

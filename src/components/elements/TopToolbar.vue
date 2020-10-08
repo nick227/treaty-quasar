@@ -64,11 +64,12 @@ export default {
       this.$router.push({ path: '/profile/' + this.$store.state.user.uid })
     },
     getProfile: function (network) {
-      if (this.$hello.getAuthResponse(network) == null) {
+      if (!this.$store.state.user.uid) {
         return false
+      } else {
+        this.profile.id = this.$store.state.user.uid
+        this.profile.avatar_url = this.$store.state.user.avatarUrl
       }
-      this.profile.id = this.$store.state.user.uid
-      this.profile.avatar_url = this.$store.state.user.avatarUrl
     },
     checkMessages: async function () {
       if (this.profile.id) {

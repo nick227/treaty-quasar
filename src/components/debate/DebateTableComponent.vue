@@ -1,21 +1,19 @@
 <template>
   <div>
-      <q-expansion-item @before-show="userCheck" v-model="expanded" switch-toggle-side dense-toggle label="Add Topic">
-        <CreateDebateWidget :conflictId="conflictId" :userOrganizationId="userOrganizationId" :reload="reload" />
-      </q-expansion-item>
-  <div class="row full-width">
-    <q-table
-    style=""
-    class="full-width align-left table q-pa-sm"
-    dense
-    flat
-    @row-click="onRowClick"
-    :loading="loading"
-    :data="readyDebates"
-    :columns="columns"
-    row-key="id"
-    :pagination="initialPagination"
-    >
+      <CreateDebateWidget :conflictId="conflictId" :userOrganizationId="userOrganizationId" :reload="reload" />
+    <div class="row full-width">
+      <q-table
+      style=""
+      class="full-width align-left table"
+      dense
+      flat
+      @row-click="onRowClick"
+      :loading="loading"
+      :data="readyDebates"
+      :columns="columns"
+      row-key="id"
+      :pagination="initialPagination"
+      >
       <template v-slot:top-right>
         <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
           <template v-slot:append>
@@ -23,14 +21,8 @@
           </template>
         </q-input>
       </template>
-    <template v-slot:body-cell-actions="props">
-          <q-td :props="props">
-            <q-btn  square flat color="grey" @click="openDebate(props.row)" icon="launch"></q-btn>
-          </q-td>
-        </template>
     </q-table>
   </div>
-
   <q-dialog v-model="showDebate" class="z-top">
     <DebateDialogComponent class="z-top"
     :userOrganizationId="userOrganizationId"
@@ -97,8 +89,7 @@ export default {
         { name: 'description', label: 'Description', field: 'description', sortable: true, align: 'left', classes: 'ellipsis', format: (val) => { return val.length > 50 ? val.slice(0, 50) + '...' : val } },
         { name: 'creator', label: 'Created by', field: 'creator_name', sortable: true, align: 'left' },
         { name: 'creator_organization', label: 'Organization', field: 'creator_organization_name', sortable: true, align: 'left' },
-        { name: 'create_date', label: 'Date', field: 'create_date', sortable: true, align: 'left', format: val => date.formatDate(val, 'M/D/YY') },
-        { name: 'actions', label: 'View', field: '', align: 'center' }
+        { name: 'create_date', label: 'Date', field: 'create_date', sortable: true, align: 'left', format: val => date.formatDate(val, 'M/D/YY') }
       ]
     },
     onIntersection: function (index, done) {

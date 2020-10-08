@@ -1,11 +1,9 @@
 <template>
   <div>
-  <div class="full-width q-pa-sm q-mb-lg">
     <q-btn class="full-width text-center" @click="openCreateTreaty" color="accent">Add Treaty</q-btn>
-  </div>
   <div class="row full-width">
     <q-table
-    class="full-width align-left table q-pa-sm"
+    class="full-width align-left table"
     dense
     flat
     @row-click="onRowClick"
@@ -21,24 +19,31 @@
           </template>
         </q-input>
       </template>
-    <template v-slot:body-cell-actions="props">
-          <q-td :props="props">
-            <q-btn  square flat color="grey" @click="openTreaty(props.row)" icon="launch"></q-btn>
-          </q-td>
-        </template>
     </q-table>
   <q-dialog v-model="showTreaty" class="z-top">
     <TreatyDialogComponent class="z-top"
     :creatorName="creatorName"
     :creatorId="creatorId"
+    :orgAname="orgAname"
+    :orgBname="orgBname"
     :userOrganizationId="userOrganizationId"
     :treatyId="childTreatyId" />
   </q-dialog>
   <q-dialog v-model="createTreaty" class="z-top">
+
+  <q-layout view="Lhh lpR fff" container class="bg-white river-width">
+    <q-header class="bg-grey">
+      <q-toolbar>
+        <q-toolbar-title class="text-center">Create Treaty</q-toolbar-title>
+        <q-btn flat v-close-popup round dense icon="close" />
+      </q-toolbar>
+    </q-header>
+    <q-page-container>
     <CreateTreaty
     :userOrganizationId="userOrganizationId"
     :conflictId="conflictId"
     :reload="reload" />
+  </q-page-container></q-layout>
   </q-dialog>
   </div>
   </div>
@@ -50,7 +55,7 @@ import { date } from 'quasar'
 export default {
   name: 'TreatyTableComponent',
   components: { TreatyDialogComponent, CreateTreaty },
-  props: ['userOrganizationId', 'conflictId'],
+  props: ['userOrganizationId', 'conflictId', 'orgAname', 'orgBname'],
   data () {
     return {
       filter: '',
@@ -79,6 +84,7 @@ export default {
       this.createTreaty = true
     },
     reload: function () {
+      this.treaties = []
       this.createTreaty = false
       this.getTreaties()
     },
@@ -105,8 +111,7 @@ export default {
         { name: 'name', label: 'Name', field: 'name', align: 'left' },
         { name: 'organization', label: 'Organization', field: 'organization', sortable: true, align: 'left' },
         { name: 'creatorName', label: 'Creator', field: 'creatorName', sortable: true, align: 'left' },
-        { name: 'create_date', label: 'Date', field: 'create_date', sortable: true, align: 'left', format: val => date.formatDate(val, 'M/D/YY') },
-        { name: 'actions', label: 'View', field: '', align: 'center' }
+        { name: 'create_date', label: 'Date', field: 'create_date', sortable: true, align: 'left', format: val => date.formatDate(val, 'M/D/YY') }
       ]
     }
   },

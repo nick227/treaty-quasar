@@ -42,15 +42,28 @@
       />
     </div>
     <div class="full-width  text-right q-mt-md">
+      <q-btn @click="confirmDelete = true" label="Delete Treaty" color="red" class="q-mr-md" />
       <q-btn label="SUBMIT" type="submit" color="primary"/>
     </div>
   </q-form>
+  <q-dialog v-model="confirmDelete" class="z-top z-max" style="z-index:1000">
+      <q-card>
+        <q-card-section class="row items-center">
+          <q-avatar icon="check" color="primary" text-color="white" />
+          <span class="q-ml-sm">Permanently delete this treaty?</span>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" color="primary" v-close-popup />
+          <q-btn flat label="DELETE FOREVER" @click="deleteTreaty" color="primary" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 <script>
 export default {
   name: 'EditTreatyWidget',
-  props: ['name', 'description', 'avatarUrl', 'id', 'reload', 'provisions'],
+  props: ['name', 'description', 'avatarUrl', 'treatyId', 'reload', 'provisions'],
   model: {
     prop: 'name',
     event: 'blur'
@@ -68,7 +81,7 @@ export default {
   },
   data () {
     return {
-      confirm: false,
+      confirmDelete: false,
       provisionsToDelete: [],
       data_provisions: [],
       data_name: this.name,
@@ -81,6 +94,23 @@ export default {
     this.$mount()
   },
   methods: {
+    deleteTreaty: async function () {
+      const q = `${process.env.api}/treaties/${this.treatyId}`
+      await this.$axios.delete(q)
+        .then((res) => {
+          this.$router.push('/treaties')
+          this.$q.notify({
+            type: 'positive',
+            message: 'Delete Success'
+          })
+        })
+        .catch((err) => {
+          this.$q.notify({
+            type: 'negative',
+            message: 'Error (DELETE UNDER DEVELOPMENT): ' + err
+          })
+        })
+    },
     deleteProvision (provision) {
       this.provisionsToDelete.push(provision.id)
     },
@@ -95,8 +125,10 @@ export default {
         q = `${process.env.api}/treaty-provisions/${this.provisionsToDelete[0]}/provision-comments`
         await this.$axios.delete(q)
         q = `${process.env.api}/treaty-provisions/${this.provisionsToDelete[0]}`
+        console.log(q)
         await this.$axios.delete(q)
       }
+      this.reload()
     },
     postForm: async function (e) {
       this.deleteProvisions()
@@ -104,9 +136,9 @@ export default {
         name: this.data_name,
         description: this.data_description,
         avatar_url: this.data_avatar_url,
-        id: this.id
+        id: this.treatyId
       }
-      const q = `${process.env.api}/treaties/${this.id}`
+      const q = `${process.env.api}/treaties/${this.treatyId}`
       await this.$axios.patch(q, payload, { headers: { Accept: 'application/json' } })
         .then((res) => {
           this.reload()

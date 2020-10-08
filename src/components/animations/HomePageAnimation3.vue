@@ -1,13 +1,13 @@
 <template>
 <div>
-  <div class="text-center q-pa-lg z-top absolute-center">
+  <div style="z-index:2;" class="text-center q-pa-lg absolute-center">
     <h1 key="title" class="text-white welcome">CONCORDANT.IO</h1>
     <h4 key="sub" class="q-mb-sm text-white">The treaty building platform</h4>
-    <q-btn key="btn" class="q-mb-sm" @click="getStarted" to="/get-started" color="dark full-width">GET STARTED</q-btn>
-    <p key="byline" class="text-center z-top text-white">Giving PEACE a chance.</p>x
+    <q-btn key="btn" class="q-mb-sm" to="/get-started" color="dark full-width">GET STARTED</q-btn>
+    <p key="byline" class="text-center z-top text-white">Giving PEACE a chance.</p>
   </div>
 <canvas id='funbars'></canvas>
-<p class="home-credit"><a class="text-white text-weight-bold" href="https://codepen.io/towc" target="_blank">Animation by Matei Copot</a></p>
+<p style="z-index:2;" class="home-credit"><a class="text-white text-weight-bold" href="https://codepen.io/towc" target="_blank">Animation by Matei Copot</a></p>
 </div>
 </template>
 <script>
@@ -22,14 +22,10 @@ export default {
   data () {
     return {}
   },
-  methods: {
-    getStarted: function () {
-
-    }
-  },
+  methods: {},
   mounted () {
     const c = document.getElementById('funbars')
-    var w = c.width = window.innerWidth, h = c.height = window.innerHeight, ctx = c.getContext('2d'), minDist = 10, maxDist = 30, initialWidth = 10, maxLines = 100, initialLines = 4, speed = 15, lines = [], frame = 0, timeSinceLast = 0
+    var w = c.width = window.innerWidth, h = c.height = window.innerHeight, ctx = c.getContext('2d'), minDist = 10, maxDist = 30, initialWidth = 10, maxLines = 100, initialLines = 4, speed = 5, lines = [], frame = 0, timeSinceLast = 0
     var dirs = [
       // straight x, y velocity
       [0, 1],

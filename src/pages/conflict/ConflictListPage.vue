@@ -6,15 +6,15 @@
     <h6 class="q-mb-sm text-center">Conflicts</h6>
       <q-separator />
     <q-list class="row">
-      <h3 class="q-ma-lg text-center" v-if="!conflicts.length && !done">LOADING...</h3>
-      <h3 class="q-ma-lg text-center" v-if="!conflicts.length && done">No conflicts found.</h3>
+      <h5 class="q-ma-lg text-center" v-if="!conflicts.length && !done">LOADING...</h5>
+      <h5 class="q-ma-lg text-center" v-if="!conflicts.length && done">No conflicts found.</h5>
       <div v-for="conflict in conflicts" class="col col-shrink info-card q-mb-lg" :key="conflict.id">
         <q-card class="flex-break q-ma-lg">
-          <div :style="'background-image:url(' + conflict.avatar_url + ')'" class="card-image"></div>
+          <router-link :to="'/conflict/'+conflict.id"><div :style="'background-image:url(' + conflict.avatar_url + ')'" class="card-image"></div></router-link>
           <q-card-section>
-            <p>{{ conflict.organization_a.name }} vs. {{ conflict.organization_b.name }}</p>
-            <div clickable class="text-h6 cursor-pointer">{{ conflict.name }}</div>
-            <p class="ellipsis">{{ conflict.description }}</p>
+            <div clickable class="text-h6 cursor-pointer ellipsis">{{ conflict.name }}</div>
+            <p class="ellipsis q-ma-none q-pa-none q-pb-sm">{{ conflict.description }}</p>
+            <p class="q-ma-none q-pa-none ellipsis"><span class="">{{ conflict.organization_a.name }}</span> vs. <span class="">{{ conflict.organization_b.name }}</span></p>
           </q-card-section>
     <q-card-section>
       <router-link :to="'/conflict/'+conflict.id"><q-btn class="full-width" color="primary" label="Visit" /></router-link>

@@ -2,7 +2,7 @@
   <q-page class="full-height river-width">
     <ConflictHeaderSection v-if="conflict_creator_user_id" :creatorUserId="conflict_creator_user_id" :name="name" :avatar_url="avatar_url" :description="description" :status="status" :id="id" :reload="reload" :org_a="org_a" :org_b="org_b" :user_organization_name="user_organization_name" />
     <q-separator />
-    <ConflictPanelsSection :key="counter"  v-if="!loading" :user_organization_id="user_organization_id" :org_a="org_a" :org_b="org_b" :conflictId="conflictId" :grievances="grievances" :offers="offers" :reload="reload" />
+    <ConflictPanelsSection :key="counter"  v-if="!loading" :userOrganizationId="user_organization_id" :orgA="org_a" :orgB="org_b" :conflictId="conflictId" :title="name" :reload="reload" />
     <q-dialog v-model="verify_org" persistent>
       <q-card>
         <q-card-section class="row items-center">
@@ -83,25 +83,7 @@ export default {
       }
     },
     reload: async function () {
-      let q = `${process.env.api}/conflicts/${this.$route.params.id}?filter=
-                                          {"order":["create_date DESC"], 
-                                           "include": [
-                                                      {"relation": "offers", "scope":{
-                                                                             "include":[
-                                                                                       {"relation":"organization"}, 
-                                                                                       {"relation":"creator"}
-                                                                                       ]
-                                                                              }
-                                                      }, 
-                                                      {"relation":"grievances", "scope":{
-                                                                                 "include":[
-                                                                                           {"relation":"organization"}, 
-                                                                                           {"relation":"creator"}
-                                                                                           ]
-                                                                                }
-                                                      }
-                                                      ]
-                                                    }`.replace(/\s+/g, '')
+      let q = `${process.env.api}/conflicts/${this.$route.params.id}?filter={"order":["create_date DESC"]}`
       const conflict = await this.$axios.get(q)
       this.conflictId = conflict.data.id
       this.name = conflict.data.name

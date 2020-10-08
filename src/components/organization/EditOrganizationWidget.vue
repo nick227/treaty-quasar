@@ -1,5 +1,5 @@
 <template>
-  <div class="dialog-width">
+  <div class="bg-grey-4">
   <q-form @submit="postForm" greedy class="q-pa-md bg-grey-4">
     <q-input
      filled
@@ -12,7 +12,7 @@
     <q-input
      filled
      stack-label
-     label="Description"
+     label="description"
      @input="handleInput"
      name="description"
      v-model="data_description"
@@ -33,24 +33,12 @@
       <q-btn label="SUBMIT" type="submit" color="primary"/>
     </div>
   </q-form>
-  <q-dialog v-model="confirm" persistent>
-      <q-card>
-        <q-card-section class="row items-center">
-          <q-avatar icon="check" color="primary" text-color="white" />
-          <span class="q-ml-sm">Permanently delete this conflict?</span>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn flat label="Cancel" color="primary" v-close-popup />
-          <q-btn flat label="DELETE FOREVER" @click="deleteConflict" color="primary" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </div>
 </template>
 <script>
 export default {
-  name: 'EditConflictWidget',
-  props: ['name', 'description', 'avatar_url', 'id', 'status', 'reload'],
+  name: 'EditOrganizationWidget',
+  props: ['organization', 'reload'],
   model: {
     prop: 'name',
     event: 'blur'
@@ -68,47 +56,27 @@ export default {
   },
   data () {
     return {
-      data_name: this.name,
-      data_description: this.description,
-      data_avatar_url: this.avatar_url,
-      confirm: false
+      data_name: this.organization.name,
+      data_description: this.organization.description,
+      data_avatar_url: this.organization.avatar_url
     }
   },
   mounted () {
-    this.data_name = this.name
     this.$mount()
   },
   methods: {
-    deleteConflict: async function () {
-      const q = `${process.env.api}/conflicts/${this.id}`
-      await this.$axios.delete(q)
-        .then((res) => {
-          this.confirm = false
-          this.pageReload()
-          this.$q.notify({
-            type: 'positive',
-            message: 'Delete Success'
-          })
-        })
-        .catch((err) => {
-          this.$q.notify({
-            type: 'negative',
-            message: 'Error deleting: ' + err
-          })
-        })
-    },
     handleInput (value) {
       this.$emit('msgChange', value)
     },
     postForm: async function (e) {
-      if (!this.$errorHandler.loggedInCheck()) { return false }
       const payload = {
+        id: this.organization.id,
         name: this.data_name,
         description: this.data_description,
         avatar_url: this.data_avatar_url
       }
-      const q = `${process.env.api}/conflicts/${this.id}`
-      await this.$axios.patch(q, payload, { headers: { Accept: 'application/json' } })
+      const q = `${process.env.api}/organizations/${this.organization.id}`
+      await this.$axios.patch(q, payload)
         .then((res) => {
           this.reload()
           this.$q.notify({
@@ -119,10 +87,11 @@ export default {
         .catch((err) => {
           this.$q.notify({
             type: 'negative',
-            message: 'Error saving: ' + err
+            message: 'Error updating: ' + err
           })
         })
     }
   }
 }
+
 </script>

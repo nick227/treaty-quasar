@@ -1,13 +1,11 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <TopToolbar></TopToolbar>
-    <!--
-    <q-footer reveal elevated class="bg-grey">
+    <q-footer reveal elevated class="bg-white">
         <q-toolbar>
-          <q-toolbar-title class="text-h6 text-center">GIVE PEACE A CHANCE</q-toolbar-title>
+          <q-toolbar-title class="text-right text-caption text-black">&copy; concordant.io</q-toolbar-title>
         </q-toolbar>
       </q-footer>
-    -->
     <q-page-container>
       <router-view />
     </q-page-container>

@@ -8,6 +8,7 @@
           padding="lg"
           color="positive"
           round
+          :disabled="voted"
           label="AYE"
           @click="confirm(1)"
         />
@@ -16,13 +17,16 @@
           padding="lg"
           color="negative"
           round
+          :disabled="voted"
           label="NAY"
           @click="confirm(0)"
         />
       </div>
     </div>
     <q-separator />
-    <div class="row text-center flex-center full-width"><div class="text-green q-mr-md">{{ num_yay }} Yay</div><div>/</div><div class="text-red q-ml-md">{{ num_nay }} Nay</div></div>
+    <div class="row text-center justify-center full-width"><div class="text-right col q-pr-lg">total:</div><div class="text-green q-mr-md">{{ num_yay }} Yay</div><div>/</div><div class="text-red q-ml-md">{{ num_nay }} Nay</div></div>
+    <div class="row text-center justify-center full-width"><div class="text-right col q-pr-lg">{{ orgAname }}:</div><div class="text-green q-mr-md">{{ org_a_votes.yay }} Yay</div><div>/</div><div class="text-red q-ml-md">{{ org_a_votes.nay }} Nay</div></div>
+    <div class="row text-center justify-center full-width"><div class="text-right col q-pr-lg">{{ orgBname }}:</div><div class="text-green q-mr-md">{{ org_b_votes.yay }} Yay</div><div>/</div><div class="text-red q-ml-md">{{ org_b_votes.nay }} Nay</div></div>
     <q-dialog v-model="verify" persistent>
       <q-card>
         <q-card-section class="row items-center">
@@ -40,16 +44,31 @@
 <script>
 export default {
   name: 'TreatyVoteWidget',
-  props: ['id', 'userOrganizationId', 'votes', 'reload'],
+  props: ['id', 'userOrganizationId', 'votes', 'reload', 'orgAname', 'orgBname'],
   data () {
     return {
       count: 0,
       voteVal: null,
+      voted: false,
       verify: false,
       voteTxt: null
     }
   },
   computed: {
+    org_a_votes: function () {
+      return {
+        yay: this.votes.filter((o) => {
+          return o.vote === 1 && o.organization === this.orgAname
+        }).length,
+        nay: this.votes.filter((o) => { return o.vote === 0 && o.organization === this.orgAname }).length
+      }
+    },
+    org_b_votes: function () {
+      return {
+        yay: this.votes.filter((o) => { return o.vote === 1 && o.organization === this.orgBname }).length,
+        nay: this.votes.filter((o) => { return o.vote === 0 && o.organization === this.orgBname }).length
+      }
+    },
     num_yay: function () {
       return this.votes.filter((o) => { return o.vote === 1 }).length
     },
@@ -71,10 +90,9 @@ export default {
         organization_id: parseInt(this.userOrganizationId),
         vote_type: this.voteVal
       }
-      console.log(q)
-      console.log(payload)
       await this.$axios.post(q, payload, { headers: { Accept: 'application/json' } }).then(() => {
         this.reload()
+        this.voted = true
         this.$q.notify({
           type: 'positive',
           message: 'Vote Received'

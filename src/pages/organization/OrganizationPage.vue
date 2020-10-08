@@ -1,10 +1,19 @@
 <template>
   <q-page padding class="river-width">
+    <div class="row relative-position" style="z-index:3" v-if="isUser">
+        <q-expansion-item v-model="expanded" switch-toggle-side dense-toggle label="Edit Organization" style="height:40px;" class="dialog-width">
+          <EditOrganizationWidget
+           :organization="org"
+           :reload="reload"
+           />
+        </q-expansion-item>
+    </div>
     <div class="q-pa-md q-gutter-sm">
       <div class="text-center">
         <h3>{{org.name}}</h3>
         <h6>{{org.description}}</h6>
       </div>
+  <q-btn class="full-width q-mb-md text-black" v-if="isMember" label="Member Chat" icon="login" color="lightgrey" :ripple="{ center: true }" @click="memberChat = true"></q-btn>
       <transition
   appear
   enter-active-class="animated fadeIn"
@@ -13,9 +22,15 @@
     <q-img class="full-width q-mt-none" :src="org.avatar_url"></q-img>
     </transition>
   </div>
-  <q-btn class="full-width" :label="!isMember ? 'Join' : 'Unjoin'" :color="!isMember ? 'primary' : 'secondary'" style="width:100px" :ripple="{ center: true }" @click="!isMember ? join(org.id) : unjoin(org.id)"></q-btn>
+  <q-btn class="full-width q-mb-md" label="Create Conflict" color="accent" style="" :ripple="{ center: true }" @click="createConflict = true"></q-btn>
+  <q-btn class="full-width q-mb-md" :label="!isMember ? 'Join' : 'Unjoin'" :color="!isMember ? 'primary' : 'secondary'" style="" :ripple="{ center: true }" @click="!isMember ? join(org.id) : unjoin(org.id)"></q-btn>
+  <CommentsWidget v-if="org.id"
+        :userOrganizationId="org.id"
+        :entityId="org.id"
+        entityType="organization"
+  ></CommentsWidget>
   <div v-if="members.length" class="q-pa-md q-gutter-sm">
-  <h6>Members</h6>
+  <h6>Members {{ members.length }}</h6>
     <q-list>
       <q-item v-for="member in members" :key="member.id" clickable v-ripple :to="'/profile/' + member.id">
           <q-item-section avatar>
@@ -31,7 +46,7 @@
    </div>
    <q-separator />
   <div v-if="conflicts.length" class="q-pa-md q-gutter-sm">
-  <h6>Conflicts</h6>
+  <h6>Conflicts {{ conflicts.length }}</h6>
     <q-list>
       <q-item v-for="conflict in conflicts" :key="conflict.id" clickable v-ripple :to="'/conflict/' + conflict.id">
           <q-item-section avatar>
@@ -45,14 +60,18 @@
         </q-item>
     </q-list>
    </div>
-  <CommentsWidget v-if="org.id"
-        :userOrganizationId="org.id"
-        :entityId="org.id"
-        entityType="organization"
-  ></CommentsWidget>
+  <q-dialog class="z-max" v-model="memberChat">
+    <OrganizationChatWidget class="z-max" :organization="org" />
+  </q-dialog>
+  <q-dialog v-model="createConflict">
+    <CreateConflictWidget :defaultOrgName="org.name" />
+  </q-dialog>
 </q-page>
 </template>
 <script>
+import OrganizationChatWidget from 'components/organization/OrganizationChatWidget.vue'
+import EditOrganizationWidget from 'components/organization/EditOrganizationWidget.vue'
+import CreateConflictWidget from 'components/conflict/CreateConflictWidget.vue'
 import CommentsWidget from 'components/widgets/CommentsWidget.vue'
 export default {
   meta () {
@@ -61,20 +80,25 @@ export default {
     }
   },
   name: 'Organization',
-  components: { CommentsWidget },
+  components: { CommentsWidget, CreateConflictWidget, EditOrganizationWidget, OrganizationChatWidget },
   data () {
     return {
+      memberChat: false,
+      isUser: false,
+      expanded: false,
       org: {},
       members: [],
       conflicts: [],
-      isMember: false
+      isMember: false,
+      createConflict: false
     }
   },
-  async mounted () {
+  created () {
     this.reload()
   },
   methods: {
     reload: async function () {
+      this.expanded = false
       this.loadOrg()
       this.loadMembers()
       this.loadConflicts()
@@ -101,7 +125,7 @@ export default {
       const q = `${process.env.api}/organizations/${this.$route.params.id}`
       const org = await this.$axios.get(q)
       this.org = org.data
-      console.log(this.org)
+      this.isUser = this.$errorHandler.isLoggedInUser(this.org.creator_user_id)
     },
     loadMembers: async function () {
       const q = `${process.env.api}/organizations/${this.$route.params.id}/users`

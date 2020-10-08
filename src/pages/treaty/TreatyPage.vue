@@ -1,5 +1,6 @@
 <template>
-  <div>
+    <q-page-container :style="!treatyId ? 'padding-top:0' : ''" :class="!treatyId ? 'river-width' : 'full-width'" v-if="!loading">
+      <q-page padding>
     <div class="row full-width q-pa-sm bg-grey-2">
       <div class="col col-md-5">
         <a class="cursor-pointer" @click="$router.push('/organization/'+org_a.id)">
@@ -17,10 +18,8 @@
         </a>
       </div>
     </div>
-    <q-page-container class="river-width" v-if="!loading">
-      <q-page padding>
         <div v-if="isUser" class="row relative-position q-mb-sm full-width" style="height:35px;">
-          <q-expansion-item v-model="editExpanded" switch-toggle-side dense-toggle label="Edit Treaty" class="z-top">
+          <q-expansion-item v-model="editExpanded" switch-toggle-side dense-toggle label="Edit Treaty" style="z-index:2">
             <EditTreatyWidget
     :name="treaty.name"
     :description="treaty.description"
@@ -28,7 +27,7 @@
     :provisions="provisions"
     :reload="getTreaty"
     :key="'edit' + counter"
-    :id="treaty.id" />
+    :treatyId="treaty.id" />
           </q-expansion-item>
         </div>
         <RatingWidget :readonly="userOrganizationId ? false : true" :entityId="treaty.id" :userOrganizationId="userOrganizationId" entityType="treaty" />
@@ -41,6 +40,16 @@
             <p v-if="treaty.creator" class="caption q-pt-none">Created by: <router-link :to="'/profile/'+treaty.creator.id">{{ treaty.creator.name }}</router-link></p>
           </div>
         </div>
+         <div class="q-mt-sm">
+          <q-expansion-item icon="share" v-model="showShareWidget" dense-toggle label="Share Treaty" class="bg-blue-grey-1">
+          <ShareWidget entityType="treaty" :entityId="treaty.id" :title="treaty.name" />
+          </q-expansion-item>
+        </div>
+        <q-separator class="q-mt-md" />
+        <CommentsWidget v-if="userOrganizationId"
+              :entityId="treaty.id"
+              entityType="treaty"
+        ></CommentsWidget>
         <q-separator class="q-mt-md" />
         <h5 v-if="provisions.length">Provisions:</h5>
         <q-separator class="q-mb-md" />
@@ -64,6 +73,8 @@
         :votes="votes"
         :key="'votesw' + counter"
         :id="treaty.id"
+        :orgAname= "org_a.name"
+        :orgBname= "org_b.name"
         :userOrganizationId="userOrganizationId" />
         <q-separator class="q-mt-md" />
         <h5>Votes:</h5>
@@ -73,10 +84,6 @@
       :key="'votest' + counter"
       :votes="votes"
       :id="treaty.id" />
-        <CommentsWidget v-if="userOrganizationId"
-              :entityId="treaty.id"
-              entityType="treaty"
-        ></CommentsWidget>
         <q-dialog v-model="verify_org" persistent>
           <q-card>
             <q-card-section class="row items-center">
@@ -90,11 +97,11 @@
         <RelatedTreatiesWidget :conflictId="treaty.conflict.id" :currentId="treaty.id" />
       </q-page>
     </q-page-container>
-  </div>
 </template>
 <script>
 import RatingWidget from 'components/widgets/RatingWidget.vue'
 import CommentsWidget from 'components/widgets/CommentsWidget.vue'
+import ShareWidget from 'components/widgets/ShareWidget.vue'
 import EditTreatyWidget from 'components/treaty/EditTreatyWidget.vue'
 import RelatedTreatiesWidget from 'components/treaty/RelatedTreatiesWidget.vue'
 import AddProvision from 'components/treaty/AddProvision.vue'
@@ -105,13 +112,15 @@ export default {
   name: 'TreatyPage',
   meta () {
     return {
-      title: this.treaty.name
+      title: this.treaty.name,
+      image: this.treaty.avatar_url
     }
   },
-  props: [],
-  components: { AddProvision, CommentsWidget, TreatyVoteWidget, RatingWidget, TreatyVotesTable, EditTreatyWidget, TreatyProvisionComponent, RelatedTreatiesWidget },
+  props: ['treatyId'],
+  components: { AddProvision, CommentsWidget, TreatyVoteWidget, RatingWidget, TreatyVotesTable, EditTreatyWidget, TreatyProvisionComponent, RelatedTreatiesWidget, ShareWidget },
   data () {
     return {
+      showShareWidget: false,
       userOrganizationId: null,
       creatorName: null,
       creatorId: null,
@@ -128,6 +137,7 @@ export default {
       verify_org: false,
       org_a: {},
       org_b: {},
+      treaty_id: this.treatyId || this.$route.params.id,
       initialPagination: {
         sortBy: 'desc',
         descending: false,
@@ -139,7 +149,7 @@ export default {
   methods: {
     getTreaty: async function () {
       this.editExpanded = this.expanded = false
-      const q = `${process.env.api}/treaties/${this.$route.params.id}?filter={"include":[{"relation":"creator"},{"relation":"conflict", "scope":{"include":[{"relation":"organization_a"},{"relation":"organization_b"}]}}]}`
+      const q = `${process.env.api}/treaties/${this.treaty_id}?filter={"include":[{"relation":"creator"},{"relation":"conflict", "scope":{"include":[{"relation":"organization_a"},{"relation":"organization_b"}]}}]}`
       const treaty = await this.$axios.get(q)
       this.treaty = treaty.data
       this.org_a = this.treaty.conflict.organization_a
@@ -182,8 +192,12 @@ export default {
       ]
     },
     getVotes: async function () {
-      const q = `${process.env.api}/votes?filter[where][treaty_id]=${this.$route.params.id}&filter[include][0][relation]=creator&filter[include][1][relation]=organization&filter[order]=create_date%20DESC`
+      const q = `${process.env.api}/votes?filter[where][treaty_id]=${this.treaty_id}&filter[include][0][relation]=creator&filter[include][1][relation]=organization&filter[order]=create_date%20DESC`
       const votes = await this.$axios.get(q)
+      console.log(votes)
+      if (!votes.data.length) {
+        return false
+      }
       this.votes = votes.data.map((item) => {
         return {
           creatorUserId: item.creator_user_id,
@@ -199,7 +213,7 @@ export default {
     },
     loadProvisions: async function () {
       this.editExpanded = this.expanded = false
-      const q = `${process.env.api}/treaty-provisions?filter[where][treaty_id]=${this.$route.params.id}&filter[order]=position%20ASC`
+      const q = `${process.env.api}/treaty-provisions?filter[where][treaty_id]=${this.treaty_id}&filter[order]=position%20ASC`
       const provisions = await this.$axios.get(q)
       this.provisions = provisions.data
       this.numProvisions = this.provisions.length ? this.provisions.length : 0

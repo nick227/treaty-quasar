@@ -56,7 +56,7 @@ h1.welcome{
   background: transparent;
 }
 .info-card{
-  width:100%;
+  max-width:100% !important;
   width: 300px !important;
 }
 .org-card{
@@ -69,12 +69,19 @@ h1.welcome{
 .card-item{
   width:250px;
 }
+.river-width{
+  max-width: 960px;
+  width: 90%;
+}
+.dialog-width{
+  width: 100%;
+}
 .activity-width{
   width:640px;
   max-width: 100%;
 }
 .card-image{
-  max-width:500px; 
+  max-width:300px; 
   max-height:350px; 
   min-width:250px;
   min-height:250px;
@@ -83,13 +90,12 @@ h1.welcome{
   background-size: cover;
   background-position: center center;
 }
-.dialog-width{
-  width:640px;
-  max-width: 98%;
-}
-.river-width{
-  max-width: 960px;
-  width: 90%;
+.avatar-image{
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  width:100%; height:100%;
+  background-position-y: top;
 }
 .q-field--filled{
   background-color: $lightgray;
@@ -137,5 +143,8 @@ h1.welcome{
 .comment-q-avatar-inner{
   width:100px; height:100px;
 }
-
+.q-table__bottom{
+  padding: 10px;
+  background-color: lightgrey;
+}
 @import './mobile.scss';

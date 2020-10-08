@@ -4,14 +4,15 @@
     <CreateOrganizationWidget :reload="reload" />
   </q-expansion-item>
     <h6 class="q-mb-sm text-center">Organizations</h6>
+      <q-separator />
     <q-list class="row">
-      <h3 class="q-ma-lg text-center" v-if="!organizations.length && !done">LOADING...</h3>
-      <h3 class="q-ma-lg text-center" v-if="!organizations.length && done">No organizations found.</h3>
+      <h5 class="q-ma-lg text-center" v-if="!organizations.length && !done">LOADING...</h5>
+      <h5 class="q-ma-lg text-center" v-if="!organizations.length && done">No organizations found.</h5>
     <div v-for="org in organizations" class="col col-shrink info-card q-mb-lg" :key="org.id">
     <q-card class="flex-break q-ma-lg">
   <router-link :to="'/organization/'+org.id"><div :style="'background-image:url(' + org.avatar_url + ')'" class="card-image"></div></router-link>
       <q-card-section>
-        <router-link :to="'/organization/'+org.id"><div class="text-h6 cursor-pointer">{{ org.name }}</div></router-link>
+        <router-link :to="'/organization/'+org.id"><div style="" class="text-h6 cursor-pointer">{{ org.name }}</div></router-link>
       </q-card-section>
       <q-card-section class="q-pt-none">
         {{ org.description }}
@@ -44,7 +45,7 @@ export default {
       organizations: [],
       expanded: false,
       pointer: 0,
-      limit: 10,
+      limit: 6,
       done: false,
       loadNum: 0
     }
@@ -89,6 +90,9 @@ export default {
       this.loadJoined()
     },
     reload: function () {
+      this.loadNum = 0
+      this.pointer = 0
+      this.done = false
       this.expanded = false
       this.joined = []
       this.joinedList = []

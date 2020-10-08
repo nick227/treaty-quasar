@@ -1,8 +1,8 @@
 <template>
 <div class="river-width">
-    <h6 class="q-mt-lg q-mb-lg q-pa-none text-center">Members</h6>
+    <h6 class="q-mb-sm text-center q-mt-lg">Members</h6>
+      <q-separator class="q-mb-lg" />
 <div class="row q-pl-lg q-pr-lg">
-      <q-separator />
       <h3 class="q-ma-lg text-center" v-if="!users.length && !done">LOADING...</h3>
       <h3 class="q-ma-lg text-center" v-if="!users.length && done">No members found.</h3>
   <div class="col col-shrink info-card q-mb-lg" v-for="user in users" :key="user.id">

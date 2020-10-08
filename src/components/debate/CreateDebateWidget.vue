@@ -1,32 +1,39 @@
 <template>
   <div>
-  <q-form @submit="postForm" greedy class="q-pa-md bg-grey-4">
-    <q-input
-     filled
-     required
-      v-model="title"
-      placeholder="Title"
-    />
-      <q-separator />
-    <q-input
-     filled
-     required
-      placeholder="Description"
-      v-model="description"
-      autogrow
-      type="textarea"
-    />
-      <q-separator />
-    <q-input
-    filled
-    v-model="avatar_url"
-    placeholder="Avatar URL"
-    type="url"
-    />
-    <div class="text-right q-mt-lg">
-        <q-btn label="Submit" type="submit" color="primary"/>
-    </div>
-  </q-form>
+      <q-btn class="full-width" color="accent" label="Add Topic" @click="openForm" />
+      <q-dialog v-model="prompt" persistent>
+      <q-card style="min-width: 350px">
+        <q-card-section color="secondary">
+          <div class="text-h6 capitalize">Add Topic</div>
+        </q-card-section>
+        <q-card-section class="q-pt-none">
+          <q-input
+           dense
+           required
+            v-model="title"
+            placeholder="Title"
+          />
+          <q-input
+           dense
+           required
+            placeholder="Description"
+            v-model="description"
+            autogrow
+            type="textarea"
+          />
+          <q-input
+          dense
+          v-model="avatar_url"
+          placeholder="Avatar URL"
+          type="url"
+          />
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="CANCEL" @click="clearForm" v-close-popup />
+          <q-btn flat label="SUBMIT" @click="postForm" v-close-popup />
+        </q-card-actions>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 <script>
@@ -38,10 +45,21 @@ export default {
       title: '',
       description: '',
       avatar_url: '',
-      organizations: []
+      prompt: false
     }
   },
   methods: {
+    openForm: function () {
+      this.title = ''
+      this.description = ''
+      this.avatar_url = ''
+      this.prompt = true
+    },
+    clearForm: function () {
+      this.title = ''
+      this.avatar_url = ''
+      this.description = ''
+    },
     postForm: async function () {
       const q = `${process.env.api}/debates`
       const payload = {

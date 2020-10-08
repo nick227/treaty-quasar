@@ -3,7 +3,7 @@
   <div class="text-center z-top">
     <h1 class="text-light">CONCORDANT.IO</h1>
     <h4 class="q-mb-sm">The treaty building platform</h4>
-    <q-btn class="q-mb-sm" :to="!$errorHandler.isLoggedIn() ? '/login' : '/treaties'" color="dark full-width">GET STARTED</q-btn>
+    <q-btn key="btn" class="q-mb-sm" to="/get-started" color="dark full-width">GET STARTED</q-btn>
     <p class="text-center z-top">Giving PEACE a chance.</p>
   </div>
   <p class="caption fixed-bottom-right z-top" style="margin-right:100px;"><a class="text-dark q-mr-lg text-weight-bold" href="https://codepen.io/rachelnabors" target="_blank">Animation by Rachel Nabors</a></p>
@@ -35,7 +35,7 @@ export default {
 </script>
 <style>
 .tuna {
-  animation: walk-cycle 1s steps(12) infinite;
+  animation: walk-cycle 1.4s steps(12) infinite;
   background: url(http://stash.rachelnabors.com/img/codepen/tuna_sprite.png) 0 0 no-repeat;
   height: 200px;
   width: 400px;
@@ -57,7 +57,7 @@ export default {
   left: 0;
 }
 .foreground {
-  animation: parallax_fg linear 10s infinite both;
+  animation: parallax_fg linear 15s infinite both;
   background:  url(http://stash.rachelnabors.com/24ways2012/foreground_grass.png) 0 100% repeat-x;
   z-index: 0;
 }
@@ -66,7 +66,7 @@ export default {
   100% {background-position: 0 100%;}
 }
 .midground {
-  animation: parallax_mg linear 20s infinite;
+  animation: parallax_mg linear 22s infinite;
   background:  url(http://stash.rachelnabors.com/24ways2012/midground_grass.png) 0 100% repeat-x;
   z-index: -1;
 }

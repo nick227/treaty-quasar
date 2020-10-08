@@ -1,12 +1,4 @@
 <template>
-  <q-layout view="Lhh lpR fff" container class="bg-white river-width">
-    <q-header class="bg-primary">
-      <q-toolbar>
-        <q-toolbar-title class="q-pl-lg">Create Treaty</q-toolbar-title>
-        <q-btn flat v-close-popup round dense icon="close" />
-      </q-toolbar>
-    </q-header>
-    <q-page-container>
       <q-page padding class="">
         <q-form>
           <q-list class="full-width">
@@ -21,9 +13,10 @@
                     </q-item>
                   </template>
                 </q-select>
-                <div v-if="!conflictId && !userOrganizationIdSelect" class="full-width text-right q-mb-sm">Conflict not listed?</div>
-                <div v-if="!conflictId && !userOrganizationIdSelect" class="full-width text-center q-mb-sm">
-                  <q-btn class="full-width" icon="add" label="ADD CONFLICT" />
+                <div v-if="!conflictId && !userOrganizationIdSelect" class="full-width q-mb-sm">
+                  <q-expansion-item v-model="expanded" switch-toggle-side dense-toggle label="Create Conflict">
+                    <CreateConflictWidget :reload="loadConflicts" />
+                  </q-expansion-item>
                 </div>
                 <p v-if="userOrganizationNameSelect" class="q-pt-none">Creating as: {{ userOrganizationNameSelect }}</p>
                 <q-input class="q-mb-sm" outlined required v-model="name" label="Name" />
@@ -65,36 +58,39 @@
           </q-card>
         </q-dialog>
       </q-page>
-    </q-page-container>
-  </q-layout>
 </template>
 <script>
+import CreateConflictWidget from 'components/conflict/CreateConflictWidget.vue'
+import AddAchievementMixin from 'components/mixins/AddAchievementMixin.vue'
 export default {
   name: 'CreateTreaty',
-  components: {},
+  components: { CreateConflictWidget },
   props: ['userOrganizationId', 'conflictId', 'reload'],
   data () {
     return {
       name: '',
-      description: '',
+      expanded: false,
+      achievementTypeId: null,
       avatar_url: '',
+      conflict: null,
+      conflicts: [],
+      conflictsObj: {},
+      conflictSelect: null,
+      conflictSelectId: null,
+      description: '',
+      options: [],
+      org_a: { name: '', id: '' },
+      org_b: { name: '', id: '' },
       provisionCount: 0,
       provisions: [],
       provisionNames: [],
       provisionText: [],
-      conflict: null,
-      conflicts: [],
-      options: [],
-      conflictsObj: {},
-      conflictSelect: null,
-      conflictSelectId: null,
       userOrganizationIdSelect: null,
       userOrganizationNameSelect: null,
-      verify_org: false,
-      org_a: { name: '', id: '' },
-      org_b: { name: '', id: '' }
+      verify_org: false
     }
   },
+  mixins: [AddAchievementMixin],
   async created () {
     if (!this.conflictId) {
       this.getConflicts()
@@ -112,6 +108,19 @@ export default {
     }
   },
   methods: {
+    loadConflicts (res) {
+      this.getConflicts()
+      this.conflictSelect = res.data.name
+      this.expanded = false
+    },
+    showLoading () {
+      this.$q.loading.show({
+        message: 'This takes a while.<br/><span class="text-primary">Hang on...</span>'
+      })
+    },
+    removeLoading () {
+      this.$q.loading.hide()
+    },
     setOrg (key) {
       this.userOrganizationIdSelect = this[key].id
       this.userOrganizationNameSelect = this[key].name
@@ -140,6 +149,7 @@ export default {
       }
     },
     postTreaty: async function () {
+      this.showLoading()
       const q = `${process.env.api}/treaties`
       const conflictId = this.conflictId ? this.conflictId : this.conflictSelectId
       const userOrganizationId = this.userOrganizationId ? this.userOrganizationId : this.userOrganizationIdSelect
@@ -159,7 +169,7 @@ export default {
         .catch((err) => {
           this.$q.notify({
             type: 'negative',
-            message: err
+            message: 'Error creating treaty: ' + err
           })
         })
     },
@@ -181,7 +191,7 @@ export default {
           .catch((err) => {
             this.$q.notify({
               type: 'negative',
-              message: err
+              message: 'Error creating provision: ' + err
             })
           })
         this.provisionNames[i] = ''
@@ -192,8 +202,10 @@ export default {
       this.avatar_url = ''
       this.$q.notify({
         type: 'positive',
-        message: 'Treaty created'
+        message: 'Treaty created!'
       })
+      this.addAchievement('Treaty Builder')
+      this.removeLoading()
       this.reload()
     },
     removeProvision: function (index) {
@@ -203,7 +215,8 @@ export default {
       this.provisionCount++
       this.provisions.push(this.provisionCount)
     }
-  }
+  },
+  mounted () {}
 }
 
 </script>
